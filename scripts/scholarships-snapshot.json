@@ -1,0 +1,29 @@
+[
+  {
+    "id": "fulbright-us",
+    "name": "Fulbright U.S. Student Program",
+    "country": "USA",
+    "flag": "🇺🇸",
+    "organization": "Institute of International Education, Inc.",
+    "degree": [
+      "masters",
+      "phd"
+    ],
+    "funding": "full",
+    "fields": [
+      "Any"
+    ],
+    "deadline": "2026-03-31",
+    "description": "The Fulbright U.S. Student Program funds American citizens to study, conduct research, or teach English abroad. It offers over 2,000 awards annually across all academic disciplines, including the creative and performing arts, for graduating seniors, graduate students, young professionals, and artists.",
+    "requirements": {
+      "essays": [],
+      "other": [
+        "U.S. Citizen",
+        "Current U.S. Student: enrolled in undergraduate or graduate degree programs",
+        "U.S. Citizen but not a Student: will hold a bachelor’s degree by the award start date, and do not have a Ph.D. degree",
+        "Artist: relatively limited professional experience in the fields (typically 7 years or less)"
+      ]
+    },
+    "link": "https://us.fulbrightonline.org/"
+  }
+]

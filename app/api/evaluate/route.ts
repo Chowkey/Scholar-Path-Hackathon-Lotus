@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getGeminiClient } from "@/lib/gemini";
+import { getOpenAIClient } from "@/lib/openai";
 import { normalizeGpa } from "@/lib/utils";
 import type { EvaluationResult, ProfileFormData, Scholarship } from "@/lib/types";
 
@@ -41,6 +41,55 @@ type EvaluateRequestBody = {
   scholarships: Scholarship[];
 };
 
+const EVALUATION_RESPONSE_SCHEMA = {
+  type: "object",
+  additionalProperties: false,
+  properties: {
+    results: {
+      type: "array",
+      items: {
+        type: "object",
+        additionalProperties: false,
+        properties: {
+          scholarshipId: { type: "string" },
+          scholarshipName: { type: "string" },
+          trafficLight: { type: "string", enum: ["green", "yellow", "red"] },
+          matchPercent: { type: "number" },
+          strengths: {
+            type: "array",
+            items: { type: "string" },
+          },
+          gaps: {
+            type: "array",
+            items: {
+              type: "object",
+              additionalProperties: false,
+              properties: {
+                field: { type: "string" },
+                current: { type: "string" },
+                required: { type: "string" },
+                advice: { type: "string" },
+              },
+              required: ["field", "current", "required", "advice"],
+            },
+          },
+          verdict: { type: "string" },
+        },
+        required: [
+          "scholarshipId",
+          "scholarshipName",
+          "trafficLight",
+          "matchPercent",
+          "strengths",
+          "gaps",
+          "verdict",
+        ],
+      },
+    },
+  },
+  required: ["results"],
+} as const;
+
 function getErrorStatus(error: unknown): number {
   if (
     typeof error === "object" &&
@@ -74,33 +123,38 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Select at least one scholarship to evaluate." }, { status: 400 });
     }
 
-    const gemini = getGeminiClient();
+    const openai = getOpenAIClient();
     const normalizedProfile = {
       ...body.profile,
       normalizedGpaOn4Scale: normalizeGpa(body.profile.gpa, body.profile.gpaScale),
     };
 
-    const response = await gemini.models.generateContent({
-      model: "gemini-3.1-flash-lite-preview",
-      contents: JSON.stringify({
+    const response = await openai.responses.create({
+      model: process.env.OPENAI_EVALUATE_MODEL ?? "gpt-5.4-mini",
+      instructions: SYSTEM_PROMPT,
+      input: JSON.stringify({
         profile: normalizedProfile,
         scholarships: body.scholarships,
       }),
-      config: {
-        systemInstruction: SYSTEM_PROMPT,
-        maxOutputTokens: 1800,
-        responseMimeType: "application/json",
+      max_output_tokens: 1800,
+      text: {
+        format: {
+          type: "json_schema",
+          name: "scholarship_evaluation",
+          schema: EVALUATION_RESPONSE_SCHEMA,
+          strict: true,
+        },
       },
     });
 
-    const text = response.text ?? "";
+    const text = response.output_text ?? "";
 
     try {
       const parsed = JSON.parse(stripMarkdownFences(text)) as { results: EvaluationResult[] };
 
       return NextResponse.json(parsed);
     } catch (parseError) {
-      console.error("[/api/evaluate] Failed to parse Gemini response as JSON.", {
+      console.error("[/api/evaluate] Failed to parse OpenAI response as JSON.", {
         rawText: text,
         parseError,
       });
@@ -108,7 +162,7 @@ export async function POST(request: Request) {
       return NextResponse.json(
         {
           error:
-            "Gemini returned an invalid evaluation format. Try again, or lower the number of selected scholarships.",
+            "OpenAI returned an invalid evaluation format. Try again, or lower the number of selected scholarships.",
         },
         { status: 502 },
       );
@@ -118,7 +172,7 @@ export async function POST(request: Request) {
     const rawMessage = getErrorMessage(error);
     const message =
       status === 429
-        ? "Gemini quota was exceeded for the evaluator request. Check your API billing/quota, wait for reset, or switch to a model/project with available quota."
+        ? "OpenAI quota was exceeded for the evaluator request. Check your API billing/quota, wait for reset, or switch to a model/project with available quota."
         : rawMessage;
 
     console.error("[/api/evaluate] Request failed.", {

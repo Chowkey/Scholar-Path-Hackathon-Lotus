@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
-import type { Content } from "@google/genai";
-import { getGeminiClient } from "@/lib/gemini";
+import { getOpenAIClient } from "@/lib/openai";
 
 const SYSTEM_PROMPT = `You are ScholarPath Counselor, a warm and knowledgeable scholarship advisor for students
 in Southeast Asia looking to study abroad.
@@ -40,29 +39,28 @@ type ChatRequestBody = {
 export async function POST(request: Request) {
   try {
     const body = (await request.json()) as ChatRequestBody;
-    const gemini = getGeminiClient();
-    const contents: Content[] = body.messages.map((message) => ({
-      role: message.role === "assistant" ? "model" : "user",
-      parts: [{ text: message.content }],
+    const openai = getOpenAIClient();
+    const input = body.messages.map((message) => ({
+      role: message.role,
+      content: [{ type: "input_text" as const, text: message.content }],
     }));
 
     const encoder = new TextEncoder();
     const readable = new ReadableStream({
       async start(controller) {
         try {
-          const stream = await gemini.models.generateContentStream({
-            model: "gemini-2.5-flash",
-            contents,
-            config: {
-              systemInstruction: SYSTEM_PROMPT,
-              maxOutputTokens: 1200,
-              tools: [{ googleSearch: {} }],
-            },
+          const stream = await openai.responses.create({
+            model: process.env.OPENAI_CHAT_MODEL ?? "gpt-5.4-mini",
+            instructions: SYSTEM_PROMPT,
+            input,
+            max_output_tokens: 1200,
+            tools: [{ type: "web_search_preview" }],
+            stream: true,
           });
 
-          for await (const chunk of stream) {
-            if (chunk.text) {
-              controller.enqueue(encoder.encode(chunk.text));
+          for await (const event of stream) {
+            if (event.type === "response.output_text.delta" && event.delta) {
+              controller.enqueue(encoder.encode(event.delta));
             }
           }
 
