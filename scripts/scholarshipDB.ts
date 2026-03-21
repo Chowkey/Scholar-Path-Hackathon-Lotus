@@ -71,7 +71,7 @@ const FIXED_SOURCES: SourceConfig[] = [
   },
 ];
 
-const SCHOLARSHIPS_PER_SOURCE = Number(process.env.SCHOLARSHIPS_PER_SOURCE ?? "3");
+const SCHOLARSHIPS_PER_SOURCE = Number(process.env.SCHOLARSHIPS_PER_SOURCE ?? "10");
 const OPENAI_SCRAPE_MODEL = process.env.OPENAI_SCRAPE_MODEL ?? "gpt-5.4-mini";
 const INTERFAZE_MODEL = process.env.INTERFAZE_MODEL ?? "interfaze-beta";
 const SCRAPE_PROVIDER = (process.env.SCHOLARSHIP_SCRAPE_PROVIDER ??
@@ -125,11 +125,11 @@ function getChatMessageText(response: unknown): string {
     choices?: Array<{
       message?: {
         content?:
-          | string
-          | Array<{
-              type?: string;
-              text?: string;
-            }>;
+        | string
+        | Array<{
+          type?: string;
+          text?: string;
+        }>;
       };
     }>;
   };
@@ -227,7 +227,11 @@ function normalizeScrapeArray(value: unknown): Partial<Scholarship>[] {
   return [];
 }
 
-function buildScrapePrompt(source: SourceConfig): string {
+function buildScrapePrompt(source: SourceConfig, existingNames: string[] = []): string {
+  const exclusionRule = existingNames.length > 0
+    ? `- CRITICAL EXCLUSION: DO NOT extract any of the following known scholarships. They are already in the database: ${existingNames.join(", ")}`
+    : "";
+
   return [
     "You are extracting scholarship records from a specific source page.",
     `Source name: ${source.name}`,
@@ -246,7 +250,7 @@ function buildScrapePrompt(source: SourceConfig): string {
     '      "degree": "one of Bachelor, Master, Doctorate, Associate, Diploma, Certificate, Foundation, MBA, Professional, Postdoctoral, Other",',
     '      "funding": "raw funding text or value from source (can be string or amount)",',
     '      "field": "single field of study label, e.g. Medicine, Law, Computer Science",',
-    '      "academicRequirements": "short paragraph summarizing academic requirements",',
+    '      "academicRequirements": "detailed markdown text containing all academic requirements exactly as presented, preserving bullet points and lists",',
     '      "languageRequirements": {',
     '        "ielts": "string or null",',
     '        "toefl": "string or null",',
@@ -254,9 +258,9 @@ function buildScrapePrompt(source: SourceConfig): string {
     '        "duolingo": "string or null",',
     '        "other": ["...optional language conditions..."]',
     "      },",
-    '      "otherRequirements": "short paragraph for non-academic and non-language constraints",',
+    '      "otherRequirements": "detailed markdown text containing all non-academic documents/requirements exactly as presented, preserving bullet points/formatting",',
     '      "deadline": "YYYY-MM-DD if explicit, otherwise a short deadline note like Rolling or See source",',
-    '      "description": "2-4 sentence summary",',
+    '      "description": "detailed markdown summary covering what the scholarship offers, preserving original formatting",',
     '      "link": "best application or detail URL",',
     '      "sourceName": "source page name",',
     '      "sourceUrl": "source page URL"',
@@ -265,6 +269,10 @@ function buildScrapePrompt(source: SourceConfig): string {
     "}",
     "",
     "Rules:",
+    "- CRITICAL FORMATTING: Do NOT summarize the requirements. Keep the original bullet points, lists, and full details using Markdown syntax.",
+    "- CRITICAL: Please select a RANDOM and DIVERSE subset of scholarships from the page.",
+    "- DO NOT just pick the first ones you encounter. Scroll deep into the content to find hidden or lesser-known scholarships.",
+    exclusionRule,
     "- Use only information from the source page and clearly linked details.",
     "- Prioritize scholarships that clearly show study location and host institution.",
     "- If source has many listings, choose the most concrete and complete entries.",
@@ -302,6 +310,23 @@ function validateScholarship(
       record: null,
       reason: "link points to source listing URL instead of scholarship detail/apply page",
     };
+  }
+
+  const isVague = (val: unknown) => {
+    const s = normalizeString(val).toLowerCase();
+    return s.includes("see source") || s === "not specified" || s === "not specified." || s === "unknown" || s === "general" || s === "";
+  };
+
+  const vagueCount = [
+    scraped.country,
+    scraped.funding,
+    scraped.field,
+    scraped.academicRequirements,
+    scraped.description
+  ].filter(isVague).length;
+
+  if (vagueCount >= 3) {
+    return { record: null, reason: "too many vague or 'See source' fields (likely a trash link or missing data)" };
   }
 
   const country = normalizeCountry(normalizeString(scraped.country, "Unknown"));
@@ -345,14 +370,16 @@ function validateScholarship(
 
 async function scrapeWithInterfaze(
   client: OpenAI,
-  source: SourceConfig
+  source: SourceConfig,
+  existingNames: string[]
 ): Promise<Partial<Scholarship>[]> {
   const response = await client.chat.completions.create({
     model: INTERFAZE_MODEL,
+    temperature: 0.8,
     messages: [
       {
         role: "user",
-        content: buildScrapePrompt(source),
+        content: buildScrapePrompt(source, existingNames),
       },
     ],
     tools: [
@@ -384,7 +411,8 @@ async function scrapeWithInterfaze(
 
 async function scrapeWithOpenAI(
   client: OpenAI,
-  source: SourceConfig
+  source: SourceConfig,
+  existingNames: string[]
 ): Promise<Partial<Scholarship>[]> {
   const response = await client.responses.create({
     model: OPENAI_SCRAPE_MODEL,
@@ -394,7 +422,7 @@ async function scrapeWithOpenAI(
         content: [
           {
             type: "input_text",
-            text: buildScrapePrompt(source),
+            text: buildScrapePrompt(source, existingNames),
           },
         ],
       },
@@ -458,9 +486,9 @@ async function main() {
   const openai = new OpenAI({ apiKey: openAiApiKey });
   const interfaze: OpenAI | null = interfazeApiKey
     ? new OpenAI({
-        apiKey: interfazeApiKey,
-        baseURL: "https://api.interfaze.ai/v1",
-      })
+      apiKey: interfazeApiKey,
+      baseURL: "https://api.interfaze.ai/v1",
+    })
     : null;
 
   const supabase = createClient(supabaseUrl, supabaseServiceRoleKey, {
@@ -482,7 +510,27 @@ async function main() {
   console.log(`Saved fixed source snapshot to ${sourceSnapshotPath}`);
   console.log("");
 
-  const scholarships: Scholarship[] = [];
+  const snapshotPath = path.resolve(
+    process.cwd(),
+    "scripts",
+    "scholarships-snapshot.json"
+  );
+
+  let existingNames: string[] = [];
+  let existingScholarships: Scholarship[] = [];
+  try {
+    if (fs.existsSync(snapshotPath)) {
+      const rawSnapshot = fs.readFileSync(snapshotPath, "utf-8");
+      existingScholarships = JSON.parse(rawSnapshot) as Scholarship[];
+      existingNames = existingScholarships.map(s => s.name);
+      console.log(`Loaded ${existingNames.length} existing scholarships to exclude from the new scrape.`);
+    }
+  } catch (e) {
+    console.log("No existing snapshot found or error parsing snapshot, proceeding without exclusions.");
+  }
+  console.log("");
+
+  const scholarships: Scholarship[] = [...existingScholarships];
   const failed: Array<{ source: string; reason: string }> = [];
 
   for (const source of FIXED_SOURCES) {
@@ -491,8 +539,8 @@ async function main() {
     try {
       const scrapedItems =
         SCRAPE_PROVIDER === "openai"
-          ? await scrapeWithOpenAI(openai, source)
-          : await scrapeWithInterfaze(interfaze!, source);
+          ? await scrapeWithOpenAI(openai, source, existingNames)
+          : await scrapeWithInterfaze(interfaze!, source, existingNames);
 
       if (scrapedItems.length === 0) {
         failed.push({ source: source.name, reason: "no scholarships extracted" });
@@ -531,12 +579,6 @@ async function main() {
 
   const uniqueScholarships = Array.from(
     new Map(scholarships.map((item) => [item.id, item])).values()
-  );
-
-  const snapshotPath = path.resolve(
-    process.cwd(),
-    "scripts",
-    "scholarships-snapshot.json"
   );
 
   fs.writeFileSync(snapshotPath, JSON.stringify(uniqueScholarships, null, 2), "utf-8");
