@@ -15,6 +15,7 @@ export type Scholarship = {
   country: string;
   flag: string;
   organization: string;
+  universities?: string[]; // Specific universities where the scholarship can be used
   degree: ("undergraduate" | "masters" | "phd")[];
   funding: "full" | "partial";
   fields: string[];
@@ -57,6 +58,12 @@ export type EvaluationResult = {
   strengths: string[];
   gaps: EvaluationGap[];
   verdict: string;
+  // Optional fields populated when enriched with school/acceptance rate data
+  universityData?: Array<{
+    name: string;
+    acceptanceRate: number | null;
+  }>;
+  competitivenessLevel?: "Very Selective" | "Highly Selective" | "Selective" | "Moderately Selective" | "Unknown";
 };
 
 export type UserInfo = {

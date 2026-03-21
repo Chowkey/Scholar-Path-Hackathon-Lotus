@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { scholarships } from "@/lib/scholarships";
+import { fetchAcceptanceRate } from "@/lib/acceptance-rate";
 import type { EvaluationResult as EvaluationResultType, ProfileFormData } from "@/lib/types";
 
 const initialProfile: ProfileFormData = {
@@ -95,7 +96,55 @@ export function EvaluatorClient({ initialSelectedIds }: EvaluatorClientProps) {
         throw new Error("error" in payload ? payload.error : "Evaluation failed.");
       }
 
-      setResults(payload.results);
+      // Fetch acceptance rates for ALL universities for each scholarship
+      const enrichedResults = await Promise.all(
+        payload.results.map(async (result) => {
+          const scholarship = selectedScholarships.find((s) => s.id === result.scholarshipId);
+          if (!scholarship || !scholarship.universities || scholarship.universities.length === 0) {
+            return {
+              ...result,
+              universityData: [],
+            };
+          }
+
+          try {
+            // Fetch acceptance rates for ALL universities in parallel
+            const universityDataPromises = scholarship.universities.map(async (universityName) => {
+              try {
+                const acceptanceRateData = await fetchAcceptanceRate(universityName);
+                return {
+                  name: universityName,
+                  acceptanceRate: acceptanceRateData.acceptanceRate,
+                };
+              } catch (error) {
+                console.warn(`Failed to fetch acceptance rate for ${universityName}:`, error);
+                return {
+                  name: universityName,
+                  acceptanceRate: null,
+                };
+              }
+            });
+
+            const universityData = await Promise.all(universityDataPromises);
+
+            return {
+              ...result,
+              universityData,
+            };
+          } catch (error) {
+            console.warn(`Failed to fetch acceptance rates for ${scholarship.organization}:`, error);
+            return {
+              ...result,
+              universityData: scholarship.universities.map((name) => ({
+                name,
+                acceptanceRate: null,
+              })),
+            };
+          }
+        })
+      );
+
+      setResults(enrichedResults);
     } catch (caughtError) {
       const message =
         caughtError instanceof Error
