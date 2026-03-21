@@ -1104,5 +1104,64 @@
     },
     "shortlistIds": [],
     "recommendations": []
+  },
+  {
+    "id": "269af2a2-5a36-4972-abe1-a17b519a05f5",
+    "createdAt": "2026-03-21T23:00:49.447Z",
+    "messages": [
+      {
+        "role": "user",
+        "content": "I want to study abroad but I don't know where to start"
+      },
+      {
+        "role": "assistant",
+        "content": "**Where to start**\n\nA good study-abroad plan usually starts **9 to 15 months before enrollment**. The first steps are:\n\n1. **Choose your degree level** — for example, bachelor’s, master’s, or PhD.\n2. **Pick a country or region** — compare tuition, living costs, scholarships, visa rules, language requirements, and whether the country is strong in your intended field.\n3. **Choose a field and shortlist programs** — look for programs that match your academic background and career goals.\n4. **Check deadlines early** — scholarship deadlines often come **before** university admission deadlines.\n5. **Start preparing key application materials** — especially tests, SOPs, and recommendation letters.\n6. **Plan your budget** — include tuition, living expenses, insurance, visa, travel, and initial settlement costs.\n\n**Basic documents and items to prepare**\n- Academic transcripts and certificates\n- Passport\n- English test scores if required (such as IELTS/TOEFL)\n- Statement of Purpose (SOP)\n- Recommendation letters\n- CV or resume\n- Proof of finances, if needed\n- Any program-specific documents the university asks for\n\n**Important note**\nUniversity admission and scholarship applications can be **separate or linked**, so always check whether you need:\n- one application,\n- two parallel applications, or\n- a nomination through an embassy or institution.\n\nIf you want, I can help you build a simple step-by-step plan once you choose a degree and destination.\n\nWhat degree do you want to pursue, and in which country or region would you like to study?"
+      }
+    ],
+    "profile": {
+      "educationLevel": null,
+      "degreeTarget": null,
+      "targetCountriesOrRegions": [],
+      "fieldOfStudy": null,
+      "nationality": null,
+      "fundingPreference": null,
+      "ielts": null,
+      "toefl": null,
+      "gpa": null,
+      "enoughInfoForRecommendations": false,
+      "missingFields": [
+        "degree target",
+        "preferred country or region",
+        "field of study",
+        "funding preference"
+      ],
+      "nextBestQuestion": "What degree do you want to pursue, and in which country or region would you like to study?",
+      "generalQuestionToAnswer": "Where do I start with the study-abroad process?",
+      "needsGeneralGuidance": true,
+      "confusionAreas": [
+        "getting started with the study-abroad process",
+        "choosing a country or region",
+        "choosing a degree level",
+        "choosing a field of study",
+        "understanding scholarship/funding options"
+      ],
+      "specificityLevel": "low",
+      "profileSummary": "The student wants to study abroad but is unsure where to start and has not provided any details about degree level, destination, field, or funding preference.",
+      "intent": {
+        "intent": "application_guidance",
+        "needsWebSearch": false,
+        "shouldUseKnowledgeBase": true,
+        "shouldUseScholarshipMatching": false,
+        "responseGoal": "Explain the first steps and basic documents needed to begin planning a study-abroad application."
+      },
+      "retrievedKnowledgeIds": [
+        "application-timeline",
+        "country-choice",
+        "scholarship-vs-admission",
+        "budgeting"
+      ]
+    },
+    "shortlistIds": [],
+    "recommendations": []
   }
 ]

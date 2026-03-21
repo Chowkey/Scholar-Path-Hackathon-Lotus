@@ -11,11 +11,20 @@ type AppShellProps = {
 export function AppShell({ children }: AppShellProps) {
   const pathname = usePathname();
   const isAdminRoute = pathname.startsWith("/admin");
+  const isLandingPage = pathname === "/";
 
   return (
     <div className="flex h-screen">
-      {isAdminRoute ? <AdminSidebar /> : <Sidebar />}
-      <main className={isAdminRoute ? "flex-1 overflow-y-auto bg-stone-100" : "flex-1 overflow-y-auto bg-neutral-50"}>
+      {isAdminRoute ? <AdminSidebar /> : isLandingPage ? null : <Sidebar />}
+      <main
+        className={
+          isAdminRoute
+            ? "flex-1 overflow-y-auto bg-stone-100"
+            : isLandingPage
+              ? "flex-1 overflow-y-auto bg-neutral-50"
+              : "flex-1 overflow-y-auto bg-neutral-50"
+        }
+      >
         {children}
       </main>
     </div>
