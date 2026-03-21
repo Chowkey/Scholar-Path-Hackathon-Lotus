@@ -1,66 +1,77 @@
 /**
  * scripts/scholarshipDB.ts
  *
- * Two-step scholarship database builder:
- * 1. Use the OpenAI Responses API with web search to discover reliable scholarship pages.
- * 2. Use a scraper model (Interfaze by default, optionally OpenAI) to extract structured scholarship data.
+ * Scholarship seeding pipeline:
+ * 1. Scrape a fixed list of scholarship source URLs.
+ * 2. Extract up to N scholarships per source with LLM-based structuring.
+ * 3. Upsert normalized records into Supabase.
  *
  * Required env:
  *   OPENAI_API_KEY=...
+ *   SUPABASE_URL=... (or NEXT_PUBLIC_SUPABASE_URL=...)
+ *   SUPABASE_SERVICE_ROLE_KEY=...
  *
  * Optional env:
  *   INTERFAZE_API_KEY=...
- *   OPENAI_DISCOVERY_MODEL=gpt-5.4
  *   OPENAI_SCRAPE_MODEL=gpt-5.4-mini
  *   INTERFAZE_MODEL=interfaze-beta
- *   SCHOLARSHIP_SOURCE_COUNT=5
+ *   SCHOLARSHIPS_PER_SOURCE=3
  *   SCHOLARSHIP_SCRAPE_PROVIDER=interfaze
  *
  * Usage:
- *   npm run db:init
+ *   npm run db:seed
  */
 
 import OpenAI from "openai";
+import { createClient } from "@supabase/supabase-js";
 import dotenv from "dotenv";
 import * as fs from "fs";
 import * as path from "path";
+import { normalizeCountry, normalizeDegreeLevel } from "../lib/scholarshipOptions";
+import type { LanguageRequirements, Scholarship } from "../lib/types";
 
 dotenv.config({ override: true });
 
-interface ScholarshipRequirements {
-  gpa?: string;
-  ielts?: string;
-  toefl?: string;
-  essays: string[];
-  other: string[];
-}
-
-interface Scholarship {
-  id: string;
-  name: string;
-  country: string;
-  flag: string;
-  organization: string;
-  degree: ("undergraduate" | "masters" | "phd")[];
-  funding: "full" | "partial";
-  fields: string[];
-  deadline: string;
-  description: string;
-  requirements: ScholarshipRequirements;
-  link: string;
-}
-
-interface DiscoveredSource {
-  source_name: string;
-  url: string;
-  what_to_scrape: string[];
-  reliability_explanation: string;
-}
-
 type ScrapeProvider = "interfaze" | "openai";
 
-const SOURCE_COUNT = Number(process.env.SCHOLARSHIP_SOURCE_COUNT ?? "5");
-const DISCOVERY_MODEL = process.env.OPENAI_DISCOVERY_MODEL ?? "gpt-5.4";
+type SourceConfig = {
+  name: string;
+  url: string;
+};
+
+const FIXED_SOURCES: SourceConfig[] = [
+  { name: "HannahEd", url: "https://hannahed.co/" },
+  {
+    name: "Hotcourses Australia Agriculture Scholarships",
+    url: "https://www.hotcoursesabroad.com/study/international-scholarships/australia/qn/agriculture-and-related-sciences/9/qid/a/scholarship.html",
+  },
+  {
+    name: "Hotcourses Canada Computer and Mathematical Sciences Scholarships",
+    url: "https://www.hotcoursesabroad.com/study/international-scholarships/canada/qn/computer-and-mathematical-sciences/32/qid/e/scholarship.html",
+  },
+  {
+    name: "Hotcourses UK Architecture Scholarships",
+    url: "https://www.hotcoursesabroad.com/study/international-scholarships/uk/qn/architecture-building-and-planning/210/qid/c/scholarship.html",
+  },
+  {
+    name: "Hotcourses USA Law Scholarships",
+    url: "https://www.hotcoursesabroad.com/study/international-scholarships/us-usa/qn/law/211/qid/j/scholarship.html",
+  },
+  {
+    name: "Hotcourses Malaysia MBA Scholarships",
+    url: "https://www.hotcoursesabroad.com/study/international-scholarships/malaysia/qn/mba/114/qid/k/scholarship.html",
+  },
+  {
+    name: "Hotcourses Singapore Business Scholarships",
+    url: "https://www.hotcoursesabroad.com/study/international-scholarships/singapore/qn/business-and-administrative-studies/168/qid/d/scholarship.html",
+  },
+  {
+    name: "Oxford Scholarships A-Z",
+    url: "https://www.ox.ac.uk/admissions/graduate/fees-and-funding/fees-funding-and-scholarship-search/scholarships-a-z-listing",
+  },
+];
+
+const SCHOLARSHIPS_PER_SOURCE = Number(process.env.SCHOLARSHIPS_PER_SOURCE ?? "3");
 const OPENAI_SCRAPE_MODEL = process.env.OPENAI_SCRAPE_MODEL ?? "gpt-5.4-mini";
 const INTERFAZE_MODEL = process.env.INTERFAZE_MODEL ?? "interfaze-beta";
 const SCRAPE_PROVIDER = (process.env.SCHOLARSHIP_SCRAPE_PROVIDER ??
@@ -71,7 +82,7 @@ function slugify(value: string): string {
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "")
-    .slice(0, 64);
+    .slice(0, 80);
 }
 
 function sleep(ms: number): Promise<void> {
@@ -139,253 +150,203 @@ function getChatMessageText(response: unknown): string {
   return "";
 }
 
-function isValidDate(dateStr: string): boolean {
-  const date = new Date(dateStr);
-  return !Number.isNaN(date.getTime()) && /^\d{4}-\d{2}-\d{2}$/.test(dateStr);
+function normalizeString(value: unknown, fallback = ""): string {
+  return typeof value === "string" && value.trim() ? value.trim() : fallback;
 }
 
-function normalizeDegree(value: unknown): Scholarship["degree"] {
-  const allowed = new Set(["undergraduate", "masters", "phd"]);
-  const input = Array.isArray(value) ? value : [];
-  const normalized = input.filter(
-    (item): item is Scholarship["degree"][number] =>
-      typeof item === "string" && allowed.has(item)
-  );
-
-  return normalized.length > 0 ? normalized : ["masters"];
+function normalizeUrlForComparison(value: string): string {
+  try {
+    const parsed = new URL(value.trim());
+    const pathname = parsed.pathname.replace(/\/+$/, "");
+    return `${parsed.origin.toLowerCase()}${pathname}${parsed.search}`;
+  } catch {
+    return value.trim().replace(/\/+$/, "");
+  }
 }
 
-function normalizeFunding(value: unknown): Scholarship["funding"] {
-  return value === "full" ? "full" : "partial";
+function isSameUrl(a: string, b: string): boolean {
+  return normalizeUrlForComparison(a) === normalizeUrlForComparison(b);
 }
 
-function normalizeStringArray(value: unknown, fallback: string[] = []): string[] {
+function normalizeStringArray(value: unknown): string[] {
   if (!Array.isArray(value)) {
-    return fallback;
+    return [];
   }
 
-  const normalized = value
+  return value
     .filter((item): item is string => typeof item === "string")
     .map((item) => item.trim())
     .filter(Boolean);
-
-  return normalized.length > 0 ? normalized : fallback;
 }
 
-function buildDiscoveryPrompt(minSources: number): string {
-  return [
-    "Find reliable, public scholarship or scholarship-program pages that are good candidates for future scraping.",
-    `Return at least ${minSources} distinct sources.`,
-    "",
-    "Only include sources that are one of these:",
-    "- official scholarship program pages",
-    "- government education or scholarship portals",
-    "- university scholarship directories",
-    "- well-known scholarship search platforms with structured listings",
-    "",
-    "For each source include:",
-    '- "source_name"',
-    '- "url"',
-    '- "what_to_scrape": an array of the specific page fields worth extracting',
-    '- "reliability_explanation": why this source is credible and worth scraping',
-    "",
-    "Focus on pages that expose useful fields such as scholarship name, provider, deadline, award amount, eligibility, requirements, application link, country, degree level, and field of study.",
-    "Prefer direct program pages over homepages when possible.",
-    "Return only a JSON array. Do not wrap it in an object. Do not include markdown.",
-  ].join("\n");
+function normalizeLanguageRequirements(value: unknown): LanguageRequirements {
+  if (!value || typeof value !== "object") {
+    return { other: [] };
+  }
+
+  const candidate = value as Partial<LanguageRequirements>;
+  const output: LanguageRequirements = {
+    other: normalizeStringArray(candidate.other),
+  };
+
+  if (typeof candidate.ielts === "string" && candidate.ielts.trim()) {
+    output.ielts = candidate.ielts.trim();
+  }
+  if (typeof candidate.toefl === "string" && candidate.toefl.trim()) {
+    output.toefl = candidate.toefl.trim();
+  }
+  if (typeof candidate.pte === "string" && candidate.pte.trim()) {
+    output.pte = candidate.pte.trim();
+  }
+  if (typeof candidate.duolingo === "string" && candidate.duolingo.trim()) {
+    output.duolingo = candidate.duolingo.trim();
+  }
+
+  return output;
 }
 
-function buildScrapePrompt(source: DiscoveredSource): string {
+function normalizeScrapeArray(value: unknown): Partial<Scholarship>[] {
+  if (Array.isArray(value)) {
+    return value as Partial<Scholarship>[];
+  }
+
+  if (value && typeof value === "object") {
+    const candidate = value as { scholarships?: unknown; results?: unknown };
+
+    if (Array.isArray(candidate.scholarships)) {
+      return candidate.scholarships as Partial<Scholarship>[];
+    }
+
+    if (Array.isArray(candidate.results)) {
+      return candidate.results as Partial<Scholarship>[];
+    }
+
+    return [value as Partial<Scholarship>];
+  }
+
+  return [];
+}
+
+function buildScrapePrompt(source: SourceConfig): string {
   return [
-    "You are extracting one scholarship or scholarship program into a normalized schema.",
-    `Source name: ${source.source_name}`,
+    "You are extracting scholarship records from a specific source page.",
+    `Source name: ${source.name}`,
     `Source URL: ${source.url}`,
-    `Target fields from discovery: ${source.what_to_scrape.join(", ")}`,
-    `Why this source was selected: ${source.reliability_explanation}`,
+    `Extract up to ${SCHOLARSHIPS_PER_SOURCE} DISTINCT scholarships from this source.`,
     "",
-    "Inspect the page content from the provided URL and return ONLY valid JSON with this exact structure:",
+    "Return ONLY valid JSON with this exact top-level structure:",
     "{",
-    '  "id": "stable slug id",',
-    '  "name": "official scholarship or program name",',
-    '  "country": "country or region",',
-    '  "flag": "flag emoji if known, otherwise empty string",',
-    '  "organization": "awarding body",',
-    '  "degree": ["undergraduate" | "masters" | "phd"],',
-    '  "funding": "full" | "partial",',
-    '  "fields": ["field of study", "..."],',
-    '  "deadline": "YYYY-MM-DD",',
-    '  "description": "2-3 sentence description",',
-    '  "requirements": {',
-    '    "gpa": "string or null",',
-    '    "ielts": "string or null",',
-    '    "toefl": "string or null",',
-    '    "essays": ["..."],',
-    '    "other": ["..."]',
-    "  },",
-    '  "link": "best application or learn-more URL"',
+    '  "scholarships": [',
+    "    {",
+    '      "id": "stable slug id",',
+    '      "name": "scholarship name",',
+    '      "country": "country where the student will study",',
+    '      "flag": "flag emoji if known, else empty string",',
+    '      "organization": "university/college where the student will study",',
+    '      "degree": "one of Bachelor, Master, Doctorate, Associate, Diploma, Certificate, Foundation, MBA, Professional, Postdoctoral, Other",',
+    '      "funding": "raw funding text or value from source (can be string or amount)",',
+    '      "field": "single field of study label, e.g. Medicine, Law, Computer Science",',
+    '      "academicRequirements": "short paragraph summarizing academic requirements",',
+    '      "languageRequirements": {',
+    '        "ielts": "string or null",',
+    '        "toefl": "string or null",',
+    '        "pte": "string or null",',
+    '        "duolingo": "string or null",',
+    '        "other": ["...optional language conditions..."]',
+    "      },",
+    '      "otherRequirements": "short paragraph for non-academic and non-language constraints",',
+    '      "deadline": "YYYY-MM-DD if explicit, otherwise a short deadline note like Rolling or See source",',
+    '      "description": "2-4 sentence summary",',
+    '      "link": "best application or detail URL",',
+    '      "sourceName": "source page name",',
+    '      "sourceUrl": "source page URL"',
+    "    }",
+    "  ]",
     "}",
     "",
     "Rules:",
-    "- Use only facts you can support from the page content or clearly linked application details.",
-    "- If the page is a directory page, extract the main scholarship or program represented by that page.",
-    "- If an optional score is not specified, use null.",
-    "- If a list is not specified, return an empty array.",
-    "- deadline must be ISO format YYYY-MM-DD. If the page gives only a month or cycle, infer the best exact date only if explicitly supported; otherwise use the most recent exact deadline present on the page.",
-    "- The JSON must be valid and contain no extra commentary.",
+    "- Use only information from the source page and clearly linked details.",
+    "- Prioritize scholarships that clearly show study location and host institution.",
+    "- If source has many listings, choose the most concrete and complete entries.",
+    "- The link field must be the scholarship detail/apply page URL for that specific scholarship.",
+    "- Do not reuse the source URL as link unless the source page itself is a single scholarship detail page.",
+    "- Do not invent values; when uncertain, use concise fallback text.",
+    "- Return JSON only, no markdown.",
   ].join("\n");
-}
-
-async function discoverSources(openai: OpenAI): Promise<DiscoveredSource[]> {
-  const response = await openai.responses.create({
-    model: DISCOVERY_MODEL,
-    input: [
-      {
-        role: "developer",
-        content: [
-          {
-            type: "input_text",
-            text: buildDiscoveryPrompt(SOURCE_COUNT),
-          },
-        ],
-      },
-      {
-        role: "user",
-        content: [
-          {
-            type: "input_text",
-            text: "Find strong scholarship pages for building a scholarship dataset.",
-          },
-        ],
-      },
-    ],
-    tools: [{ type: "web_search_preview" }],
-    reasoning: {
-      effort: "medium",
-      summary: "auto",
-    },
-  } as never);
-
-  const raw = getResponsesText(response);
-  if (!raw) {
-    throw new Error("Discovery API returned no text.");
-  }
-
-  let parsed: unknown;
-
-  try {
-    parsed = parseJson<unknown>(raw);
-  } catch (error) {
-    throw new Error(
-      `Discovery response was not valid JSON. ${(error as Error).message}`
-    );
-  }
-
-  const items = Array.isArray(parsed)
-    ? parsed
-    : typeof parsed === "object" && parsed !== null && Array.isArray((parsed as { sources?: unknown }).sources)
-      ? (parsed as { sources: unknown[] }).sources
-      : [];
-
-  const sources = items
-    .map((item) => {
-      const source = item as Partial<DiscoveredSource>;
-      return {
-        source_name: typeof source.source_name === "string" ? source.source_name.trim() : "",
-        url: typeof source.url === "string" ? source.url.trim() : "",
-        what_to_scrape: normalizeStringArray(source.what_to_scrape),
-        reliability_explanation:
-          typeof source.reliability_explanation === "string"
-            ? source.reliability_explanation.trim()
-            : "",
-      };
-    })
-    .filter(
-      (item) =>
-        item.source_name &&
-        /^https?:\/\//i.test(item.url) &&
-        item.what_to_scrape.length > 0 &&
-        item.reliability_explanation
-    );
-
-  if (sources.length === 0) {
-    throw new Error("Discovery returned no usable sources.");
-  }
-
-  return sources.slice(0, SOURCE_COUNT);
 }
 
 function validateScholarship(
   scraped: Partial<Scholarship>,
-  source: DiscoveredSource
-): Scholarship | null {
-  const id = typeof scraped.id === "string" && scraped.id.trim()
-    ? slugify(scraped.id)
-    : slugify(scraped.name || source.source_name);
+  source: SourceConfig,
+  index: number
+): { record: Scholarship | null; reason?: string } {
+  const name = normalizeString(scraped.name);
+  const organization = normalizeString(scraped.organization);
+  const description = normalizeString(scraped.description);
+  const link = normalizeString(scraped.link);
 
-  const name = typeof scraped.name === "string" ? scraped.name.trim() : "";
-  const organization =
-    typeof scraped.organization === "string" ? scraped.organization.trim() : "";
-  const description =
-    typeof scraped.description === "string" ? scraped.description.trim() : "";
-  const deadline =
-    typeof scraped.deadline === "string" && isValidDate(scraped.deadline)
-      ? scraped.deadline
-      : "";
-
-  if (!id || !name || !organization || !description || !deadline) {
-    return null;
+  if (!name) {
+    return { record: null, reason: "missing name" };
+  }
+  if (!organization) {
+    return { record: null, reason: "missing organization" };
+  }
+  if (!description) {
+    return { record: null, reason: "missing description" };
+  }
+  if (!link) {
+    return { record: null, reason: "missing link" };
+  }
+  if (isSameUrl(link, source.url)) {
+    return {
+      record: null,
+      reason: "link points to source listing URL instead of scholarship detail/apply page",
+    };
   }
 
-  const requirementsInput =
-    typeof scraped.requirements === "object" && scraped.requirements !== null
-      ? scraped.requirements
-      : {};
+  const country = normalizeCountry(normalizeString(scraped.country, "Unknown"));
+  const degree = normalizeDegreeLevel(scraped.degree ?? "Other");
+  const funding = normalizeString(scraped.funding, "Not specified");
+  const field = normalizeString(scraped.field, "General");
+  const deadline = normalizeString(scraped.deadline, "See source");
+  const academicRequirements = normalizeString(
+    scraped.academicRequirements,
+    "Not specified."
+  );
+  const otherRequirements = normalizeString(scraped.otherRequirements, "Not specified.");
+
+  const idInput = normalizeString(scraped.id, `${name}-${organization}-${index + 1}`);
+  const id = slugify(idInput);
+  if (!id) {
+    return { record: null, reason: "invalid id" };
+  }
 
   return {
-    id,
-    name,
-    country:
-      typeof scraped.country === "string" && scraped.country.trim()
-        ? scraped.country.trim()
-        : "Global",
-    flag: typeof scraped.flag === "string" ? scraped.flag : "",
-    organization,
-    degree: normalizeDegree(scraped.degree),
-    funding: normalizeFunding(scraped.funding),
-    fields: normalizeStringArray(scraped.fields, ["Any"]),
-    deadline,
-    description,
-    requirements: {
-      gpa:
-        typeof (requirementsInput as ScholarshipRequirements).gpa === "string"
-          ? (requirementsInput as ScholarshipRequirements).gpa
-          : undefined,
-      ielts:
-        typeof (requirementsInput as ScholarshipRequirements).ielts === "string"
-          ? (requirementsInput as ScholarshipRequirements).ielts
-          : undefined,
-      toefl:
-        typeof (requirementsInput as ScholarshipRequirements).toefl === "string"
-          ? (requirementsInput as ScholarshipRequirements).toefl
-          : undefined,
-      essays: normalizeStringArray(
-        (requirementsInput as ScholarshipRequirements).essays
-      ),
-      other: normalizeStringArray(
-        (requirementsInput as ScholarshipRequirements).other
-      ),
+    record: {
+      id,
+      name,
+      country,
+      flag: normalizeString(scraped.flag),
+      organization,
+      degree,
+      funding,
+      field,
+      academicRequirements,
+      languageRequirements: normalizeLanguageRequirements(scraped.languageRequirements),
+      otherRequirements,
+      deadline,
+      description,
+      link,
+      sourceName: normalizeString(scraped.sourceName, source.name),
+      sourceUrl: normalizeString(scraped.sourceUrl, source.url),
     },
-    link:
-      typeof scraped.link === "string" && /^https?:\/\//i.test(scraped.link)
-        ? scraped.link
-        : source.url,
   };
 }
 
 async function scrapeWithInterfaze(
   client: OpenAI,
-  source: DiscoveredSource
-): Promise<Partial<Scholarship>> {
+  source: SourceConfig
+): Promise<Partial<Scholarship>[]> {
   const response = await client.chat.completions.create({
     model: INTERFAZE_MODEL,
     messages: [
@@ -417,13 +378,14 @@ async function scrapeWithInterfaze(
     throw new Error("Interfaze returned no content.");
   }
 
-  return parseJson<Partial<Scholarship>>(raw);
+  const parsed = parseJson<unknown>(raw);
+  return normalizeScrapeArray(parsed).slice(0, SCHOLARSHIPS_PER_SOURCE);
 }
 
 async function scrapeWithOpenAI(
   client: OpenAI,
-  source: DiscoveredSource
-): Promise<Partial<Scholarship>> {
+  source: SourceConfig
+): Promise<Partial<Scholarship>[]> {
   const response = await client.responses.create({
     model: OPENAI_SCRAPE_MODEL,
     input: [
@@ -441,7 +403,7 @@ async function scrapeWithOpenAI(
         content: [
           {
             type: "input_text",
-            text: `Inspect the scholarship page at ${source.url} and return the JSON object only.`,
+            text: `Extract scholarships from ${source.url} as requested and return JSON only.`,
           },
         ],
       },
@@ -458,58 +420,19 @@ async function scrapeWithOpenAI(
     throw new Error("OpenAI scrape returned no content.");
   }
 
-  return parseJson<Partial<Scholarship>>(raw);
-}
-
-function toTypeScriptFile(scholarships: Scholarship[]): string {
-  const lines: string[] = [
-    "/**",
-    " * lib/scholarships.ts",
-    " * Auto-generated by scripts/scholarshipDB.ts",
-    ` * Generated: ${new Date().toISOString()}`,
-    " * Do not edit manually; re-run the build script to refresh.",
-    " */",
-    "",
-    'import type { Scholarship } from "./types";',
-    "",
-    `export const scholarships: Scholarship[] = ${JSON.stringify(
-      scholarships,
-      null,
-      2
-    )};`,
-    "",
-    "export function getScholarshipById(id: string): Scholarship | undefined {",
-    "  return scholarships.find((s) => s.id === id);",
-    "}",
-    "",
-    "export function filterScholarships(opts: {",
-    "  region?: string;",
-    "  degree?: string;",
-    '  funding?: "full" | "partial";',
-    "  query?: string;",
-    "}): Scholarship[] {",
-    "  return scholarships.filter((s) => {",
-    '    if (opts.region && opts.region !== "All" && s.country !== opts.region) return false;',
-    '    if (opts.degree && opts.degree !== "All" && !s.degree.includes(opts.degree as Scholarship["degree"][0])) return false;',
-    "    if (opts.funding && s.funding !== opts.funding) return false;",
-    "    if (opts.query) {",
-    "      const q = opts.query.toLowerCase();",
-    "      if (!s.name.toLowerCase().includes(q) && !s.country.toLowerCase().includes(q) && !s.description.toLowerCase().includes(q)) return false;",
-    "    }",
-    "    return true;",
-    "  });",
-    "}",
-  ];
-
-  return lines.join("\n");
+  const parsed = parseJson<unknown>(raw);
+  return normalizeScrapeArray(parsed).slice(0, SCHOLARSHIPS_PER_SOURCE);
 }
 
 async function main() {
   const openAiApiKey = process.env.OPENAI_API_KEY;
+  const supabaseUrl =
+    process.env.SUPABASE_URL ?? process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
   const interfazeApiKey = process.env.INTERFAZE_API_KEY;
 
   if (!openAiApiKey) {
-    console.error("OPENAI_API_KEY is required for scholarship source discovery.");
+    console.error("OPENAI_API_KEY is required for scholarship extraction.");
     process.exit(1);
   }
 
@@ -517,6 +440,18 @@ async function main() {
     console.error(
       "INTERFAZE_API_KEY is required when SCHOLARSHIP_SCRAPE_PROVIDER=interfaze."
     );
+    process.exit(1);
+  }
+
+  if (!supabaseUrl) {
+    console.error(
+      "SUPABASE_URL (or NEXT_PUBLIC_SUPABASE_URL) is required for Supabase upsert."
+    );
+    process.exit(1);
+  }
+
+  if (!supabaseServiceRoleKey) {
+    console.error("SUPABASE_SERVICE_ROLE_KEY is required for Supabase upsert.");
     process.exit(1);
   }
 
@@ -528,55 +463,63 @@ async function main() {
       })
     : null;
 
-  console.log("ScholarPath scholarship builder");
-  console.log(`Discovery model: ${DISCOVERY_MODEL}`);
-  console.log(`Scrape provider: ${SCRAPE_PROVIDER}`);
-  console.log(`Target source count: ${SOURCE_COUNT}`);
-  console.log("");
+  const supabase = createClient(supabaseUrl, supabaseServiceRoleKey, {
+    auth: { persistSession: false, autoRefreshToken: false },
+  });
 
-  console.log("Step 1/2: discovering reliable source pages...");
-  const sources = await discoverSources(openai);
+  console.log("ScholarPath scholarship builder");
+  console.log(`Scrape provider: ${SCRAPE_PROVIDER}`);
+  console.log(`Scholarships per source: ${SCHOLARSHIPS_PER_SOURCE}`);
+  console.log(`Source count: ${FIXED_SOURCES.length}`);
+  console.log("");
 
   const sourceSnapshotPath = path.resolve(
     process.cwd(),
     "scripts",
     "discovered-sources.json"
   );
-  fs.writeFileSync(sourceSnapshotPath, JSON.stringify(sources, null, 2), "utf-8");
-  console.log(`Discovered ${sources.length} source pages.`);
-  console.log(`Saved discovery snapshot to ${sourceSnapshotPath}`);
+  fs.writeFileSync(sourceSnapshotPath, JSON.stringify(FIXED_SOURCES, null, 2), "utf-8");
+  console.log(`Saved fixed source snapshot to ${sourceSnapshotPath}`);
   console.log("");
-
-  console.log("Step 2/2: scraping discovered pages into scholarship records...");
 
   const scholarships: Scholarship[] = [];
   const failed: Array<{ source: string; reason: string }> = [];
 
-  for (const source of sources) {
-    console.log(`Scraping ${source.source_name}`);
+  for (const source of FIXED_SOURCES) {
+    console.log(`Scraping ${source.name}`);
 
     try {
-      const scraped =
+      const scrapedItems =
         SCRAPE_PROVIDER === "openai"
           ? await scrapeWithOpenAI(openai, source)
           : await scrapeWithInterfaze(interfaze!, source);
 
-      const normalized = validateScholarship(scraped, source);
-      if (!normalized) {
-        failed.push({
-          source: source.source_name,
-          reason: "Missing required fields after normalization.",
-        });
-        console.log("  skipped: invalid normalized scholarship object");
+      if (scrapedItems.length === 0) {
+        failed.push({ source: source.name, reason: "no scholarships extracted" });
+        console.log("  skipped: source returned no scholarships");
         continue;
       }
 
-      scholarships.push(normalized);
-      console.log(`  ok: ${normalized.name} (${normalized.deadline})`);
-      await sleep(1000);
+      let okCount = 0;
+      for (const [index, raw] of scrapedItems.entries()) {
+        const validation = validateScholarship(raw, source, index);
+        if (!validation.record) {
+          failed.push({
+            source: source.name,
+            reason: `entry ${index + 1}: ${validation.reason ?? "invalid object"}`,
+          });
+          continue;
+        }
+
+        scholarships.push(validation.record);
+        okCount += 1;
+      }
+
+      console.log(`  ok: ${okCount}/${scrapedItems.length} scholarships accepted`);
+      await sleep(800);
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
-      failed.push({ source: source.source_name, reason: message });
+      failed.push({ source: source.name, reason: message });
       console.log(`  failed: ${message}`);
     }
   }
@@ -590,27 +533,48 @@ async function main() {
     new Map(scholarships.map((item) => [item.id, item])).values()
   );
 
-  const outputPath = path.resolve(process.cwd(), "lib", "scholarships.ts");
   const snapshotPath = path.resolve(
     process.cwd(),
     "scripts",
     "scholarships-snapshot.json"
   );
 
-  fs.writeFileSync(outputPath, toTypeScriptFile(uniqueScholarships), "utf-8");
-  fs.writeFileSync(
-    snapshotPath,
-    JSON.stringify(uniqueScholarships, null, 2),
-    "utf-8"
-  );
+  fs.writeFileSync(snapshotPath, JSON.stringify(uniqueScholarships, null, 2), "utf-8");
+
+  const rows = uniqueScholarships.map((item) => ({
+    id: item.id,
+    name: item.name,
+    country: item.country,
+    flag: item.flag,
+    organization: item.organization,
+    degree: item.degree,
+    funding: item.funding,
+    field_of_study: item.field,
+    academic_requirements: item.academicRequirements,
+    language_requirements: item.languageRequirements,
+    other_requirements: item.otherRequirements,
+    deadline: item.deadline,
+    description: item.description,
+    link: item.link,
+    source_name: item.sourceName ?? "",
+    source_url: item.sourceUrl ?? "",
+  }));
+
+  const { error: upsertError } = await supabase
+    .from("scholarships")
+    .upsert(rows, { onConflict: "id" });
+
+  if (upsertError) {
+    throw new Error(`Supabase upsert failed: ${upsertError.message}`);
+  }
 
   console.log("");
-  console.log(`Wrote ${uniqueScholarships.length} scholarships to ${outputPath}`);
+  console.log(`Wrote ${uniqueScholarships.length} scholarships to Supabase`);
   console.log(`Saved JSON snapshot to ${snapshotPath}`);
 
   if (failed.length > 0) {
     console.log("");
-    console.log("Some sources failed:");
+    console.log("Some extractions failed:");
     for (const item of failed) {
       console.log(`- ${item.source}: ${item.reason}`);
     }

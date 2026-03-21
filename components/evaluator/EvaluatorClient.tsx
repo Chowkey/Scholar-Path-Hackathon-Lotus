@@ -1,16 +1,20 @@
 "use client";
 
-import { useState } from "react";
-import { ClipboardList } from "lucide-react";
+import { useEffect, useState } from "react";
+import { AlertTriangle, ClipboardList } from "lucide-react";
 import { EvaluationResult } from "@/components/evaluator/EvaluationResult";
 import { ProfileForm } from "@/components/evaluator/ProfileForm";
 import { ScholarshipSelector } from "@/components/evaluator/ScholarshipSelector";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { EmptyState } from "@/components/ui/EmptyState";
-import { scholarships } from "@/lib/scholarships";
+import { Spinner } from "@/components/ui/Spinner";
 import { fetchAcceptanceRate } from "@/lib/acceptance-rate";
-import type { EvaluationResult as EvaluationResultType, ProfileFormData } from "@/lib/types";
+import type {
+  EvaluationResult as EvaluationResultType,
+  ProfileFormData,
+  Scholarship,
+} from "@/lib/types";
 
 const initialProfile: ProfileFormData = {
   educationLevel: "undergraduate",
@@ -36,8 +40,55 @@ export function EvaluatorClient({ initialSelectedIds }: EvaluatorClientProps) {
   const [results, setResults] = useState<EvaluationResultType[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [scholarships, setScholarships] = useState<Scholarship[]>([]);
+  const [isScholarshipsLoading, setIsScholarshipsLoading] = useState(true);
+  const [scholarshipsError, setScholarshipsError] = useState<string | null>(null);
 
-  const selectedScholarships = scholarships.filter((scholarship) => selectedIds.includes(scholarship.id));
+  useEffect(() => {
+    const controller = new AbortController();
+
+    async function loadScholarships() {
+      setIsScholarshipsLoading(true);
+      setScholarshipsError(null);
+
+      try {
+        const response = await fetch("/api/scholarships", {
+          cache: "no-store",
+          signal: controller.signal,
+        });
+        const payload = (await response.json()) as Scholarship[] | { error?: string };
+
+        if (!response.ok || !Array.isArray(payload)) {
+          const message =
+            !Array.isArray(payload) && payload.error
+              ? payload.error
+              : "Unable to load scholarships.";
+          throw new Error(message);
+        }
+
+        setScholarships(payload);
+      } catch (caughtError) {
+        if (caughtError instanceof DOMException && caughtError.name === "AbortError") {
+          return;
+        }
+        const message =
+          caughtError instanceof Error ? caughtError.message : "Unable to load scholarships.";
+        setScholarshipsError(message);
+        setScholarships([]);
+      } finally {
+        if (!controller.signal.aborted) {
+          setIsScholarshipsLoading(false);
+        }
+      }
+    }
+
+    void loadScholarships();
+    return () => controller.abort();
+  }, []);
+
+  const selectedScholarships = scholarships.filter((scholarship) =>
+    selectedIds.includes(scholarship.id)
+  );
 
   const toggleScholarship = (scholarshipId: string) => {
     setWarning(null);
@@ -162,35 +213,55 @@ export function EvaluatorClient({ initialSelectedIds }: EvaluatorClientProps) {
         <header>
           <h1 className="font-heading text-3xl font-bold text-neutral-900">Check My Fit</h1>
           <p className="mt-2 text-base leading-7 text-neutral-600">
-            Compare your profile against shortlisted scholarships and see where you already match and what to improve next.
+            Compare your profile against shortlisted scholarships and see where you
+            already match and what to improve next.
           </p>
         </header>
 
         <div className="mt-8 grid gap-6 lg:grid-cols-[2fr_3fr]">
           <div className="space-y-6">
             <Card>
-              <h2 className="font-heading text-xl font-semibold text-neutral-900">Your profile</h2>
+              <h2 className="font-heading text-xl font-semibold text-neutral-900">
+                Your profile
+              </h2>
               <div className="mt-5">
                 <ProfileForm value={profile} onChange={setProfile} errors={errors} />
               </div>
             </Card>
 
             <Card>
-              <h2 className="font-heading text-xl font-semibold text-neutral-900">Pick scholarships</h2>
+              <h2 className="font-heading text-xl font-semibold text-neutral-900">
+                Pick scholarships
+              </h2>
               <p className="mt-2 text-sm leading-6 text-neutral-600">
                 Choose up to five scholarships from the directory.
               </p>
+
               <div className="mt-4">
-                <ScholarshipSelector
-                  scholarships={scholarships}
-                  selectedIds={selectedIds}
-                  onToggle={toggleScholarship}
-                  warning={warning}
-                />
+                {isScholarshipsLoading ? (
+                  <div className="flex items-center gap-3 rounded-xl border border-neutral-200 px-3 py-5 text-sm text-neutral-500">
+                    <Spinner />
+                    <span>Loading scholarships...</span>
+                  </div>
+                ) : scholarshipsError ? (
+                  <EmptyState
+                    icon={AlertTriangle}
+                    title="Could not load scholarships"
+                    subtitle={scholarshipsError}
+                  />
+                ) : (
+                  <ScholarshipSelector
+                    scholarships={scholarships}
+                    selectedIds={selectedIds}
+                    onToggle={toggleScholarship}
+                    warning={warning}
+                  />
+                )}
               </div>
               <Button
                 onClick={() => void evaluate()}
                 isLoading={isLoading}
+                disabled={isScholarshipsLoading || Boolean(scholarshipsError)}
                 className="mt-5 w-full justify-center py-3"
               >
                 Evaluate my fit
