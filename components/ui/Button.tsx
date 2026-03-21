@@ -43,7 +43,7 @@ export function Button({
       {...props}
     >
       {isLoading ? <Spinner /> : null}
-      <span>{children}</span>
+      <span className="inline-flex items-center gap-2 whitespace-nowrap">{children}</span>
     </button>
   );
 }

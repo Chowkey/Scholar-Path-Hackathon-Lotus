@@ -778,5 +778,390 @@
     },
     "shortlistIds": [],
     "recommendations": []
+  },
+  {
+    "id": "c09474af-89d9-46e7-94da-af77da0c7542",
+    "createdAt": "2026-03-21T18:29:17.577Z",
+    "messages": [
+      {
+        "role": "user",
+        "content": "I want to study abroad but I don't know where to start"
+      },
+      {
+        "role": "assistant",
+        "content": "A good place to start is to think **backwards from your application deadline** and build a simple plan.\n\n**1) Start early**\n- A typical study-abroad timeline begins **9 to 15 months before enrollment**.\n- First tasks usually include:\n  - shortlisting countries and programs\n  - checking test requirements\n  - drafting your SOP/personal statement\n  - requesting recommendation letters\n- **Scholarship deadlines can come earlier than university deadlines**, so it helps to plan around the earliest deadline.\n\n**2) Decide what to compare**\nWhen choosing a country, compare:\n- **tuition and living costs**\n- **scholarship availability**\n- **visa policy**\n- **language requirements**\n- **strength of the country in your intended field**\n- **post-study goals** and lifestyle preference\n\n**3) Gather your basic info first**\nBefore narrowing options, collect:\n- your **degree target**\n- your **field of study**\n- the **countries or regions** you are open to\n- whether you need **full funding or partial funding**\n- your test scores if you already have them\n\n**4) Build a shortlist**\nOnce you have that information, you can compare programs and scholarships side by side and choose the best fit.\n\nIf you want, I can help you make a simple first shortlist once you tell me your degree, field, and preferred country or region.\n\nWhat degree do you want to pursue, which country or region are you considering, what field do you want to study, and are you looking for full funding or partial funding?"
+      }
+    ],
+    "profile": {
+      "educationLevel": null,
+      "degreeTarget": null,
+      "targetCountriesOrRegions": [],
+      "fieldOfStudy": null,
+      "nationality": null,
+      "fundingPreference": null,
+      "ielts": null,
+      "toefl": null,
+      "gpa": null,
+      "enoughInfoForRecommendations": false,
+      "missingFields": [
+        "degreeTarget",
+        "targetCountriesOrRegions",
+        "fieldOfStudy",
+        "fundingPreference"
+      ],
+      "nextBestQuestion": "What degree do you want to pursue, which country or region are you considering, what field do you want to study, and are you looking for full funding or partial funding?",
+      "generalQuestionToAnswer": "Where should I start with the study-abroad process?",
+      "needsGeneralGuidance": true,
+      "confusionAreas": [
+        "study-abroad process",
+        "where to start",
+        "country choice",
+        "application planning"
+      ],
+      "specificityLevel": "low",
+      "profileSummary": "The user wants to study abroad but is at the very beginning and does not yet know where to start. No details are available yet about degree, destination, field, or funding preference.",
+      "intent": {
+        "intent": "application_guidance",
+        "needsWebSearch": false,
+        "shouldUseKnowledgeBase": true,
+        "shouldUseScholarshipMatching": false,
+        "responseGoal": "Explain the basic study-abroad starting steps and what information the student should gather first."
+      },
+      "retrievedKnowledgeIds": [
+        "application-timeline",
+        "country-choice"
+      ]
+    },
+    "shortlistIds": [],
+    "recommendations": []
+  },
+  {
+    "id": "bf021091-1582-41a4-b9ab-34287c75324f",
+    "createdAt": "2026-03-21T18:29:34.699Z",
+    "messages": [
+      {
+        "role": "user",
+        "content": "I want to study abroad but I don't know where to start"
+      },
+      {
+        "role": "assistant",
+        "content": "A good place to start is to think **backwards from your application deadline** and build a simple plan.\n**1) Start early**\n- A typical study-abroad timeline begins **9 to 15 months before enrollment**.\n- First tasks usually include:\n  - shortlisting countries and programs\n  - checking test requirements\n  - drafting your SOP/personal statement\n  - requesting recommendation letters\n- **Scholarship deadlines can come earlier than university deadlines**, so it helps to plan around the earliest deadline.\n**2) Decide what to compare**\nWhen choosing a country, compare:\n- **tuition and living costs**\n- **scholarship availability**\n- **visa policy**\n- **language requirements**\n- **strength of the country in your intended field**\n- **post-study goals** and lifestyle preference\n**3) Gather your basic info first**\nBefore narrowing options, collect:\n- your **degree target**\n- your **field of study**\n- the **countries or regions** you are open to\n- whether you need **full funding or partial funding**\n- your test scores if you already have them\n**4) Build a shortlist**\nOnce you have that information, you can compare programs and scholarships side by side and choose the best fit.\nIf you want, I can help you make a simple first shortlist once you tell me your degree, field, and preferred country or region.\nWhat degree do you want to pursue, which country or region are you considering, what field do you want to study, and are you looking for full funding or partial funding?"
+      },
+      {
+        "role": "user",
+        "content": "avalable scholarship in vietnam"
+      },
+      {
+        "role": "assistant",
+        "content": "If you want scholarships in Vietnam, the best options depend on your level and background. In general, you can look at: 1) Vietnamese government scholarships for foreign students, 2) university scholarships from Vietnamese universities, and 3) exchange/program scholarships through partner institutions. The most useful next step is to narrow it by degree level and field, because scholarship lists change by program and institution. A practical tip: start checking scholarship pages now and work backward from the earliest deadline, since scholarship deadlines often come before admission deadlines. Official places to check include the Vietnamese Ministry of Education and Training, university international offices, and embassy education pages. Here are a few official starting points:\n- Ministry of Education and Training scholarship/news pages\n- Vietnam university international admissions or scholarship pages\n- Embassy education sections for your home country\n\nI can help you find a tighter shortlist if you share one key detail.\n\nWhat degree do you want to pursue in Vietnam, and what field do you want to study?"
+      }
+    ],
+    "profile": {
+      "educationLevel": null,
+      "degreeTarget": null,
+      "targetCountriesOrRegions": [
+        "Vietnam"
+      ],
+      "fieldOfStudy": null,
+      "nationality": null,
+      "fundingPreference": null,
+      "ielts": null,
+      "toefl": null,
+      "gpa": null,
+      "enoughInfoForRecommendations": false,
+      "missingFields": [
+        "degree target",
+        "field of study",
+        "funding preference",
+        "nationality",
+        "education level"
+      ],
+      "nextBestQuestion": "What degree do you want to pursue in Vietnam, and what field do you want to study?",
+      "generalQuestionToAnswer": "Where to start with study abroad planning",
+      "needsGeneralGuidance": true,
+      "confusionAreas": [
+        "where to start with study abroad planning",
+        "available scholarships in Vietnam without enough profile details"
+      ],
+      "specificityLevel": "low",
+      "profileSummary": "The student wants to study abroad in Vietnam and is asking about available scholarships, but has not provided enough profile details to identify suitable options yet.",
+      "intent": {
+        "intent": "personalized_matching",
+        "needsWebSearch": true,
+        "shouldUseKnowledgeBase": true,
+        "shouldUseScholarshipMatching": true,
+        "responseGoal": "Find scholarship options in Vietnam that fit the student's study level and background."
+      },
+      "retrievedKnowledgeIds": [
+        "application-timeline",
+        "country-choice",
+        "budgeting",
+        "lor-basics"
+      ]
+    },
+    "shortlistIds": [],
+    "recommendations": []
+  },
+  {
+    "id": "a791228a-5a02-4c4f-ac39-155ac81c669c",
+    "createdAt": "2026-03-21T18:30:09.023Z",
+    "messages": [
+      {
+        "role": "user",
+        "content": "I want to study abroad but I don't know where to start"
+      },
+      {
+        "role": "assistant",
+        "content": "A good place to start is to think **backwards from your application deadline** and build a simple plan.\n**1) Start early**\n- A typical study-abroad timeline begins **9 to 15 months before enrollment**.\n- First tasks usually include:\n  - shortlisting countries and programs\n  - checking test requirements\n  - drafting your SOP/personal statement\n  - requesting recommendation letters\n- **Scholarship deadlines can come earlier than university deadlines**, so it helps to plan around the earliest deadline.\n**2) Decide what to compare**\nWhen choosing a country, compare:\n- **tuition and living costs**\n- **scholarship availability**\n- **visa policy**\n- **language requirements**\n- **strength of the country in your intended field**\n- **post-study goals** and lifestyle preference\n**3) Gather your basic info first**\nBefore narrowing options, collect:\n- your **degree target**\n- your **field of study**\n- the **countries or regions** you are open to\n- whether you need **full funding or partial funding**\n- your test scores if you already have them\n**4) Build a shortlist**\nOnce you have that information, you can compare programs and scholarships side by side and choose the best fit.\nIf you want, I can help you make a simple first shortlist once you tell me your degree, field, and preferred country or region.\nWhat degree do you want to pursue, which country or region are you considering, what field do you want to study, and are you looking for full funding or partial funding?"
+      },
+      {
+        "role": "user",
+        "content": "avalable scholarship in vietnam"
+      },
+      {
+        "role": "assistant",
+        "content": "If you want scholarships in Vietnam, the best options depend on your level and background. In general, you can look at: 1) Vietnamese government scholarships for foreign students, 2) university scholarships from Vietnamese universities, and 3) exchange/program scholarships through partner institutions. The most useful next step is to narrow it by degree level and field, because scholarship lists change by program and institution. A practical tip: start checking scholarship pages now and work backward from the earliest deadline, since scholarship deadlines often come before admission deadlines. Official places to check include the Vietnamese Ministry of Education and Training, university international offices, and embassy education pages. Here are a few official starting points:\n- Ministry of Education and Training scholarship/news pages\n- Vietnam university international admissions or scholarship pages\n- Embassy education sections for your home country\nI can help you find a tighter shortlist if you share one key detail.\nWhat degree do you want to pursue in Vietnam, and what field do you want to study?"
+      },
+      {
+        "role": "user",
+        "content": "undergraduate"
+      },
+      {
+        "role": "assistant",
+        "content": "Great start — to recommend the most relevant undergraduate scholarships in Vietnam, I still need **one key detail**: **what field do you want to study, and are you looking for full or partial funding?**\n\nThat will help narrow the options to scholarships that actually fit your degree plan and budget needs.\n\nWhat field do you want to study for your undergraduate degree in Vietnam, and are you looking for full or partial funding?"
+      }
+    ],
+    "profile": {
+      "educationLevel": null,
+      "degreeTarget": "undergraduate",
+      "targetCountriesOrRegions": [
+        "Vietnam"
+      ],
+      "fieldOfStudy": null,
+      "nationality": null,
+      "fundingPreference": null,
+      "ielts": null,
+      "toefl": null,
+      "gpa": null,
+      "enoughInfoForRecommendations": false,
+      "missingFields": [
+        "field of study",
+        "funding preference"
+      ],
+      "nextBestQuestion": "What field do you want to study for your undergraduate degree in Vietnam, and are you looking for full or partial funding?",
+      "generalQuestionToAnswer": "Where do I start with studying abroad and scholarships in Vietnam?",
+      "needsGeneralGuidance": true,
+      "confusionAreas": [
+        "study-abroad starting steps",
+        "scholarship options in Vietnam",
+        "how to narrow scholarships by degree/field"
+      ],
+      "specificityLevel": "low",
+      "profileSummary": "The student wants to study abroad in Vietnam at the undergraduate level and is asking about available scholarships, but they have not yet specified a field of study or funding preference.",
+      "intent": {
+        "intent": "personalized_matching",
+        "needsWebSearch": false,
+        "shouldUseKnowledgeBase": false,
+        "shouldUseScholarshipMatching": true,
+        "responseGoal": "Recommend relevant undergraduate scholarship options in Vietnam based on the student’s profile."
+      },
+      "retrievedKnowledgeIds": []
+    },
+    "shortlistIds": [],
+    "recommendations": []
+  },
+  {
+    "id": "d07a50ac-9c60-40a3-8c83-e0acecc4a065",
+    "createdAt": "2026-03-21T18:30:23.579Z",
+    "messages": [
+      {
+        "role": "user",
+        "content": "I want to study abroad but I don't know where to start"
+      },
+      {
+        "role": "assistant",
+        "content": "A good place to start is to think **backwards from your application deadline** and build a simple plan.\n**1) Start early**\n- A typical study-abroad timeline begins **9 to 15 months before enrollment**.\n- First tasks usually include:\n  - shortlisting countries and programs\n  - checking test requirements\n  - drafting your SOP/personal statement\n  - requesting recommendation letters\n- **Scholarship deadlines can come earlier than university deadlines**, so it helps to plan around the earliest deadline.\n**2) Decide what to compare**\nWhen choosing a country, compare:\n- **tuition and living costs**\n- **scholarship availability**\n- **visa policy**\n- **language requirements**\n- **strength of the country in your intended field**\n- **post-study goals** and lifestyle preference\n**3) Gather your basic info first**\nBefore narrowing options, collect:\n- your **degree target**\n- your **field of study**\n- the **countries or regions** you are open to\n- whether you need **full funding or partial funding**\n- your test scores if you already have them\n**4) Build a shortlist**\nOnce you have that information, you can compare programs and scholarships side by side and choose the best fit.\nIf you want, I can help you make a simple first shortlist once you tell me your degree, field, and preferred country or region.\nWhat degree do you want to pursue, which country or region are you considering, what field do you want to study, and are you looking for full funding or partial funding?"
+      },
+      {
+        "role": "user",
+        "content": "avalable scholarship in vietnam"
+      },
+      {
+        "role": "assistant",
+        "content": "If you want scholarships in Vietnam, the best options depend on your level and background. In general, you can look at: 1) Vietnamese government scholarships for foreign students, 2) university scholarships from Vietnamese universities, and 3) exchange/program scholarships through partner institutions. The most useful next step is to narrow it by degree level and field, because scholarship lists change by program and institution. A practical tip: start checking scholarship pages now and work backward from the earliest deadline, since scholarship deadlines often come before admission deadlines. Official places to check include the Vietnamese Ministry of Education and Training, university international offices, and embassy education pages. Here are a few official starting points:\n- Ministry of Education and Training scholarship/news pages\n- Vietnam university international admissions or scholarship pages\n- Embassy education sections for your home country\nI can help you find a tighter shortlist if you share one key detail.\nWhat degree do you want to pursue in Vietnam, and what field do you want to study?"
+      },
+      {
+        "role": "user",
+        "content": "undergraduate"
+      },
+      {
+        "role": "assistant",
+        "content": "Great start — to recommend the most relevant undergraduate scholarships in Vietnam, I still need **one key detail**: **what field do you want to study, and are you looking for full or partial funding?**\nThat will help narrow the options to scholarships that actually fit your degree plan and budget needs.\nWhat field do you want to study for your undergraduate degree in Vietnam, and are you looking for full or partial funding?"
+      },
+      {
+        "role": "user",
+        "content": "computer science"
+      },
+      {
+        "role": "assistant",
+        "content": "If you want to study **undergraduate Computer Science in Vietnam**, the best place to start is to narrow down **which universities** you want to apply to, then check each school’s **admission route + scholarship rules**. In Vietnam, many scholarships for international undergraduates are **university-specific**, so the key is matching your profile to each school’s entrance criteria, language requirements, and scholarship category. A few good official places to start are: **FPT University** (large undergraduate scholarship and aid options), **International University – Vietnam National University HCMC** (scholarship program with Computer Science-related majors), **British University Vietnam** (new technology scholarships), and **Fulbright University Vietnam** (financial aid model, though not a typical merit scholarship). ([daihoc.fpt.edu.vn](https://daihoc.fpt.edu.vn/en/students/scholarship-financial-aids/?utm_source=openai))\n\nFor a practical first pass, I’d suggest this order:\n1. Pick 3–5 universities in Vietnam with strong CS programs.\n2. Check whether they accept **international students** and whether the degree is taught in **English or Vietnamese**.\n3. Compare scholarship rules: some are for **top academic achievers**, some are for **specific groups** like female tech students, and some are **financial aid** based on need. ([daihoc.fpt.edu.vn](https://daihoc.fpt.edu.vn/en/students/scholarship-financial-aids/?utm_source=openai))\n4. Prepare the usual documents: high school transcript, passport, English test score if required, and any awards/competition results.\n\nBased on what I found, here are the most relevant official sources to check first:\n- [FPT University scholarship & financial aid](https://daihoc.fpt.edu.vn/en/students/scholarship-financial-aids/)\n- [International University HCMC scholarship program](https://hcmiu.edu.vn/en/international-universitys-scholarship-program/)\n- [BUV technology scholarships](https://www.buv.edu.vn/buv-launches-new-scholarships-to-address-vietnams-shortage-of-high-skilled-software-engineers-and-female-technology-leaders/)\n- [Fulbright University Vietnam admissions & financial aid booklet](https://fulbright.edu.vn/wp-content/uploads/2024/11/Admission-Booklet_EN_WEB_1002.pdf)\n\nOne important note: I can’t yet narrow down the *best* scholarships for you without your **funding preference, nationality, language test scores, and GPA/academic record**. Are you looking for **full funding or partial funding** for undergraduate Computer Science in Vietnam?\n\nAre you looking for full funding or partial funding for undergraduate computer science in Vietnam?"
+      }
+    ],
+    "profile": {
+      "educationLevel": null,
+      "degreeTarget": "undergraduate",
+      "targetCountriesOrRegions": [
+        "Vietnam"
+      ],
+      "fieldOfStudy": "computer science",
+      "nationality": null,
+      "fundingPreference": null,
+      "ielts": null,
+      "toefl": null,
+      "gpa": null,
+      "enoughInfoForRecommendations": false,
+      "missingFields": [
+        "funding preference",
+        "nationality",
+        "language test scores",
+        "GPA/academic record"
+      ],
+      "nextBestQuestion": "Are you looking for full funding or partial funding for undergraduate computer science in Vietnam?",
+      "generalQuestionToAnswer": "The student asked where to start with studying abroad and later asked about available scholarships in Vietnam; they need a basic process/start-point answer alongside scholarship guidance.",
+      "needsGeneralGuidance": true,
+      "confusionAreas": [
+        "where to start with the study-abroad process",
+        "how to choose scholarships in Vietnam",
+        "what information is needed to shortlist suitable options"
+      ],
+      "specificityLevel": "medium",
+      "profileSummary": "Student wants to study abroad in Vietnam for an undergraduate degree in computer science. They have not yet specified funding preference, nationality, or test/academic details, and they asked for help understanding how to begin the study-abroad process and find scholarships.",
+      "intent": {
+        "intent": "personalized_matching",
+        "needsWebSearch": true,
+        "shouldUseKnowledgeBase": false,
+        "shouldUseScholarshipMatching": true,
+        "responseGoal": "Recommend suitable undergraduate computer science scholarships in Vietnam based on the student’s profile."
+      },
+      "retrievedKnowledgeIds": []
+    },
+    "shortlistIds": [],
+    "recommendations": []
+  },
+  {
+    "id": "88f171ad-93b0-4d80-918f-385e3ef69e94",
+    "createdAt": "2026-03-21T22:09:27.053Z",
+    "messages": [
+      {
+        "role": "user",
+        "content": "I want to study abroad but I don't know where to start"
+      },
+      {
+        "role": "assistant",
+        "content": "A good place to start is to plan **backwards from your earliest deadline** and build your application step by step.\n\n## 1) First decide the basics\nBefore you apply, narrow down:\n- **Country/region** you want to study in\n- **Degree level** you want to pursue\n- **Field of study**\n- **Budget and scholarship needs**\n\nA practical way to compare countries is to look at **tuition + living costs, scholarship availability, visa policy, language requirements, and strength in your field**.\n\n## 2) Check typical timelines\nA common study-abroad timeline starts **9–15 months before enrollment**.\n\nUsually, students first:\n1. Shortlist countries and programs\n2. Check admission and scholarship deadlines\n3. Prepare for required tests\n4. Draft your Statement of Purpose\n5. Request recommendation letters\n\n**Tip:** scholarship deadlines are often **earlier** than university admission deadlines.\n\n## 3) Prepare the usual documents\nCommon application materials include:\n- **Transcripts**\n- **Degree certificate** or **expected graduation proof**\n- **Passport**\n- **CV / resume**\n- **Statement of Purpose (SOP)**\n- **Recommendation letters**\n- **Language test results** like **IELTS** or **TOEFL** if required\n\nSometimes you may also need:\n- **Portfolio**\n- **Research proposal**\n- **Writing sample**\n- Scholarship extras like **financial forms, leadership essays, or work-experience evidence**\n\n## 4) Start applying\nOnce you’ve shortlisted your options, you can:\n- Match each university’s requirements\n- Gather documents early\n- Submit applications before deadlines\n- Keep copies of everything\n\nIf you want, I can help you turn this into a simple **personal application checklist** next.\n\nWhat degree do you want to study abroad for, and in which country or region are you considering applying?"
+      }
+    ],
+    "profile": {
+      "educationLevel": null,
+      "degreeTarget": null,
+      "targetCountriesOrRegions": [],
+      "fieldOfStudy": null,
+      "nationality": null,
+      "fundingPreference": null,
+      "ielts": null,
+      "toefl": null,
+      "gpa": null,
+      "enoughInfoForRecommendations": false,
+      "missingFields": [
+        "degreeTarget",
+        "targetCountriesOrRegions",
+        "fieldOfStudy",
+        "fundingPreference"
+      ],
+      "nextBestQuestion": "What degree do you want to study abroad for, and in which country or region are you considering applying?",
+      "generalQuestionToAnswer": "Where should I start when planning to study abroad?",
+      "needsGeneralGuidance": true,
+      "confusionAreas": [
+        "where to start in the study-abroad process",
+        "application planning order",
+        "country choice",
+        "required documents/certificates"
+      ],
+      "specificityLevel": "low",
+      "profileSummary": "The student wants to study abroad but is completely at the starting stage and is unsure where to begin. No degree, country, field, funding, or test-score information has been provided yet.",
+      "intent": {
+        "intent": "application_guidance",
+        "needsWebSearch": false,
+        "shouldUseKnowledgeBase": true,
+        "shouldUseScholarshipMatching": false,
+        "responseGoal": "Explain the basic steps and documents needed to start a study-abroad application."
+      },
+      "retrievedKnowledgeIds": [
+        "common-documents",
+        "application-timeline",
+        "country-choice"
+      ]
+    },
+    "shortlistIds": [],
+    "recommendations": []
+  },
+  {
+    "id": "269af2a2-5a36-4972-abe1-a17b519a05f5",
+    "createdAt": "2026-03-21T23:00:49.447Z",
+    "messages": [
+      {
+        "role": "user",
+        "content": "I want to study abroad but I don't know where to start"
+      },
+      {
+        "role": "assistant",
+        "content": "**Where to start**\n\nA good study-abroad plan usually starts **9 to 15 months before enrollment**. The first steps are:\n\n1. **Choose your degree level** — for example, bachelor’s, master’s, or PhD.\n2. **Pick a country or region** — compare tuition, living costs, scholarships, visa rules, language requirements, and whether the country is strong in your intended field.\n3. **Choose a field and shortlist programs** — look for programs that match your academic background and career goals.\n4. **Check deadlines early** — scholarship deadlines often come **before** university admission deadlines.\n5. **Start preparing key application materials** — especially tests, SOPs, and recommendation letters.\n6. **Plan your budget** — include tuition, living expenses, insurance, visa, travel, and initial settlement costs.\n\n**Basic documents and items to prepare**\n- Academic transcripts and certificates\n- Passport\n- English test scores if required (such as IELTS/TOEFL)\n- Statement of Purpose (SOP)\n- Recommendation letters\n- CV or resume\n- Proof of finances, if needed\n- Any program-specific documents the university asks for\n\n**Important note**\nUniversity admission and scholarship applications can be **separate or linked**, so always check whether you need:\n- one application,\n- two parallel applications, or\n- a nomination through an embassy or institution.\n\nIf you want, I can help you build a simple step-by-step plan once you choose a degree and destination.\n\nWhat degree do you want to pursue, and in which country or region would you like to study?"
+      }
+    ],
+    "profile": {
+      "educationLevel": null,
+      "degreeTarget": null,
+      "targetCountriesOrRegions": [],
+      "fieldOfStudy": null,
+      "nationality": null,
+      "fundingPreference": null,
+      "ielts": null,
+      "toefl": null,
+      "gpa": null,
+      "enoughInfoForRecommendations": false,
+      "missingFields": [
+        "degree target",
+        "preferred country or region",
+        "field of study",
+        "funding preference"
+      ],
+      "nextBestQuestion": "What degree do you want to pursue, and in which country or region would you like to study?",
+      "generalQuestionToAnswer": "Where do I start with the study-abroad process?",
+      "needsGeneralGuidance": true,
+      "confusionAreas": [
+        "getting started with the study-abroad process",
+        "choosing a country or region",
+        "choosing a degree level",
+        "choosing a field of study",
+        "understanding scholarship/funding options"
+      ],
+      "specificityLevel": "low",
+      "profileSummary": "The student wants to study abroad but is unsure where to start and has not provided any details about degree level, destination, field, or funding preference.",
+      "intent": {
+        "intent": "application_guidance",
+        "needsWebSearch": false,
+        "shouldUseKnowledgeBase": true,
+        "shouldUseScholarshipMatching": false,
+        "responseGoal": "Explain the first steps and basic documents needed to begin planning a study-abroad application."
+      },
+      "retrievedKnowledgeIds": [
+        "application-timeline",
+        "country-choice",
+        "scholarship-vs-admission",
+        "budgeting"
+      ]
+    },
+    "shortlistIds": [],
+    "recommendations": []
   }
 ]

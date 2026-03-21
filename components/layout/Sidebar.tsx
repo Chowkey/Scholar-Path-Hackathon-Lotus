@@ -2,14 +2,14 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { BarChart2, BookOpen, Compass, MessageCircle, Shield, Users } from "lucide-react";
+import { BarChart2, BookOpen, Compass, MessageCircle, Users } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const navItems = [
-  { href: "/", label: "Counselor", icon: MessageCircle },
+  { href: "/", label: "Home", icon: Compass },
+  { href: "/counselor", label: "Counselor", icon: MessageCircle },
   { href: "/scholarships", label: "Scholarships", icon: BookOpen },
   { href: "/evaluator", label: "Check My Fit", icon: BarChart2 },
-  { href: "/admin/scholarships", label: "Admin", icon: Shield },
   { href: "/alumni", label: "Alumni Match", icon: Users },
 ];
 
@@ -50,7 +50,7 @@ export function Sidebar() {
 
       <div className="hidden p-4 md:block">
         <div className="rounded-xl border border-warm-100 bg-warm-50 p-3 text-sm text-neutral-600">
-          Tip: Start with the Counselor to get personalized picks.
+          Tip: Start at Home for the overview, then open Counselor for personalized guidance.
         </div>
       </div>
     </aside>
