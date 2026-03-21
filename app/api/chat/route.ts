@@ -1,33 +1,208 @@
 import { NextResponse } from "next/server";
 import { getOpenAIClient } from "@/lib/openai";
+import { saveChatSession } from "@/lib/chat-storage";
+import { scholarships, scholarshipsById } from "@/lib/scholarships";
+import { studyAbroadKnowledge } from "@/lib/study-abroad-knowledge";
 
-const SYSTEM_PROMPT = `You are ScholarPath Counselor, a warm and knowledgeable scholarship advisor for students
-in Southeast Asia looking to study abroad.
+const INTENT_PROMPT = `Classify the student's latest need in a study-abroad counseling chat.
 
-Your job:
-1. Ask the student 3-5 focused questions to understand their profile:
-   - Current education level and GPA
-   - Target country or region to study
-   - Preferred field of study
-   - English proficiency (IELTS/TOEFL score if known)
-   - Financial need (fully funded vs partial)
-
-2. After gathering enough info, recommend 3-5 specific scholarships that fit their profile.
-   Use web search to find current, accurate scholarship information.
-
-3. End EVERY conversation that reaches a recommendation with this exact format:
-   ##ROADMAP##
-   Then list the scholarships as: - [Scholarship Name] | [Country] | [Deadline hint]
-   Then list 3-5 concrete next steps the student should take.
-   ##END##
+Possible intents:
+- concept_explainer: asks what a concept means, such as SOP, IELTS, recommendation letters, visa, timeline
+- application_guidance: asks what they need, what steps to follow, what documents or certificates are required
+- personalized_matching: wants recommendations tailored to their profile, country, field, budget, or scholarship fit
+- latest_info: asks for current deadlines, latest rules, current requirements, recent changes, or official updates
 
 Rules:
-- Be warm and encouraging, never overwhelming
-- Ask one question at a time
-- If the student asks a general question first, answer it, then gently guide them back
-  to their profile
-- Always mention if a scholarship is fully funded
-- Use web search when asked about specific deadlines or requirements`;
+- Use the latest user message as the main signal, but consider prior context.
+- needsWebSearch should be true for time-sensitive or likely-changing information.
+- shouldUseScholarshipMatching should be true only when the student is asking for personalized options.
+- shouldUseKnowledgeBase should be true for concept or process guidance.
+- responseGoal should be one short sentence describing what the assistant should achieve next.`;
+
+const PROFILE_EXTRACTION_PROMPT = `Extract the student's study-abroad planning state from the
+conversation. Use only information explicitly stated or strongly implied by the user.
+
+Rules:
+- Do not invent facts.
+- Keep unknown values as null or empty arrays.
+- Track both scholarship-fit details and broader study-abroad process needs.
+- "enoughInfoForRecommendations" should be true only if you have at least:
+  degree target, preferred country/region, preferred field, and funding preference.
+- "needsGeneralGuidance" should be true if the user is mainly confused about process, documents,
+  certificates, application order, or country choice.
+- "confusionAreas" should list what the student still seems unclear about.
+- "specificityLevel" should be "low" when the student's answer is vague and needs narrowing.
+- "nextBestQuestion" should be one concise question that would most improve your ability to guide them.
+- "generalQuestionToAnswer" should summarize any process question the user asked that deserves
+  a direct answer before continuing intake.`;
+
+const KB_RESPONSE_PROMPT = `You are ScholarPath Counselor, a warm and practical study-abroad advisor.
+
+You will receive:
+- the conversation planning summary
+- retrieved local knowledge snippets from ScholarPath's database
+- optionally a shortlist of validated scholarships
+
+Rules:
+- Prefer the local knowledge snippets as your primary source of truth.
+- Answer concept and process questions clearly and directly.
+- If the student's question is vague, explain what is still unclear and ask exactly one focused follow-up question.
+- If enough profile information is available and the user wants personalized options, you may recommend scholarships from the validated shortlist only.
+- You may use light Markdown: short headings, bold text, bullet lists, numbered lists, inline code, and links.
+- Do not invent scholarship names or official rules not supported by the provided context.
+- If local knowledge may be incomplete for a changing topic, state that the student should verify official sources.`;
+
+const WEB_RESPONSE_PROMPT = `You are ScholarPath Counselor, a warm and practical study-abroad advisor.
+
+You will receive:
+- the conversation planning summary
+- optional local knowledge snippets
+- optional validated scholarship shortlist
+
+Rules:
+- Use web search for up-to-date or official information.
+- Prefer official university, embassy, immigration, scholarship, or government sources when possible.
+- Give a practical answer first, then list source links the student can check.
+- If the user is vague, ask exactly one focused follow-up question after the answer.
+- If scholarship recommendations are included, only use the validated shortlist provided to you.
+- You may use light Markdown.
+- Do not use roadmap markers in assistantMessage.`;
+
+const INTENT_SCHEMA = {
+  type: "object",
+  additionalProperties: false,
+  properties: {
+    intent: {
+      type: "string",
+      enum: ["concept_explainer", "application_guidance", "personalized_matching", "latest_info"],
+    },
+    needsWebSearch: { type: "boolean" },
+    shouldUseKnowledgeBase: { type: "boolean" },
+    shouldUseScholarshipMatching: { type: "boolean" },
+    responseGoal: { type: "string" },
+  },
+  required: [
+    "intent",
+    "needsWebSearch",
+    "shouldUseKnowledgeBase",
+    "shouldUseScholarshipMatching",
+    "responseGoal",
+  ],
+} as const;
+
+const PROFILE_SCHEMA = {
+  type: "object",
+  additionalProperties: false,
+  properties: {
+    educationLevel: {
+      anyOf: [
+        { type: "string", enum: ["high_school", "undergraduate", "graduate"] },
+        { type: "null" },
+      ],
+    },
+    degreeTarget: {
+      anyOf: [
+        { type: "string", enum: ["undergraduate", "masters", "phd"] },
+        { type: "null" },
+      ],
+    },
+    targetCountriesOrRegions: {
+      type: "array",
+      items: { type: "string" },
+    },
+    fieldOfStudy: {
+      anyOf: [{ type: "string" }, { type: "null" }],
+    },
+    nationality: {
+      anyOf: [{ type: "string" }, { type: "null" }],
+    },
+    fundingPreference: {
+      anyOf: [
+        { type: "string", enum: ["full", "partial_or_full", "unspecified"] },
+        { type: "null" },
+      ],
+    },
+    ielts: {
+      anyOf: [{ type: "number" }, { type: "null" }],
+    },
+    toefl: {
+      anyOf: [{ type: "number" }, { type: "null" }],
+    },
+    gpa: {
+      anyOf: [{ type: "string" }, { type: "null" }],
+    },
+    enoughInfoForRecommendations: { type: "boolean" },
+    missingFields: {
+      type: "array",
+      items: { type: "string" },
+    },
+    nextBestQuestion: {
+      anyOf: [{ type: "string" }, { type: "null" }],
+    },
+    generalQuestionToAnswer: {
+      anyOf: [{ type: "string" }, { type: "null" }],
+    },
+    needsGeneralGuidance: { type: "boolean" },
+    confusionAreas: {
+      type: "array",
+      items: { type: "string" },
+    },
+    specificityLevel: {
+      type: "string",
+      enum: ["low", "medium", "high"],
+    },
+    profileSummary: { type: "string" },
+  },
+  required: [
+    "educationLevel",
+    "degreeTarget",
+    "targetCountriesOrRegions",
+    "fieldOfStudy",
+    "nationality",
+    "fundingPreference",
+    "ielts",
+    "toefl",
+    "gpa",
+    "enoughInfoForRecommendations",
+    "missingFields",
+    "nextBestQuestion",
+    "generalQuestionToAnswer",
+    "needsGeneralGuidance",
+    "confusionAreas",
+    "specificityLevel",
+    "profileSummary",
+  ],
+} as const;
+
+const CHAT_RESPONSE_SCHEMA = {
+  type: "object",
+  additionalProperties: false,
+  properties: {
+    phase: {
+      type: "string",
+      enum: ["ask_more", "guide", "recommend"],
+    },
+    assistantMessage: { type: "string" },
+    followUpQuestion: {
+      anyOf: [{ type: "string" }, { type: "null" }],
+    },
+    recommendedScholarshipIds: {
+      type: "array",
+      items: { type: "string" },
+    },
+    nextSteps: {
+      type: "array",
+      items: { type: "string" },
+    },
+  },
+  required: [
+    "phase",
+    "assistantMessage",
+    "followUpQuestion",
+    "recommendedScholarshipIds",
+    "nextSteps",
+  ],
+} as const;
 
 type ChatRequestBody = {
   messages: Array<{
@@ -36,40 +211,458 @@ type ChatRequestBody = {
   }>;
 };
 
+type ChatIntent = {
+  intent: "concept_explainer" | "application_guidance" | "personalized_matching" | "latest_info";
+  needsWebSearch: boolean;
+  shouldUseKnowledgeBase: boolean;
+  shouldUseScholarshipMatching: boolean;
+  responseGoal: string;
+};
+
+type ExtractedProfile = {
+  educationLevel: "high_school" | "undergraduate" | "graduate" | null;
+  degreeTarget: "undergraduate" | "masters" | "phd" | null;
+  targetCountriesOrRegions: string[];
+  fieldOfStudy: string | null;
+  nationality: string | null;
+  fundingPreference: "full" | "partial_or_full" | "unspecified" | null;
+  ielts: number | null;
+  toefl: number | null;
+  gpa: string | null;
+  enoughInfoForRecommendations: boolean;
+  missingFields: string[];
+  nextBestQuestion: string | null;
+  generalQuestionToAnswer: string | null;
+  needsGeneralGuidance: boolean;
+  confusionAreas: string[];
+  specificityLevel: "low" | "medium" | "high";
+  profileSummary: string;
+};
+
+type ChatResponsePayload = {
+  phase: "ask_more" | "guide" | "recommend";
+  assistantMessage: string;
+  followUpQuestion: string | null;
+  recommendedScholarshipIds: string[];
+  nextSteps: string[];
+};
+
+type RankedScholarship = {
+  id: string;
+  score: number;
+  reasons: string[];
+};
+
+type RetrievedKnowledge = {
+  id: string;
+  title: string;
+  category: string;
+  content: string;
+};
+
+const REGION_ALIASES: Record<string, string[]> = {
+  europe: ["europe", "eu", "european union"],
+  usa: ["usa", "us", "united states", "america", "u.s."],
+  uk: ["uk", "united kingdom", "britain", "england"],
+  australia: ["australia"],
+  japan: ["japan"],
+  germany: ["germany"],
+  belgium: ["belgium"],
+  switzerland: ["switzerland"],
+  china: ["china"],
+  "south korea": ["south korea", "korea", "rok"],
+  "new zealand": ["new zealand", "nz"],
+};
+
+function normalizeText(value: string): string {
+  return value.toLowerCase().replace(/[^a-z0-9\s]+/g, " ").replace(/\s+/g, " ").trim();
+}
+
+function tokenize(value: string): string[] {
+  return normalizeText(value).split(" ").filter(Boolean);
+}
+
+function parseJsonResponse<T>(raw: string): T {
+  return JSON.parse(
+    raw
+      .replace(/^```(?:json)?\s*/i, "")
+      .replace(/\s*```$/i, "")
+      .trim(),
+  ) as T;
+}
+
+function includesTokenMatch(source: string, target: string): boolean {
+  const normalizedSource = normalizeText(source);
+  const normalizedTarget = normalizeText(target);
+
+  return (
+    normalizedSource.includes(normalizedTarget) ||
+    normalizedTarget.includes(normalizedSource) ||
+    tokenize(target).some((token) => token.length > 2 && normalizedSource.includes(token))
+  );
+}
+
+function matchesCountryOrRegion(preferences: string[], country: string): boolean {
+  const normalizedCountry = normalizeText(country);
+
+  return preferences.some((preference) => {
+    const normalizedPreference = normalizeText(preference);
+    if (normalizedPreference === normalizedCountry) {
+      return true;
+    }
+
+    const aliases = REGION_ALIASES[normalizedCountry] ?? [];
+    return aliases.includes(normalizedPreference);
+  });
+}
+
+function fieldMatches(fieldOfStudy: string | null, scholarshipFields: string[]): boolean {
+  if (!fieldOfStudy) {
+    return true;
+  }
+
+  return scholarshipFields.some((field) => field === "Any" || includesTokenMatch(field, fieldOfStudy));
+}
+
+function buildShortlist(profile: ExtractedProfile): RankedScholarship[] {
+  return scholarships
+    .map((scholarship) => {
+      let score = 0;
+      const reasons: string[] = [];
+
+      if (profile.degreeTarget) {
+        if (scholarship.degree.includes(profile.degreeTarget)) {
+          score += 45;
+          reasons.push(`supports ${profile.degreeTarget} study`);
+        } else {
+          score -= 100;
+        }
+      }
+
+      if (profile.targetCountriesOrRegions.length > 0 && matchesCountryOrRegion(profile.targetCountriesOrRegions, scholarship.country)) {
+        score += 25;
+        reasons.push(`matches the preferred destination (${scholarship.country})`);
+      }
+
+      if (profile.fieldOfStudy) {
+        if (fieldMatches(profile.fieldOfStudy, scholarship.fields)) {
+          score += 20;
+          reasons.push("fits the student's field interest");
+        } else {
+          score -= 10;
+        }
+      }
+
+      if (profile.fundingPreference === "full") {
+        if (scholarship.funding === "full") {
+          score += 15;
+          reasons.push("is fully funded");
+        } else {
+          score -= 20;
+        }
+      }
+
+      return { id: scholarship.id, score, reasons };
+    })
+    .filter((item) => item.score > 0)
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 8);
+}
+
+function retrieveKnowledge(messages: ChatRequestBody["messages"], profile: ExtractedProfile): RetrievedKnowledge[] {
+  const combined = normalizeText(
+    messages
+      .map((message) => message.content)
+      .join(" ") + ` ${profile.confusionAreas.join(" ")} ${profile.generalQuestionToAnswer ?? ""}`,
+  );
+
+  return studyAbroadKnowledge
+    .map((chunk) => {
+      const score = chunk.keywords.reduce((total, keyword) => {
+        return combined.includes(normalizeText(keyword)) ? total + 3 : total;
+      }, 0) + (combined.includes(normalizeText(chunk.title)) ? 4 : 0);
+
+      return { ...chunk, score };
+    })
+    .filter((chunk) => chunk.score > 0)
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 4)
+    .map(({ id, title, category, content }) => ({ id, title, category, content }));
+}
+
+function formatDeadlineHint(deadline: string): string {
+  const parsed = new Date(deadline);
+  if (Number.isNaN(parsed.getTime()) || parsed.getTime() < Date.now()) {
+    return "Check current cycle on official site";
+  }
+
+  return deadline;
+}
+
+function buildFinalAssistantText(payload: ChatResponsePayload): string {
+  const message = payload.assistantMessage.trim();
+
+  if (payload.phase !== "recommend") {
+    return payload.followUpQuestion ? `${message}\n\n${payload.followUpQuestion}`.trim() : message;
+  }
+
+  const recommendations = payload.recommendedScholarshipIds.map((id) => scholarshipsById.get(id)).filter(Boolean);
+  if (recommendations.length === 0) {
+    return payload.followUpQuestion ? `${message}\n\n${payload.followUpQuestion}`.trim() : message;
+  }
+
+  const sourceLines = recommendations
+    .map((scholarship) => `- [${scholarship!.name}](${scholarship!.link})`)
+    .join("\n");
+  const roadmapLines = recommendations
+    .map((scholarship) => `- ${scholarship!.name} | ${scholarship!.country} | ${formatDeadlineHint(scholarship!.deadline)}`)
+    .join("\n");
+  const nextSteps = payload.nextSteps.slice(0, 5).map((step, index) => `${index + 1}. ${step}`).join("\n");
+
+  return [
+    message,
+    "",
+    "## Official Sources",
+    sourceLines,
+    "",
+    "##ROADMAP##",
+    roadmapLines,
+    nextSteps,
+    "##END##",
+  ]
+    .filter(Boolean)
+    .join("\n");
+}
+
+async function extractIntent(body: ChatRequestBody): Promise<ChatIntent> {
+  const openai = getOpenAIClient();
+  const response = await openai.responses.create({
+    model: process.env.OPENAI_CHAT_MODEL ?? "gpt-5.4-mini",
+    instructions: INTENT_PROMPT,
+    input: JSON.stringify(body.messages),
+    text: {
+      format: {
+        type: "json_schema",
+        name: "chat_intent",
+        schema: INTENT_SCHEMA,
+        strict: true,
+      },
+    },
+  });
+
+  return parseJsonResponse<ChatIntent>(response.output_text ?? "");
+}
+
+async function extractProfile(body: ChatRequestBody): Promise<ExtractedProfile> {
+  const openai = getOpenAIClient();
+  const response = await openai.responses.create({
+    model: process.env.OPENAI_CHAT_MODEL ?? "gpt-5.4-mini",
+    instructions: PROFILE_EXTRACTION_PROMPT,
+    input: JSON.stringify(body.messages),
+    text: {
+      format: {
+        type: "json_schema",
+        name: "chat_profile_state",
+        schema: PROFILE_SCHEMA,
+        strict: true,
+      },
+    },
+  });
+
+  return parseJsonResponse<ExtractedProfile>(response.output_text ?? "");
+}
+
+async function generateKnowledgeResponse(
+  profile: ExtractedProfile,
+  intent: ChatIntent,
+  knowledge: RetrievedKnowledge[],
+  shortlist: RankedScholarship[],
+): Promise<ChatResponsePayload> {
+  const openai = getOpenAIClient();
+  const shortlistPayload = shortlist.map((item) => {
+    const scholarship = scholarshipsById.get(item.id);
+
+    return {
+      id: item.id,
+      name: scholarship?.name,
+      country: scholarship?.country,
+      degree: scholarship?.degree,
+      funding: scholarship?.funding,
+      fields: scholarship?.fields,
+      officialLink: scholarship?.link,
+      fitReasons: item.reasons,
+    };
+  });
+
+  const response = await openai.responses.create({
+    model: process.env.OPENAI_CHAT_MODEL ?? "gpt-5.4-mini",
+    instructions: KB_RESPONSE_PROMPT,
+    input: JSON.stringify({
+      intent,
+      profile,
+      localKnowledge: knowledge,
+      validatedScholarships: shortlistPayload,
+      recommendationMode:
+        intent.shouldUseScholarshipMatching &&
+        profile.enoughInfoForRecommendations &&
+        profile.specificityLevel !== "low" &&
+        shortlistPayload.length > 0,
+    }),
+    text: {
+      format: {
+        type: "json_schema",
+        name: "chat_kb_reply",
+        schema: CHAT_RESPONSE_SCHEMA,
+        strict: true,
+      },
+    },
+    max_output_tokens: 1200,
+  });
+
+  return parseJsonResponse<ChatResponsePayload>(response.output_text ?? "");
+}
+
+async function generateWebFallbackResponse(
+  body: ChatRequestBody,
+  profile: ExtractedProfile,
+  intent: ChatIntent,
+  knowledge: RetrievedKnowledge[],
+  shortlist: RankedScholarship[],
+): Promise<ChatResponsePayload> {
+  const openai = getOpenAIClient();
+  const shortlistPayload = shortlist.map((item) => {
+    const scholarship = scholarshipsById.get(item.id);
+    return {
+      id: item.id,
+      name: scholarship?.name,
+      country: scholarship?.country,
+      funding: scholarship?.funding,
+      officialLink: scholarship?.link,
+      fitReasons: item.reasons,
+    };
+  });
+
+  const latestUserMessage = [...body.messages].reverse().find((message) => message.role === "user")?.content ?? "";
+  const response = await openai.responses.create({
+    model: process.env.OPENAI_CHAT_MODEL ?? "gpt-5.4-mini",
+    instructions: WEB_RESPONSE_PROMPT,
+    input: JSON.stringify({
+      latestUserMessage,
+      profile,
+      intent,
+      localKnowledge: knowledge,
+      validatedScholarships: shortlistPayload,
+      note: "For web-based answers, include 2-5 Markdown links to the most relevant official sources you used.",
+    }),
+    tools: [{ type: "web_search_preview" }],
+    text: {
+      format: {
+        type: "json_schema",
+        name: "chat_web_reply",
+        schema: CHAT_RESPONSE_SCHEMA,
+        strict: true,
+      },
+    },
+    max_output_tokens: 1200,
+  });
+
+  return parseJsonResponse<ChatResponsePayload>(response.output_text ?? "");
+}
+
+function validateRecommendations(
+  payload: ChatResponsePayload,
+  shortlist: RankedScholarship[],
+  profile: ExtractedProfile,
+  intent: ChatIntent,
+): ChatResponsePayload {
+  const allowedIds = new Set(shortlist.map((item) => item.id));
+  const recommendedScholarshipIds = payload.recommendedScholarshipIds.filter((id) => allowedIds.has(id)).slice(0, 5);
+
+  if (
+    payload.phase === "recommend" &&
+    (!intent.shouldUseScholarshipMatching || !profile.enoughInfoForRecommendations || profile.specificityLevel === "low")
+  ) {
+    return {
+      phase: profile.needsGeneralGuidance ? "guide" : "ask_more",
+      assistantMessage:
+        payload.assistantMessage ||
+        "I can help with that, but I still need to narrow a few details before giving strong scholarship suggestions.",
+      followUpQuestion:
+        profile.nextBestQuestion ??
+        "Which country, degree level, and field are you currently considering most seriously?",
+      recommendedScholarshipIds: [],
+      nextSteps: [],
+    };
+  }
+
+  if (payload.phase === "recommend" && recommendedScholarshipIds.length === 0) {
+    return {
+      phase: "ask_more",
+      assistantMessage:
+        "I can point you in the right direction, but I want one more detail before I recommend the strongest scholarship matches.",
+      followUpQuestion: profile.nextBestQuestion ?? "Which country or region do you most want to study in?",
+      recommendedScholarshipIds: [],
+      nextSteps: [],
+    };
+  }
+
+  return {
+    ...payload,
+    recommendedScholarshipIds,
+    nextSteps: payload.nextSteps.slice(0, 5),
+  };
+}
+
+async function streamText(text: string): Promise<ReadableStream<Uint8Array>> {
+  const encoder = new TextEncoder();
+
+  return new ReadableStream({
+    start(controller) {
+      const chunks = text.match(/.{1,140}(\s|$)|.+$/g) ?? [text];
+      let index = 0;
+
+      const pump = () => {
+        if (index >= chunks.length) {
+          controller.close();
+          return;
+        }
+
+        controller.enqueue(encoder.encode(chunks[index]!));
+        index += 1;
+        setTimeout(pump, 12);
+      };
+
+      pump();
+    },
+  });
+}
+
 export async function POST(request: Request) {
   try {
     const body = (await request.json()) as ChatRequestBody;
-    const openai = getOpenAIClient();
-    const input = body.messages.map((message) => ({
-      role: message.role,
-      content: [{ type: "input_text" as const, text: message.content }],
-    }));
+    const [intent, profile] = await Promise.all([extractIntent(body), extractProfile(body)]);
+    const shortlist = intent.shouldUseScholarshipMatching ? buildShortlist(profile) : [];
+    const knowledge = intent.shouldUseKnowledgeBase ? retrieveKnowledge(body.messages, profile) : [];
 
-    const encoder = new TextEncoder();
-    const readable = new ReadableStream({
-      async start(controller) {
-        try {
-          const stream = await openai.responses.create({
-            model: process.env.OPENAI_CHAT_MODEL ?? "gpt-5.4-mini",
-            instructions: SYSTEM_PROMPT,
-            input,
-            max_output_tokens: 1200,
-            tools: [{ type: "web_search_preview" }],
-            stream: true,
-          });
+    const rawPayload = intent.needsWebSearch
+      ? await generateWebFallbackResponse(body, profile, intent, knowledge, shortlist)
+      : await generateKnowledgeResponse(profile, intent, knowledge, shortlist);
 
-          for await (const event of stream) {
-            if (event.type === "response.output_text.delta" && event.delta) {
-              controller.enqueue(encoder.encode(event.delta));
-            }
-          }
+    const payload = validateRecommendations(rawPayload, shortlist, profile, intent);
+    const finalAssistantText = buildFinalAssistantText(payload);
 
-          controller.close();
-        } catch (error) {
-          controller.error(error);
-        }
+    await saveChatSession({
+      messages: [...body.messages, { role: "assistant", content: finalAssistantText }],
+      profile: {
+        ...profile,
+        intent,
+        retrievedKnowledgeIds: knowledge.map((item) => item.id),
       },
+      shortlistIds: shortlist.map((item) => item.id),
+      recommendations: payload.recommendedScholarshipIds,
     });
+
+    const readable = await streamText(finalAssistantText);
 
     return new Response(readable, {
       headers: {

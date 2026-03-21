@@ -1,0 +1,782 @@
+[
+  {
+    "id": "6ab52b39-bead-4bcc-a7cb-8c050672ee9d",
+    "createdAt": "2026-03-21T09:36:49.064Z",
+    "messages": [
+      {
+        "role": "user",
+        "content": "I want to study in the US"
+      },
+      {
+        "role": "assistant",
+        "content": "You’re targeting the US, which is a good start. I can narrow this down once I know your degree goal, since the shortlist includes both a graduate scholarship and a non-degree fellowship. What degree do you want to pursue: undergraduate, master’s, or PhD?\n\nWhat degree do you want to pursue: undergraduate, master’s, or PhD?"
+      }
+    ],
+    "profile": {
+      "educationLevel": null,
+      "degreeTarget": null,
+      "targetCountriesOrRegions": [
+        "US"
+      ],
+      "fieldOfStudy": null,
+      "nationality": null,
+      "fundingPreference": null,
+      "ielts": null,
+      "toefl": null,
+      "gpa": null,
+      "enoughInfoForRecommendations": false,
+      "missingFields": [
+        "degreeTarget",
+        "fieldOfStudy",
+        "fundingPreference"
+      ],
+      "nextBestQuestion": "What degree do you want to pursue (undergraduate, master's, or PhD)?",
+      "generalQuestionToAnswer": null,
+      "profileSummary": "The student wants to study in the US, but their degree target, field of study, and funding preference are not yet known."
+    },
+    "shortlistIds": [
+      "fulbright-us",
+      "humphrey-fellowship-us"
+    ],
+    "recommendations": []
+  },
+  {
+    "id": "fab36120-fdb1-40cf-a19e-f10a7dbbd8ce",
+    "createdAt": "2026-03-21T09:37:25.654Z",
+    "messages": [
+      {
+        "role": "user",
+        "content": "I want to study in the US"
+      },
+      {
+        "role": "assistant",
+        "content": "You’re targeting the US, which is a good start. I can narrow this down once I know your degree goal, since the shortlist includes both a graduate scholarship and a non-degree fellowship. What degree do you want to pursue: undergraduate, master’s, or PhD?\nWhat degree do you want to pursue: undergraduate, master’s, or PhD?"
+      },
+      {
+        "role": "user",
+        "content": "master"
+      },
+      {
+        "role": "assistant",
+        "content": "You’re on the right track for a master’s in the US. I can narrow this down much better once I know your study area, since several options are field-specific and a few are open to many fields. If you want the most broadly relevant fully funded US options, Fulbright Foreign Student Program is the strongest match, and it’s fully funded. Please note that eligibility and deadlines can change by country, so verify the current cycle on the official page.\n\nWhat field do you want to study for your master’s?"
+      }
+    ],
+    "profile": {
+      "educationLevel": null,
+      "degreeTarget": "masters",
+      "targetCountriesOrRegions": [
+        "US"
+      ],
+      "fieldOfStudy": null,
+      "nationality": null,
+      "fundingPreference": null,
+      "ielts": null,
+      "toefl": null,
+      "gpa": null,
+      "enoughInfoForRecommendations": false,
+      "missingFields": [
+        "preferred field of study",
+        "funding preference"
+      ],
+      "nextBestQuestion": "What field do you want to study for your master’s?",
+      "generalQuestionToAnswer": null,
+      "profileSummary": "The student wants to pursue a master's degree in the US. Their intended field of study and funding preference are not yet specified."
+    },
+    "shortlistIds": [
+      "fulbright-us",
+      "humphrey-fellowship-us",
+      "chevening-uk",
+      "daad-germany",
+      "gates-cambridge-uk",
+      "erasmus-mundus-europe",
+      "mext-japan",
+      "australia-awards"
+    ],
+    "recommendations": [
+      "fulbright-us"
+    ]
+  },
+  {
+    "id": "f8a1c950-9e01-459a-99d6-d60c1adcd1dc",
+    "createdAt": "2026-03-21T09:37:45.413Z",
+    "messages": [
+      {
+        "role": "user",
+        "content": "I want to study in the US"
+      },
+      {
+        "role": "assistant",
+        "content": "You’re targeting the US, which is a good start. I can narrow this down once I know your degree goal, since the shortlist includes both a graduate scholarship and a non-degree fellowship. What degree do you want to pursue: undergraduate, master’s, or PhD?\nWhat degree do you want to pursue: undergraduate, master’s, or PhD?"
+      },
+      {
+        "role": "user",
+        "content": "master"
+      },
+      {
+        "role": "assistant",
+        "content": "You’re on the right track for a master’s in the US. I can narrow this down much better once I know your study area, since several options are field-specific and a few are open to many fields. If you want the most broadly relevant fully funded US options, Fulbright Foreign Student Program is the strongest match, and it’s fully funded. Please note that eligibility and deadlines can change by country, so verify the current cycle on the official page.\nWhat field do you want to study for your master’s?"
+      },
+      {
+        "role": "user",
+        "content": "computer science"
+      },
+      {
+        "role": "assistant",
+        "content": "The strongest match so far is Fulbright Foreign Student Program for a master’s in computer science in the US, and it is fully funded. If you’re open to other countries, there are also several fully funded options in the shortlist that fit computer science well. To narrow this down properly, are you looking for fully funded scholarships only, or are partial scholarships okay too?\n\nAre you looking for fully funded scholarships only, or are partial scholarships okay too?"
+      }
+    ],
+    "profile": {
+      "educationLevel": null,
+      "degreeTarget": "masters",
+      "targetCountriesOrRegions": [
+        "US"
+      ],
+      "fieldOfStudy": "computer science",
+      "nationality": null,
+      "fundingPreference": null,
+      "ielts": null,
+      "toefl": null,
+      "gpa": null,
+      "enoughInfoForRecommendations": false,
+      "missingFields": [
+        "funding preference"
+      ],
+      "nextBestQuestion": "Are you looking for fully funded scholarships only, or are partial scholarships okay too?",
+      "generalQuestionToAnswer": "The likely strong match mentioned so far is the Fulbright Foreign Student Program for a master’s in the US.",
+      "profileSummary": "User wants to pursue a master’s in computer science in the US. Funding preference is not yet specified."
+    },
+    "shortlistIds": [
+      "fulbright-us",
+      "chevening-uk",
+      "gates-cambridge-uk",
+      "erasmus-mundus-europe",
+      "mext-japan",
+      "adb-japan",
+      "gks-korea",
+      "humphrey-fellowship-us"
+    ],
+    "recommendations": [
+      "fulbright-us"
+    ]
+  },
+  {
+    "id": "a06cf4e4-fdce-4ae8-abf3-21b87e5401fb",
+    "createdAt": "2026-03-21T09:41:28.320Z",
+    "messages": [
+      {
+        "role": "user",
+        "content": "I want to study in the US"
+      },
+      {
+        "role": "assistant",
+        "content": "You’re targeting the US, which is a good start. I can narrow this down once I know your degree goal, since the shortlist includes both a graduate scholarship and a non-degree fellowship. What degree do you want to pursue: undergraduate, master’s, or PhD?\nWhat degree do you want to pursue: undergraduate, master’s, or PhD?"
+      },
+      {
+        "role": "user",
+        "content": "master"
+      },
+      {
+        "role": "assistant",
+        "content": "You’re on the right track for a master’s in the US. I can narrow this down much better once I know your study area, since several options are field-specific and a few are open to many fields. If you want the most broadly relevant fully funded US options, Fulbright Foreign Student Program is the strongest match, and it’s fully funded. Please note that eligibility and deadlines can change by country, so verify the current cycle on the official page.\nWhat field do you want to study for your master’s?"
+      },
+      {
+        "role": "user",
+        "content": "computer science"
+      },
+      {
+        "role": "assistant",
+        "content": "The strongest match so far is Fulbright Foreign Student Program for a master’s in computer science in the US, and it is fully funded. If you’re open to other countries, there are also several fully funded options in the shortlist that fit computer science well. To narrow this down properly, are you looking for fully funded scholarships only, or are partial scholarships okay too?\nAre you looking for fully funded scholarships only, or are partial scholarships okay too?"
+      },
+      {
+        "role": "user",
+        "content": "what the school that this program about"
+      },
+      {
+        "role": "assistant",
+        "content": "The Fulbright Foreign Student Program is not tied to a single school; it supports graduate study at many U.S. universities, and the exact host university depends on the country program and placement process. Since your funding preference is still unclear, I can narrow this down better once I know whether you want only fully funded options or are open to partial funding too.\n\nAre you looking for fully funded scholarships only, or are partial scholarships okay too?"
+      }
+    ],
+    "profile": {
+      "educationLevel": null,
+      "degreeTarget": "masters",
+      "targetCountriesOrRegions": [
+        "US"
+      ],
+      "fieldOfStudy": "computer science",
+      "nationality": null,
+      "fundingPreference": null,
+      "ielts": null,
+      "toefl": null,
+      "gpa": null,
+      "enoughInfoForRecommendations": false,
+      "missingFields": [
+        "fundingPreference"
+      ],
+      "nextBestQuestion": "Are you looking for fully funded scholarships only, or are partial scholarships okay too?",
+      "generalQuestionToAnswer": "The user is asking what school the program is about; the program mentioned is the Fulbright Foreign Student Program, which is not tied to a single school because it supports study at many U.S. universities.",
+      "profileSummary": "The user wants a master’s in computer science in the US. Funding preference is still unknown, and nationality, test scores, and GPA are not provided."
+    },
+    "shortlistIds": [
+      "fulbright-us",
+      "chevening-uk",
+      "gates-cambridge-uk",
+      "erasmus-mundus-europe",
+      "mext-japan",
+      "adb-japan",
+      "gks-korea",
+      "humphrey-fellowship-us"
+    ],
+    "recommendations": []
+  },
+  {
+    "id": "a330963d-32d8-4efc-9abb-bfb39584b7d5",
+    "createdAt": "2026-03-21T09:58:55.650Z",
+    "messages": [
+      {
+        "role": "user",
+        "content": "I want to study abroad but I don't know where to start"
+      },
+      {
+        "role": "assistant",
+        "content": "A good way to start is to choose three basics first: what degree you want, which country or region you’re open to, and whether you need full funding or just partial support. After that, the process becomes much clearer because the requirements depend on those choices. A simple first checklist is: 1) decide your degree level, 2) shortlist 2–3 countries, 3) check language test needs, 4) gather documents like transcripts, passport, CV, SOP, and recommendation letters, 5) compare deadlines, and 6) verify each program’s current cycle on the official website. Right now the missing piece is your degree and destination, so I can guide you more accurately once you pick them.\n\nWhat degree do you want to study abroad for, and which countries or regions are you considering?"
+      }
+    ],
+    "profile": {
+      "educationLevel": null,
+      "degreeTarget": null,
+      "targetCountriesOrRegions": [],
+      "fieldOfStudy": null,
+      "nationality": null,
+      "fundingPreference": null,
+      "ielts": null,
+      "toefl": null,
+      "gpa": null,
+      "enoughInfoForRecommendations": false,
+      "missingFields": [
+        "degree target",
+        "preferred country or region",
+        "field of study",
+        "funding preference",
+        "education level",
+        "nationality"
+      ],
+      "nextBestQuestion": "What degree do you want to study abroad for, and which countries or regions are you considering?",
+      "generalQuestionToAnswer": "How to start the study-abroad process",
+      "needsGeneralGuidance": true,
+      "confusionAreas": [
+        "where to start in the study-abroad process",
+        "which country or region to choose",
+        "what documents or steps are needed"
+      ],
+      "specificityLevel": "low",
+      "profileSummary": "The student wants to study abroad but is at the very beginning and doesn’t know where to start. No specific degree, country, field, funding preference, or background details were provided."
+    },
+    "shortlistIds": [],
+    "recommendations": []
+  },
+  {
+    "id": "fa8f33ca-5ec2-46e3-bcd5-bcb5a8f91db6",
+    "createdAt": "2026-03-21T10:01:13.945Z",
+    "messages": [
+      {
+        "role": "user",
+        "content": "I want to study abroad but I don't know where to start"
+      },
+      {
+        "role": "assistant",
+        "content": "A good place to start is to make **4 basic decisions** before chasing documents or scholarships:\n\n### 1) Choose your degree level\nDecide whether you want to apply for:\n- **Bachelor’s**\n- **Master’s**\n- **PhD/Doctorate**\n\n### 2) Pick a country or region\nThink about:\n- tuition cost\n- language of instruction\n- visa rules\n- job opportunities after study\n- whether you want a **fully funded** path or can self-fund part of it\n\n### 3) Choose your field of study\nExamples: engineering, business, computer science, public health, etc. \nThis affects eligibility, required documents, and available programs.\n\n### 4) Check the usual requirements\nMost applications ask for some of these:\n- passport\n- academic transcripts and certificates\n- English test (`IELTS` / `TOEFL`) if required\n- CV/resume\n- statement of purpose / motivation letter\n- recommendation letters\n- research proposal for some master’s/PhD programs\n\n### Simple order to follow\n1. Decide degree + country + field\n2. Check entry requirements\n3. Prepare documents\n4. Take English test if needed\n5. Shortlist universities/scholarships\n6. Apply before deadlines\n7. Prepare for visa after admission\n\n### Practical tip\nIf you are unsure about country choice, start by narrowing it to **2–3 countries** based on budget and language. That makes everything else easier.\n\nIf you want, I can help you choose the **best degree/country combination** next.\n\nWhat degree do you want to study abroad for, and in which country or region would you like to apply?"
+      }
+    ],
+    "profile": {
+      "educationLevel": null,
+      "degreeTarget": null,
+      "targetCountriesOrRegions": [],
+      "fieldOfStudy": null,
+      "nationality": null,
+      "fundingPreference": null,
+      "ielts": null,
+      "toefl": null,
+      "gpa": null,
+      "enoughInfoForRecommendations": false,
+      "missingFields": [
+        "degreeTarget",
+        "targetCountriesOrRegions",
+        "fieldOfStudy",
+        "fundingPreference"
+      ],
+      "nextBestQuestion": "What degree do you want to study abroad for, and in which country or region would you like to apply?",
+      "generalQuestionToAnswer": "Where should I start with the study-abroad process?",
+      "needsGeneralGuidance": true,
+      "confusionAreas": [
+        "how to start the study-abroad process",
+        "which country or region to choose",
+        "what documents or tests are needed",
+        "what degree level to apply for"
+      ],
+      "specificityLevel": "low",
+      "profileSummary": "The student wants to study abroad but is at the very beginning and does not know where to start. No degree target, country/region, field, funding preference, or test scores have been provided."
+    },
+    "shortlistIds": [],
+    "recommendations": []
+  },
+  {
+    "id": "2a0e6ce1-ca5c-4c76-8280-a92378374466",
+    "createdAt": "2026-03-21T10:06:05.387Z",
+    "messages": [
+      {
+        "role": "user",
+        "content": "I want to study abroad but I don't know where to start"
+      },
+      {
+        "role": "assistant",
+        "content": "A good place to start is to make **4 basic decisions** before chasing documents or scholarships:\n### 1) Choose your degree level\nDecide whether you want to apply for:\n- **Bachelor’s**\n- **Master’s**\n- **PhD/Doctorate**\n### 2) Pick a country or region\nThink about:\n- tuition cost\n- language of instruction\n- visa rules\n- job opportunities after study\n- whether you want a **fully funded** path or can self-fund part of it\n### 3) Choose your field of study\nExamples: engineering, business, computer science, public health, etc. \nThis affects eligibility, required documents, and available programs.\n### 4) Check the usual requirements\nMost applications ask for some of these:\n- passport\n- academic transcripts and certificates\n- English test (`IELTS` / `TOEFL`) if required\n- CV/resume\n- statement of purpose / motivation letter\n- recommendation letters\n- research proposal for some master’s/PhD programs\n### Simple order to follow\n1. Decide degree + country + field\n2. Check entry requirements\n3. Prepare documents\n4. Take English test if needed\n5. Shortlist universities/scholarships\n6. Apply before deadlines\n7. Prepare for visa after admission\n### Practical tip\nIf you are unsure about country choice, start by narrowing it to **2–3 countries** based on budget and language. That makes everything else easier.\nIf you want, I can help you choose the **best degree/country combination** next.\nWhat degree do you want to study abroad for, and in which country or region would you like to apply?"
+      },
+      {
+        "role": "user",
+        "content": "yes help me with best degree/country"
+      },
+      {
+        "role": "assistant",
+        "content": "## Where to start\nA good study-abroad plan usually goes in this order:\n\n1. **Pick your degree level**  \n   Decide whether you want a **bachelor’s, master’s, or PhD**. This depends on your current education and career goal.\n\n2. **Choose a country or region**  \n   Compare things like **tuition cost, visa rules, language, living expenses, and job opportunities**.\n\n3. **Select your field of study**  \n   Try to match it with your background and what you want to do after graduation.\n\n4. **Check entry requirements**  \n   Common items include:\n   - Academic transcripts\n   - Passport\n   - English test like IELTS/TOEFL, if required\n   - SOP/personal statement\n   - Recommendation letters\n   - CV/resume\n\n5. **Build a timeline**  \n   Start early—ideally **6–12 months before deadlines**.\n\n6. **Apply in this order**  \n   - Shortlist programs\n   - Prepare documents\n   - Take English test if needed\n   - Write SOP and get recommendation letters\n   - Submit applications\n   - Then handle visa and funding documents\n\n### Simple way to narrow your choice\n- If you want **lower cost**, look for countries with more affordable tuition and living expenses.\n- If you want **better scholarship chances**, focus on programs that clearly list funding options.\n- If you want **faster entry into jobs**, check post-study work rules.\n\nIf you want, I can help you choose the best degree/country combination step by step.\n\nWhat degree level do you want to pursue, and which country or region are you considering?"
+      }
+    ],
+    "profile": {
+      "educationLevel": null,
+      "degreeTarget": null,
+      "targetCountriesOrRegions": [],
+      "fieldOfStudy": null,
+      "nationality": null,
+      "fundingPreference": null,
+      "ielts": null,
+      "toefl": null,
+      "gpa": null,
+      "enoughInfoForRecommendations": false,
+      "missingFields": [
+        "degree target",
+        "preferred country or region",
+        "preferred field of study",
+        "funding preference"
+      ],
+      "nextBestQuestion": "What degree level do you want to pursue, and which country or region are you considering?",
+      "generalQuestionToAnswer": "Where do I start when planning to study abroad?",
+      "needsGeneralGuidance": true,
+      "confusionAreas": [
+        "how to start the study-abroad process",
+        "how to choose a degree level",
+        "how to choose a country or region",
+        "what documents and tests are needed",
+        "application order"
+      ],
+      "specificityLevel": "low",
+      "profileSummary": "The student wants to study abroad but is unsure where to start and asked for help choosing the best degree/country combination. No specific degree, country, field, or funding preference has been provided yet."
+    },
+    "shortlistIds": [],
+    "recommendations": []
+  },
+  {
+    "id": "e8b99ec7-b040-4f56-875f-163e4d624f97",
+    "createdAt": "2026-03-21T10:06:57.349Z",
+    "messages": [
+      {
+        "role": "user",
+        "content": "I want to study abroad but I don't know where to start"
+      },
+      {
+        "role": "assistant",
+        "content": "A good place to start is to make **4 basic decisions** before chasing documents or scholarships:\n### 1) Choose your degree level\nDecide whether you want to apply for:\n- **Bachelor’s**\n- **Master’s**\n- **PhD/Doctorate**\n### 2) Pick a country or region\nThink about:\n- tuition cost\n- language of instruction\n- visa rules\n- job opportunities after study\n- whether you want a **fully funded** path or can self-fund part of it\n### 3) Choose your field of study\nExamples: engineering, business, computer science, public health, etc. \nThis affects eligibility, required documents, and available programs.\n### 4) Check the usual requirements\nMost applications ask for some of these:\n- passport\n- academic transcripts and certificates\n- English test (`IELTS` / `TOEFL`) if required\n- CV/resume\n- statement of purpose / motivation letter\n- recommendation letters\n- research proposal for some master’s/PhD programs\n### Simple order to follow\n1. Decide degree + country + field\n2. Check entry requirements\n3. Prepare documents\n4. Take English test if needed\n5. Shortlist universities/scholarships\n6. Apply before deadlines\n7. Prepare for visa after admission\n### Practical tip\nIf you are unsure about country choice, start by narrowing it to **2–3 countries** based on budget and language. That makes everything else easier.\nIf you want, I can help you choose the **best degree/country combination** next.\nWhat degree do you want to study abroad for, and in which country or region would you like to apply?"
+      },
+      {
+        "role": "user",
+        "content": "yes help me with best degree/country"
+      },
+      {
+        "role": "assistant",
+        "content": "## Where to start\nA good study-abroad plan usually goes in this order:\n1. **Pick your degree level**  \n   Decide whether you want a **bachelor’s, master’s, or PhD**. This depends on your current education and career goal.\n2. **Choose a country or region**  \n   Compare things like **tuition cost, visa rules, language, living expenses, and job opportunities**.\n3. **Select your field of study**  \n   Try to match it with your background and what you want to do after graduation.\n4. **Check entry requirements**  \n   Common items include:\n   - Academic transcripts\n   - Passport\n   - English test like IELTS/TOEFL, if required\n   - SOP/personal statement\n   - Recommendation letters\n   - CV/resume\n5. **Build a timeline**  \n   Start early—ideally **6–12 months before deadlines**.\n6. **Apply in this order**  \n   - Shortlist programs\n   - Prepare documents\n   - Take English test if needed\n   - Write SOP and get recommendation letters\n   - Submit applications\n   - Then handle visa and funding documents\n### Simple way to narrow your choice\n- If you want **lower cost**, look for countries with more affordable tuition and living expenses.\n- If you want **better scholarship chances**, focus on programs that clearly list funding options.\n- If you want **faster entry into jobs**, check post-study work rules.\nIf you want, I can help you choose the best degree/country combination step by step.\nWhat degree level do you want to pursue, and which country or region are you considering?"
+      },
+      {
+        "role": "user",
+        "content": "what is SOP"
+      },
+      {
+        "role": "assistant",
+        "content": "**SOP** means **Statement of Purpose**.\n\nIt’s a short essay where you explain:\n- **who you are** academically and professionally\n- **why** you want to study that program\n- **why** you chose that university/country\n- **your goals** after graduation\n\nA simple SOP usually covers:\n1. Your background\n2. Why this subject\n3. Why this university/program\n4. Your career plans\n5. Why you’re a strong fit\n\n**Quick tip:** Keep it clear, honest, and specific. Admissions teams usually prefer a focused SOP over a very long one.\n\nSince you’re just starting, the next step is to choose your **degree level** and **target country/region** so I can guide you better.\n\nWhat degree level do you want to pursue, and which country or region are you considering?"
+      }
+    ],
+    "profile": {
+      "educationLevel": null,
+      "degreeTarget": null,
+      "targetCountriesOrRegions": [],
+      "fieldOfStudy": null,
+      "nationality": null,
+      "fundingPreference": null,
+      "ielts": null,
+      "toefl": null,
+      "gpa": null,
+      "enoughInfoForRecommendations": false,
+      "missingFields": [
+        "degreeTarget",
+        "targetCountriesOrRegions",
+        "fieldOfStudy",
+        "fundingPreference"
+      ],
+      "nextBestQuestion": "What degree level do you want to pursue, and which country or region are you considering?",
+      "generalQuestionToAnswer": "What is SOP?",
+      "needsGeneralGuidance": true,
+      "confusionAreas": [
+        "study-abroad starting process",
+        "application document acronyms"
+      ],
+      "specificityLevel": "low",
+      "profileSummary": "The student wants to study abroad but is at the very beginning and asks what SOP means. They also asked for help choosing the best degree/country, but no concrete preferences have been provided yet."
+    },
+    "shortlistIds": [],
+    "recommendations": []
+  },
+  {
+    "id": "6353b288-c783-43ef-ac08-595e91ecc02d",
+    "createdAt": "2026-03-21T10:13:32.299Z",
+    "messages": [
+      {
+        "role": "user",
+        "content": "I want to study abroad but I don't know where to start"
+      },
+      {
+        "role": "assistant",
+        "content": "A good place to start is to make **4 basic decisions** before chasing documents or scholarships:\n### 1) Choose your degree level\nDecide whether you want to apply for:\n- **Bachelor’s**\n- **Master’s**\n- **PhD/Doctorate**\n### 2) Pick a country or region\nThink about:\n- tuition cost\n- language of instruction\n- visa rules\n- job opportunities after study\n- whether you want a **fully funded** path or can self-fund part of it\n### 3) Choose your field of study\nExamples: engineering, business, computer science, public health, etc. \nThis affects eligibility, required documents, and available programs.\n### 4) Check the usual requirements\nMost applications ask for some of these:\n- passport\n- academic transcripts and certificates\n- English test (`IELTS` / `TOEFL`) if required\n- CV/resume\n- statement of purpose / motivation letter\n- recommendation letters\n- research proposal for some master’s/PhD programs\n### Simple order to follow\n1. Decide degree + country + field\n2. Check entry requirements\n3. Prepare documents\n4. Take English test if needed\n5. Shortlist universities/scholarships\n6. Apply before deadlines\n7. Prepare for visa after admission\n### Practical tip\nIf you are unsure about country choice, start by narrowing it to **2–3 countries** based on budget and language. That makes everything else easier.\nIf you want, I can help you choose the **best degree/country combination** next.\nWhat degree do you want to study abroad for, and in which country or region would you like to apply?"
+      },
+      {
+        "role": "user",
+        "content": "yes help me with best degree/country"
+      },
+      {
+        "role": "assistant",
+        "content": "## Where to start\nA good study-abroad plan usually goes in this order:\n1. **Pick your degree level**  \n   Decide whether you want a **bachelor’s, master’s, or PhD**. This depends on your current education and career goal.\n2. **Choose a country or region**  \n   Compare things like **tuition cost, visa rules, language, living expenses, and job opportunities**.\n3. **Select your field of study**  \n   Try to match it with your background and what you want to do after graduation.\n4. **Check entry requirements**  \n   Common items include:\n   - Academic transcripts\n   - Passport\n   - English test like IELTS/TOEFL, if required\n   - SOP/personal statement\n   - Recommendation letters\n   - CV/resume\n5. **Build a timeline**  \n   Start early—ideally **6–12 months before deadlines**.\n6. **Apply in this order**  \n   - Shortlist programs\n   - Prepare documents\n   - Take English test if needed\n   - Write SOP and get recommendation letters\n   - Submit applications\n   - Then handle visa and funding documents\n### Simple way to narrow your choice\n- If you want **lower cost**, look for countries with more affordable tuition and living expenses.\n- If you want **better scholarship chances**, focus on programs that clearly list funding options.\n- If you want **faster entry into jobs**, check post-study work rules.\nIf you want, I can help you choose the best degree/country combination step by step.\nWhat degree level do you want to pursue, and which country or region are you considering?"
+      },
+      {
+        "role": "user",
+        "content": "what is SOP"
+      },
+      {
+        "role": "assistant",
+        "content": "**SOP** means **Statement of Purpose**.\nIt’s a short essay where you explain:\n- **who you are** academically and professionally\n- **why** you want to study that program\n- **why** you chose that university/country\n- **your goals** after graduation\nA simple SOP usually covers:\n1. Your background\n2. Why this subject\n3. Why this university/program\n4. Your career plans\n5. Why you’re a strong fit\n**Quick tip:** Keep it clear, honest, and specific. Admissions teams usually prefer a focused SOP over a very long one.\nSince you’re just starting, the next step is to choose your **degree level** and **target country/region** so I can guide you better.\nWhat degree level do you want to pursue, and which country or region are you considering?"
+      },
+      {
+        "role": "user",
+        "content": "give me some sources for writing SOP"
+      },
+      {
+        "role": "assistant",
+        "content": "**What is an SOP?**  \nAn SOP, or **Statement of Purpose**, is a short essay where you explain:\n- **why** you want to study this program\n- **what** you want to study\n- **your academic/background strengths**\n- **your career goals**\n- **why** that university or country fits you\n\nIt usually sounds personal, clear, and focused — not too dramatic, and not just a repeat of your CV.\n\n**Simple SOP structure**\n1. **Introduction** – your interest in the field\n2. **Academic background** – what you studied and key achievements\n3. **Why this program** – why this degree/country/university\n4. **Career goals** – what you want to do after graduation\n5. **Conclusion** – a confident closing\n\n**Good sources to learn SOP writing**\n- University admissions pages often explain what they want in an SOP\n- Education blogs from major universities and scholarship offices\n- Sample SOP guides from trusted study-abroad websites\n- Writing centers from universities (they often give essay structure tips)\n\n**Practical tips**\n- Make it **specific** to the program\n- Use **clear examples** from your studies or work\n- Keep it **honest and simple**\n- Avoid copying samples word-for-word\n- Check the **word limit** and format on the official website\n\n**What to do next**\n- Draft a rough SOP outline first\n- Gather your grades, CV, and achievements\n- Then tailor the SOP for each university\n- Always verify the current application requirements on the official page\n\nIf you want, I can also give you a **simple SOP template** or **review your draft line by line**."
+      }
+    ],
+    "profile": {
+      "educationLevel": null,
+      "degreeTarget": null,
+      "targetCountriesOrRegions": [],
+      "fieldOfStudy": null,
+      "nationality": null,
+      "fundingPreference": null,
+      "ielts": null,
+      "toefl": null,
+      "gpa": null,
+      "enoughInfoForRecommendations": false,
+      "missingFields": [
+        "degree target",
+        "preferred country/region",
+        "preferred field",
+        "funding preference"
+      ],
+      "nextBestQuestion": "What degree level, country/region, and field do you want to apply for?",
+      "generalQuestionToAnswer": "What is an SOP, and can you give me sources for writing one?",
+      "needsGeneralGuidance": true,
+      "confusionAreas": [
+        "study-abroad planning basics",
+        "statement of purpose (SOP) writing",
+        "application order and required documents"
+      ],
+      "specificityLevel": "low",
+      "profileSummary": "The student is at the very beginning of study-abroad planning, asking where to start and what an SOP is, and then requesting sources for SOP writing. No degree, country, field, or funding preference has been provided yet."
+    },
+    "shortlistIds": [],
+    "recommendations": []
+  },
+  {
+    "id": "addfb7eb-d9b1-4f4b-8bf3-fd096ab4384c",
+    "createdAt": "2026-03-21T10:13:51.346Z",
+    "messages": [
+      {
+        "role": "user",
+        "content": "I want to study abroad but I don't know where to start"
+      },
+      {
+        "role": "assistant",
+        "content": "A good place to start is to make **4 basic decisions** before chasing documents or scholarships:\n### 1) Choose your degree level\nDecide whether you want to apply for:\n- **Bachelor’s**\n- **Master’s**\n- **PhD/Doctorate**\n### 2) Pick a country or region\nThink about:\n- tuition cost\n- language of instruction\n- visa rules\n- job opportunities after study\n- whether you want a **fully funded** path or can self-fund part of it\n### 3) Choose your field of study\nExamples: engineering, business, computer science, public health, etc. \nThis affects eligibility, required documents, and available programs.\n### 4) Check the usual requirements\nMost applications ask for some of these:\n- passport\n- academic transcripts and certificates\n- English test (`IELTS` / `TOEFL`) if required\n- CV/resume\n- statement of purpose / motivation letter\n- recommendation letters\n- research proposal for some master’s/PhD programs\n### Simple order to follow\n1. Decide degree + country + field\n2. Check entry requirements\n3. Prepare documents\n4. Take English test if needed\n5. Shortlist universities/scholarships\n6. Apply before deadlines\n7. Prepare for visa after admission\n### Practical tip\nIf you are unsure about country choice, start by narrowing it to **2–3 countries** based on budget and language. That makes everything else easier.\nIf you want, I can help you choose the **best degree/country combination** next.\nWhat degree do you want to study abroad for, and in which country or region would you like to apply?"
+      },
+      {
+        "role": "user",
+        "content": "yes help me with best degree/country"
+      },
+      {
+        "role": "assistant",
+        "content": "## Where to start\nA good study-abroad plan usually goes in this order:\n1. **Pick your degree level**  \n   Decide whether you want a **bachelor’s, master’s, or PhD**. This depends on your current education and career goal.\n2. **Choose a country or region**  \n   Compare things like **tuition cost, visa rules, language, living expenses, and job opportunities**.\n3. **Select your field of study**  \n   Try to match it with your background and what you want to do after graduation.\n4. **Check entry requirements**  \n   Common items include:\n   - Academic transcripts\n   - Passport\n   - English test like IELTS/TOEFL, if required\n   - SOP/personal statement\n   - Recommendation letters\n   - CV/resume\n5. **Build a timeline**  \n   Start early—ideally **6–12 months before deadlines**.\n6. **Apply in this order**  \n   - Shortlist programs\n   - Prepare documents\n   - Take English test if needed\n   - Write SOP and get recommendation letters\n   - Submit applications\n   - Then handle visa and funding documents\n### Simple way to narrow your choice\n- If you want **lower cost**, look for countries with more affordable tuition and living expenses.\n- If you want **better scholarship chances**, focus on programs that clearly list funding options.\n- If you want **faster entry into jobs**, check post-study work rules.\nIf you want, I can help you choose the best degree/country combination step by step.\nWhat degree level do you want to pursue, and which country or region are you considering?"
+      },
+      {
+        "role": "user",
+        "content": "what is SOP"
+      },
+      {
+        "role": "assistant",
+        "content": "**SOP** means **Statement of Purpose**.\nIt’s a short essay where you explain:\n- **who you are** academically and professionally\n- **why** you want to study that program\n- **why** you chose that university/country\n- **your goals** after graduation\nA simple SOP usually covers:\n1. Your background\n2. Why this subject\n3. Why this university/program\n4. Your career plans\n5. Why you’re a strong fit\n**Quick tip:** Keep it clear, honest, and specific. Admissions teams usually prefer a focused SOP over a very long one.\nSince you’re just starting, the next step is to choose your **degree level** and **target country/region** so I can guide you better.\nWhat degree level do you want to pursue, and which country or region are you considering?"
+      },
+      {
+        "role": "user",
+        "content": "give me some sources for writing SOP"
+      },
+      {
+        "role": "assistant",
+        "content": "**What is an SOP?**  \nAn SOP, or **Statement of Purpose**, is a short essay where you explain:\n- **why** you want to study this program\n- **what** you want to study\n- **your academic/background strengths**\n- **your career goals**\n- **why** that university or country fits you\nIt usually sounds personal, clear, and focused — not too dramatic, and not just a repeat of your CV.\n**Simple SOP structure**\n1. **Introduction** – your interest in the field\n2. **Academic background** – what you studied and key achievements\n3. **Why this program** – why this degree/country/university\n4. **Career goals** – what you want to do after graduation\n5. **Conclusion** – a confident closing\n**Good sources to learn SOP writing**\n- University admissions pages often explain what they want in an SOP\n- Education blogs from major universities and scholarship offices\n- Sample SOP guides from trusted study-abroad websites\n- Writing centers from universities (they often give essay structure tips)\n**Practical tips**\n- Make it **specific** to the program\n- Use **clear examples** from your studies or work\n- Keep it **honest and simple**\n- Avoid copying samples word-for-word\n- Check the **word limit** and format on the official website\n**What to do next**\n- Draft a rough SOP outline first\n- Gather your grades, CV, and achievements\n- Then tailor the SOP for each university\n- Always verify the current application requirements on the official page\nIf you want, I can also give you a **simple SOP template** or **review your draft line by line**."
+      },
+      {
+        "role": "user",
+        "content": "i mean some links tell me how to write SOP"
+      },
+      {
+        "role": "assistant",
+        "content": "A **Statement of Purpose (SOP)** is a short essay explaining **who you are, what you want to study, why that program/country, and how it fits your goals**.\n\n### What an SOP usually includes\n1. **Your academic background**\n2. **Why you chose this field**\n3. **Why this university/program**\n4. **Your career goals**\n5. **Any gaps or weak points** explained honestly and briefly\n\n### Simple SOP writing tips\n- Keep it **clear, personal, and specific**\n- Show **motivation + fit**, not just achievements\n- Use **examples** instead of vague claims\n- Avoid copying templates too closely\n- Proofread for grammar and word limit\n\n### Reliable places to learn SOP writing\nSince you asked for links, a good next step is to check:\n- The **official university admissions page** for SOP requirements\n- The **program’s application instructions** for word count and format\n- Reputable university writing centers or admissions blogs that explain SOP structure\n\n### Practical SOP workflow\n1. List your academic and career story\n2. Match it to the program’s strengths\n3. Draft a simple outline\n4. Write the first draft\n5. Edit for clarity and length\n6. Ask someone to review it\n\nIf you want, I can help you write an SOP outline next, or review a draft paragraph by paragraph.\n\nWhat degree level, country or region, field of study, and funding preference are you considering?"
+      }
+    ],
+    "profile": {
+      "educationLevel": null,
+      "degreeTarget": null,
+      "targetCountriesOrRegions": [],
+      "fieldOfStudy": null,
+      "nationality": null,
+      "fundingPreference": null,
+      "ielts": null,
+      "toefl": null,
+      "gpa": null,
+      "enoughInfoForRecommendations": false,
+      "missingFields": [
+        "degreeTarget",
+        "targetCountriesOrRegions",
+        "fieldOfStudy",
+        "fundingPreference"
+      ],
+      "nextBestQuestion": "What degree level, country or region, field of study, and funding preference are you considering?",
+      "generalQuestionToAnswer": "The user asked for links that explain how to write an SOP (Statement of Purpose).",
+      "needsGeneralGuidance": true,
+      "confusionAreas": [
+        "SOP meaning and how to write it",
+        "where to find reliable SOP writing sources"
+      ],
+      "specificityLevel": "low",
+      "profileSummary": "The student is at the very beginning of study-abroad planning and has only asked general questions. They need basic guidance on SOP writing and still need to choose a degree level, country/region, field, and funding preference before personalized recommendations can be made."
+    },
+    "shortlistIds": [],
+    "recommendations": []
+  },
+  {
+    "id": "c081ff30-9525-4e2b-b031-635239dfc0f3",
+    "createdAt": "2026-03-21T10:14:12.968Z",
+    "messages": [
+      {
+        "role": "user",
+        "content": "I want to study abroad but I don't know where to start"
+      },
+      {
+        "role": "assistant",
+        "content": "A good place to start is to make **4 basic decisions** before chasing documents or scholarships:\n### 1) Choose your degree level\nDecide whether you want to apply for:\n- **Bachelor’s**\n- **Master’s**\n- **PhD/Doctorate**\n### 2) Pick a country or region\nThink about:\n- tuition cost\n- language of instruction\n- visa rules\n- job opportunities after study\n- whether you want a **fully funded** path or can self-fund part of it\n### 3) Choose your field of study\nExamples: engineering, business, computer science, public health, etc. \nThis affects eligibility, required documents, and available programs.\n### 4) Check the usual requirements\nMost applications ask for some of these:\n- passport\n- academic transcripts and certificates\n- English test (`IELTS` / `TOEFL`) if required\n- CV/resume\n- statement of purpose / motivation letter\n- recommendation letters\n- research proposal for some master’s/PhD programs\n### Simple order to follow\n1. Decide degree + country + field\n2. Check entry requirements\n3. Prepare documents\n4. Take English test if needed\n5. Shortlist universities/scholarships\n6. Apply before deadlines\n7. Prepare for visa after admission\n### Practical tip\nIf you are unsure about country choice, start by narrowing it to **2–3 countries** based on budget and language. That makes everything else easier.\nIf you want, I can help you choose the **best degree/country combination** next.\nWhat degree do you want to study abroad for, and in which country or region would you like to apply?"
+      },
+      {
+        "role": "user",
+        "content": "yes help me with best degree/country"
+      },
+      {
+        "role": "assistant",
+        "content": "## Where to start\nA good study-abroad plan usually goes in this order:\n1. **Pick your degree level**  \n   Decide whether you want a **bachelor’s, master’s, or PhD**. This depends on your current education and career goal.\n2. **Choose a country or region**  \n   Compare things like **tuition cost, visa rules, language, living expenses, and job opportunities**.\n3. **Select your field of study**  \n   Try to match it with your background and what you want to do after graduation.\n4. **Check entry requirements**  \n   Common items include:\n   - Academic transcripts\n   - Passport\n   - English test like IELTS/TOEFL, if required\n   - SOP/personal statement\n   - Recommendation letters\n   - CV/resume\n5. **Build a timeline**  \n   Start early—ideally **6–12 months before deadlines**.\n6. **Apply in this order**  \n   - Shortlist programs\n   - Prepare documents\n   - Take English test if needed\n   - Write SOP and get recommendation letters\n   - Submit applications\n   - Then handle visa and funding documents\n### Simple way to narrow your choice\n- If you want **lower cost**, look for countries with more affordable tuition and living expenses.\n- If you want **better scholarship chances**, focus on programs that clearly list funding options.\n- If you want **faster entry into jobs**, check post-study work rules.\nIf you want, I can help you choose the best degree/country combination step by step.\nWhat degree level do you want to pursue, and which country or region are you considering?"
+      },
+      {
+        "role": "user",
+        "content": "what is SOP"
+      },
+      {
+        "role": "assistant",
+        "content": "**SOP** means **Statement of Purpose**.\nIt’s a short essay where you explain:\n- **who you are** academically and professionally\n- **why** you want to study that program\n- **why** you chose that university/country\n- **your goals** after graduation\nA simple SOP usually covers:\n1. Your background\n2. Why this subject\n3. Why this university/program\n4. Your career plans\n5. Why you’re a strong fit\n**Quick tip:** Keep it clear, honest, and specific. Admissions teams usually prefer a focused SOP over a very long one.\nSince you’re just starting, the next step is to choose your **degree level** and **target country/region** so I can guide you better.\nWhat degree level do you want to pursue, and which country or region are you considering?"
+      },
+      {
+        "role": "user",
+        "content": "give me some sources for writing SOP"
+      },
+      {
+        "role": "assistant",
+        "content": "**What is an SOP?**  \nAn SOP, or **Statement of Purpose**, is a short essay where you explain:\n- **why** you want to study this program\n- **what** you want to study\n- **your academic/background strengths**\n- **your career goals**\n- **why** that university or country fits you\nIt usually sounds personal, clear, and focused — not too dramatic, and not just a repeat of your CV.\n**Simple SOP structure**\n1. **Introduction** – your interest in the field\n2. **Academic background** – what you studied and key achievements\n3. **Why this program** – why this degree/country/university\n4. **Career goals** – what you want to do after graduation\n5. **Conclusion** – a confident closing\n**Good sources to learn SOP writing**\n- University admissions pages often explain what they want in an SOP\n- Education blogs from major universities and scholarship offices\n- Sample SOP guides from trusted study-abroad websites\n- Writing centers from universities (they often give essay structure tips)\n**Practical tips**\n- Make it **specific** to the program\n- Use **clear examples** from your studies or work\n- Keep it **honest and simple**\n- Avoid copying samples word-for-word\n- Check the **word limit** and format on the official website\n**What to do next**\n- Draft a rough SOP outline first\n- Gather your grades, CV, and achievements\n- Then tailor the SOP for each university\n- Always verify the current application requirements on the official page\nIf you want, I can also give you a **simple SOP template** or **review your draft line by line**."
+      },
+      {
+        "role": "user",
+        "content": "i mean some links tell me how to write SOP"
+      },
+      {
+        "role": "assistant",
+        "content": "A **Statement of Purpose (SOP)** is a short essay explaining **who you are, what you want to study, why that program/country, and how it fits your goals**.\n### What an SOP usually includes\n1. **Your academic background**\n2. **Why you chose this field**\n3. **Why this university/program**\n4. **Your career goals**\n5. **Any gaps or weak points** explained honestly and briefly\n### Simple SOP writing tips\n- Keep it **clear, personal, and specific**\n- Show **motivation + fit**, not just achievements\n- Use **examples** instead of vague claims\n- Avoid copying templates too closely\n- Proofread for grammar and word limit\n### Reliable places to learn SOP writing\nSince you asked for links, a good next step is to check:\n- The **official university admissions page** for SOP requirements\n- The **program’s application instructions** for word count and format\n- Reputable university writing centers or admissions blogs that explain SOP structure\n### Practical SOP workflow\n1. List your academic and career story\n2. Match it to the program’s strengths\n3. Draft a simple outline\n4. Write the first draft\n5. Edit for clarity and length\n6. Ask someone to review it\nIf you want, I can help you write an SOP outline next, or review a draft paragraph by paragraph.\nWhat degree level, country or region, field of study, and funding preference are you considering?"
+      },
+      {
+        "role": "user",
+        "content": "can u do web search"
+      },
+      {
+        "role": "assistant",
+        "content": "I can’t do live web search from here. But I can still help you with reliable, practical guidance and show you how to find good SOP resources.\n\n**What an SOP is**\n- SOP = **Statement of Purpose**\n- It’s a short essay for your application where you explain:\n  - why you want to study that program\n  - your academic background\n  - your goals\n  - why that university/country fits you\n\n**How to start the study-abroad process**\n1. Decide your **degree level**: Bachelor’s, Master’s, PhD, etc.\n2. Choose a **country/region** based on budget, language, and visa rules.\n3. Pick a **field of study**.\n4. Check the basic requirements:\n   - transcripts/marksheets\n   - English test (IELTS/TOEFL) if needed\n   - SOP\n   - recommendation letters\n   - passport\n5. Make a shortlist of universities and scholarships.\n6. Prepare documents and apply before deadlines.\n\n**Where to find reliable SOP-writing resources**\n- Official university admissions pages\n- University writing centers or graduate school guides\n- Reputable university blogs/guides from admissions offices\n- Sample SOPs only as a structure reference, not for copying\n\n**Quick SOP tip**\nA strong SOP usually answers:\n- Why this course?\n- Why this university?\n- Why you?\n- What are your plans after graduation?\n\nIf you want, I can next help you build a simple SOP outline or checklist.\n\nWhat degree level, country or region, field of study, and funding preference are you considering?"
+      }
+    ],
+    "profile": {
+      "educationLevel": null,
+      "degreeTarget": null,
+      "targetCountriesOrRegions": [],
+      "fieldOfStudy": null,
+      "nationality": null,
+      "fundingPreference": null,
+      "ielts": null,
+      "toefl": null,
+      "gpa": null,
+      "enoughInfoForRecommendations": false,
+      "missingFields": [
+        "degree target",
+        "preferred country or region",
+        "preferred field of study",
+        "funding preference"
+      ],
+      "nextBestQuestion": "What degree level, country or region, field of study, and funding preference are you considering?",
+      "generalQuestionToAnswer": "Can you do web search?",
+      "needsGeneralGuidance": true,
+      "confusionAreas": [
+        "how to start the study-abroad process",
+        "what an SOP is",
+        "where to find reliable SOP-writing resources"
+      ],
+      "specificityLevel": "low",
+      "profileSummary": "The student wants to study abroad but is at the very beginning of the process and is currently asking for help with SOP resources and whether web search is possible. No specific degree, country, field, or funding preference has been provided."
+    },
+    "shortlistIds": [],
+    "recommendations": []
+  },
+  {
+    "id": "3e778047-801e-4ba8-b1f9-7d2568c1e281",
+    "createdAt": "2026-03-21T10:49:43.992Z",
+    "messages": [
+      {
+        "role": "user",
+        "content": "I want to study abroad but I don't know where to start"
+      },
+      {
+        "role": "assistant",
+        "content": "A good way to start is to **work backwards from deadlines** and narrow your options step by step.\n\n## Basic study-abroad starting steps\n1. **Decide your degree level**\n   - Undergraduate, master's, or PhD.\n2. **Choose a few countries/programs to compare**\n   - Look at tuition, living costs, scholarship availability, visa rules, language requirements, and whether the country is strong in your field.\n3. **Check admission and scholarship timelines early**\n   - A typical planning window is **9 to 15 months before enrollment**.\n   - Scholarship deadlines often come **before** university deadlines.\n4. **Prepare the common documents**\n   - Transcripts\n   - Degree certificate or expected graduation proof\n   - Passport\n   - CV/resume\n   - Statement of Purpose (SOP)\n   - Recommendation letters\n   - IELTS/TOEFL results if required\n   - Sometimes: portfolio, research proposal, or writing sample\n5. **Track any extra scholarship materials**\n   - Some scholarships ask for financial forms, leadership essays, or proof of work experience.\n\n## What you should gather first\n- Your **degree target**\n- Your **preferred country or region**\n- Your **field of study**\n- Your **funding preference**\n- Basic documents like your transcript and passport\n\nIf you want, I can help you build a simple first shortlist once you tell me your degree level and what country or region you’re considering.\n\nWhat degree level do you want to study abroad for: undergraduate, master's, or PhD?"
+      }
+    ],
+    "profile": {
+      "educationLevel": null,
+      "degreeTarget": null,
+      "targetCountriesOrRegions": [],
+      "fieldOfStudy": null,
+      "nationality": null,
+      "fundingPreference": null,
+      "ielts": null,
+      "toefl": null,
+      "gpa": null,
+      "enoughInfoForRecommendations": false,
+      "missingFields": [
+        "degree target",
+        "preferred country/region",
+        "field of study",
+        "funding preference"
+      ],
+      "nextBestQuestion": "What degree level do you want to study abroad for: undergraduate, master's, or PhD?",
+      "generalQuestionToAnswer": "Where should I start when planning to study abroad?",
+      "needsGeneralGuidance": true,
+      "confusionAreas": [
+        "where to start in the study-abroad process",
+        "application documents and steps",
+        "choosing a country or program"
+      ],
+      "specificityLevel": "low",
+      "profileSummary": "The student wants to study abroad but is at the very beginning and does not yet know where to start. No destination, degree level, field, or funding preference has been provided.",
+      "intent": {
+        "intent": "application_guidance",
+        "needsWebSearch": false,
+        "shouldUseKnowledgeBase": true,
+        "shouldUseScholarshipMatching": false,
+        "responseGoal": "Explain the basic study-abroad starting steps and what information they need to gather first."
+      },
+      "retrievedKnowledgeIds": [
+        "application-timeline",
+        "common-documents",
+        "country-choice"
+      ]
+    },
+    "shortlistIds": [],
+    "recommendations": []
+  },
+  {
+    "id": "a13f4d2c-c5ef-4d22-a2f5-1bd751874ab6",
+    "createdAt": "2026-03-21T10:51:33.997Z",
+    "messages": [
+      {
+        "role": "user",
+        "content": "I want to study abroad but I don't know where to start"
+      },
+      {
+        "role": "assistant",
+        "content": "A good way to start is to **work backwards from deadlines** and narrow your options step by step.\n## Basic study-abroad starting steps\n1. **Decide your degree level**\n   - Undergraduate, master's, or PhD.\n2. **Choose a few countries/programs to compare**\n   - Look at tuition, living costs, scholarship availability, visa rules, language requirements, and whether the country is strong in your field.\n3. **Check admission and scholarship timelines early**\n   - A typical planning window is **9 to 15 months before enrollment**.\n   - Scholarship deadlines often come **before** university deadlines.\n4. **Prepare the common documents**\n   - Transcripts\n   - Degree certificate or expected graduation proof\n   - Passport\n   - CV/resume\n   - Statement of Purpose (SOP)\n   - Recommendation letters\n   - IELTS/TOEFL results if required\n   - Sometimes: portfolio, research proposal, or writing sample\n5. **Track any extra scholarship materials**\n   - Some scholarships ask for financial forms, leadership essays, or proof of work experience.\n## What you should gather first\n- Your **degree target**\n- Your **preferred country or region**\n- Your **field of study**\n- Your **funding preference**\n- Basic documents like your transcript and passport\nIf you want, I can help you build a simple first shortlist once you tell me your degree level and what country or region you’re considering.\nWhat degree level do you want to study abroad for: undergraduate, master's, or PhD?"
+      },
+      {
+        "role": "user",
+        "content": "how to find my preferred country"
+      },
+      {
+        "role": "assistant",
+        "content": "A good way to choose a study-abroad country is to compare **budget, language, visa requirements, and program fit** before focusing on rankings or prestige.\n\nHere’s a simple starting framework:\n\n1. **Budget**\n   - Separate your total cost into **tuition, living expenses, insurance, visa, travel, and initial settlement costs**.\n   - If funding is limited, prioritize countries and programs with **lower tuition** or **strong scholarship coverage**.\n\n2. **Language**\n   - Check whether your target programs are taught in **English** or the local language.\n   - Also consider whether you’d be comfortable living in that country day to day.\n\n3. **Visa and process**\n   - Some countries have more straightforward application and visa steps than others.\n   - It helps to plan backward from the **earliest deadline**, since scholarships often close before university admission deadlines.\n\n4. **Program fit**\n   - Focus on whether the country has strong programs in your field, and whether the universities match your academic goals.\n   - A strong fit matters more than choosing a country just because it is popular.\n\n5. **Preparation timeline**\n   - A typical study-abroad timeline starts **9 to 15 months before enrollment**.\n   - In that time, students usually shortlist countries and programs, prepare tests, draft SOPs, and request recommendation letters.\n\nIf you’re not sure where to begin, start by making a shortlist of 3–5 countries and score each one on cost, language, visa ease, and program quality. That usually makes the decision much clearer.\n\nWhat degree level are you aiming for: undergraduate, master's, or PhD?"
+      }
+    ],
+    "profile": {
+      "educationLevel": null,
+      "degreeTarget": null,
+      "targetCountriesOrRegions": [],
+      "fieldOfStudy": null,
+      "nationality": null,
+      "fundingPreference": null,
+      "ielts": null,
+      "toefl": null,
+      "gpa": null,
+      "enoughInfoForRecommendations": false,
+      "missingFields": [
+        "degree target",
+        "preferred country/region",
+        "field of study",
+        "funding preference"
+      ],
+      "nextBestQuestion": "What degree level are you aiming for: undergraduate, master's, or PhD?",
+      "generalQuestionToAnswer": "How to find my preferred country",
+      "needsGeneralGuidance": true,
+      "confusionAreas": [
+        "choosing a country or region for study abroad",
+        "where to begin in the study-abroad process"
+      ],
+      "specificityLevel": "low",
+      "profileSummary": "The student wants to study abroad but is unsure where to start and specifically asks how to find a preferred country. No degree level, country, field, funding preference, test scores, GPA, or nationality have been provided.",
+      "intent": {
+        "intent": "application_guidance",
+        "needsWebSearch": false,
+        "shouldUseKnowledgeBase": true,
+        "shouldUseScholarshipMatching": false,
+        "responseGoal": "Help the student choose a country by comparing key study-abroad factors like budget, language, visa, and program fit."
+      },
+      "retrievedKnowledgeIds": [
+        "application-timeline",
+        "common-documents",
+        "sop-basics",
+        "budgeting"
+      ]
+    },
+    "shortlistIds": [],
+    "recommendations": []
+  }
+]

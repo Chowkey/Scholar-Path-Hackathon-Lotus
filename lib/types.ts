@@ -64,3 +64,42 @@ export type EvaluationResult = {
   gaps: EvaluationGap[];
   verdict: string;
 };
+
+export type UserInfo = {
+  nationality?: string;
+  currentLocation?: string;
+  fieldOfStudy?: string;
+  targetDegree?: "undergraduate" | "masters" | "phd";
+  interests?: string[];
+  languages?: string[];
+  currentSchool?: string;
+};
+
+export type AlumniSearchInput = {
+  dreamUniversity: string;
+  user: UserInfo;
+  limit?: number;
+  model?: string;
+};
+
+export type AlumniMatch = {
+  name: string;
+  profileUrl: string;
+  university: string;
+  currentSchool?: string;
+  recentMatching?: string;
+  headline?: string;
+  location?: string;
+  graduation?: string;
+  matchReasons: string[];
+  confidence: "high" | "medium" | "low";
+  sources: Array<{
+    url: string;
+    note: string;
+  }>;
+};
+
+export type AlumniSearchResult = {
+  dreamUniversity: string;
+  alumni: AlumniMatch[];
+};

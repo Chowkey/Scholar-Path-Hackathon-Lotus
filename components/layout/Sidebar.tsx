@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { BarChart2, BookOpen, Compass, MessageCircle, Shield } from "lucide-react";
+import { BarChart2, BookOpen, Compass, MessageCircle, Shield, Users } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const navItems = [
@@ -10,6 +10,7 @@ const navItems = [
   { href: "/scholarships", label: "Scholarships", icon: BookOpen },
   { href: "/evaluator", label: "Check My Fit", icon: BarChart2 },
   { href: "/admin/scholarships", label: "Admin", icon: Shield },
+  { href: "/alumni", label: "Alumni Match", icon: Users },
 ];
 
 export function Sidebar() {

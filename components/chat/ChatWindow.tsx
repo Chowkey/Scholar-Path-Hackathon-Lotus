@@ -10,9 +10,9 @@ import { parseRoadmap, stripRoadmap } from "@/lib/chat";
 import type { Message } from "@/lib/types";
 
 const quickStarts = [
-  "I want to study in the US",
-  "Find me fully-funded options",
-  "What scholarships suit a Vietnamese student?",
+  "I want to study abroad but I don't know where to start",
+  "What certificates and documents do I usually need?",
+  "Find me fully-funded options for a master's degree",
 ];
 
 export function ChatWindow() {
@@ -80,10 +80,10 @@ export function ChatWindow() {
       <div className="mx-auto flex w-full max-w-5xl flex-1 flex-col">
         <header>
           <h1 className="font-heading text-3xl font-bold text-neutral-900">
-            Your Scholarship Counselor
+            Your Study Abroad Counselor
           </h1>
           <p className="mt-2 text-base leading-7 text-neutral-600">
-            Ask a few questions, narrow the list, and leave with a clear next-step plan.
+            Figure out requirements, clear up confusion, and narrow down scholarships step by step.
           </p>
         </header>
 
@@ -94,10 +94,10 @@ export function ChatWindow() {
                 <MessageCircle className="h-8 w-8" />
               </div>
               <h2 className="font-heading text-3xl font-bold text-neutral-900">
-                Hi! Let&apos;s find your scholarship.
+                Hi! Let&apos;s figure out your study abroad plan.
               </h2>
               <p className="mt-3 text-base leading-7 text-neutral-600">
-                I&apos;ll ask you a few questions to understand your goals.
+                I&apos;ll help you sort out requirements, documents, and scholarship options one step at a time.
               </p>
 
               <div className="mt-6 flex flex-wrap justify-center gap-3">
