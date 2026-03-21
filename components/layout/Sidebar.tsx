@@ -2,13 +2,14 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { BarChart2, BookOpen, Compass, MessageCircle } from "lucide-react";
+import { BarChart2, BookOpen, Compass, MessageCircle, Users } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const navItems = [
   { href: "/", label: "Counselor", icon: MessageCircle },
   { href: "/scholarships", label: "Scholarships", icon: BookOpen },
   { href: "/evaluator", label: "Check My Fit", icon: BarChart2 },
+  { href: "/alumni", label: "Alumni Match", icon: Users },
 ];
 
 export function Sidebar() {
