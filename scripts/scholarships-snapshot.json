@@ -1,29 +1,482 @@
 [
   {
-    "id": "fulbright-us",
-    "name": "Fulbright U.S. Student Program",
-    "country": "USA",
-    "flag": "🇺🇸",
-    "organization": "Institute of International Education, Inc.",
-    "degree": [
-      "masters",
-      "phd"
-    ],
-    "funding": "full",
-    "fields": [
-      "Any"
-    ],
-    "deadline": "2026-03-31",
-    "description": "The Fulbright U.S. Student Program funds American citizens to study, conduct research, or teach English abroad. It offers over 2,000 awards annually across all academic disciplines, including the creative and performing arts, for graduating seniors, graduate students, young professionals, and artists.",
-    "requirements": {
-      "essays": [],
-      "other": [
-        "U.S. Citizen",
-        "Current U.S. Student: enrolled in undergraduate or graduate degree programs",
-        "U.S. Citizen but not a Student: will hold a bachelor’s degree by the award start date, and do not have a Ph.D. degree",
-        "Artist: relatively limited professional experience in the fields (typically 7 years or less)"
-      ]
+    "id": "generation-connect-young-leadership-programme",
+    "name": "GENERATION CONNECT YOUNG LEADERSHIP PROGRAMME",
+    "country": "Switzerland",
+    "flag": "🇨🇭",
+    "organization": "GENERATION CONNECT YOUNG LEADERSHIP PROGRAMME",
+    "degree": "Other",
+    "funding": "See source",
+    "field": "Leadership",
+    "academicRequirements": "Generation Connect Young Leadership Programme (GCYLP) is a program in collaboration with Huawei.",
+    "languageRequirements": {
+      "other": []
     },
-    "link": "https://us.fulbrightonline.org/"
+    "otherRequirements": "No other specific requirements mentioned.",
+    "deadline": "See source",
+    "description": "This is a leadership program in Switzerland, partnered with Huawei. It is designed to foster young leaders. Further details are available on the source page.",
+    "link": "https://hannahed.co/thuy-si-generation-connect-young-leadership-programme/",
+    "sourceName": "HannahEd",
+    "sourceUrl": "https://hannahed.co/"
+  },
+  {
+    "id": "research-internship-the-university-of-hong-kong",
+    "name": "THỰC TẬP NGHIÊN CỨU TẠI THE UNIVERSITY OF HONG KONG",
+    "country": "Hong Kong",
+    "flag": "🇭🇰",
+    "organization": "THE UNIVERSITY OF HONG KONG",
+    "degree": "Other",
+    "funding": "See source",
+    "field": "Computer Science",
+    "academicRequirements": "Research internship program by the School of Computing and Data Science.",
+    "languageRequirements": {
+      "other": []
+    },
+    "otherRequirements": "No other specific requirements mentioned.",
+    "deadline": "07/03/2026",
+    "description": "This is a summer research internship program offered by the School of Computing and Data Science at The University of Hong Kong. It is open for applications in 2026.",
+    "link": "https://hannahed.co/research-internship-hku-ai-data-cs/",
+    "sourceName": "HannahEd",
+    "sourceUrl": "https://hannahed.co/"
+  },
+  {
+    "id": "daad-epos-media-studies-germany",
+    "name": "HỌC BỔNG DAAD EPOS – MEDIA STUDIES",
+    "country": "Germany",
+    "flag": "🇩🇪",
+    "organization": "DAAD EPOS",
+    "degree": "Master",
+    "funding": "See source",
+    "field": "Media Studies",
+    "academicRequirements": "Master's program in International Media Studies (IMS) organized by DW Akademie.",
+    "languageRequirements": {
+      "other": []
+    },
+    "otherRequirements": "No other specific requirements mentioned.",
+    "deadline": "07/03/2026",
+    "description": "This scholarship is for the International Media Studies (IMS) Master's program in Germany, organized by DW Akademie. Further application details can be found on the provided link.",
+    "link": "https://hannahed.co/daad-epos-media-studies/",
+    "sourceName": "HannahEd",
+    "sourceUrl": "https://hannahed.co/"
+  },
+  {
+    "id": "research-training-program-international-fee-offset-scholarship",
+    "name": "Research Training Program (RTP) International Fee Offset Scholarship",
+    "country": "Australia",
+    "flag": "🇦🇺",
+    "organization": "The Australian National University",
+    "degree": "Master",
+    "funding": "Not specified",
+    "field": "Agriculture and Veterinary Medicine",
+    "academicRequirements": "See source for academic requirements.",
+    "languageRequirements": {
+      "other": []
+    },
+    "otherRequirements": "See source for other requirements.",
+    "deadline": "See source",
+    "description": "The Research Training Program (RTP) International Fee Offset Scholarship is offered by The Australian National University for postgraduate students. The scholarship aims to support international students undertaking research programs.",
+    "link": "https://www.hotcoursesabroad.com/study/international-scholarships/australia/qn/agriculture-and-related-sciences/9/qid/a/scholarship.html",
+    "sourceName": "Hotcourses Australia Agriculture Scholarships",
+    "sourceUrl": "https://www.hotcoursesabroad.com/study/international-scholarships/australia/qn/agriculture-and-related-sciences/9/qid/a/scholarship.html"
+  },
+  {
+    "id": "clyde-mcgill-and-colleen-rigby-scholarship",
+    "name": "Clyde McGill and Colleen Rigby Scholarship",
+    "country": "Australia",
+    "flag": "🇦🇺",
+    "organization": "Murdoch University",
+    "degree": "Other",
+    "funding": "Details on award page",
+    "field": "Agriculture and Veterinary Medicine",
+    "academicRequirements": "See source for academic requirements.",
+    "languageRequirements": {
+      "other": []
+    },
+    "otherRequirements": "See source for other requirements.",
+    "deadline": "See source",
+    "description": "The Clyde McGill and Colleen Rigby Scholarship is provided by Murdoch University. This scholarship supports students in Agriculture and Veterinary Medicine. Further details regarding the award are available on the source page.",
+    "link": "https://www.hotcoursesabroad.com/study/international-scholarships/australia/qn/agriculture-and-related-sciences/9/qid/a/scholarship.html",
+    "sourceName": "Hotcourses Australia Agriculture Scholarships",
+    "sourceUrl": "https://www.hotcoursesabroad.com/study/international-scholarships/australia/qn/agriculture-and-related-sciences/9/qid/a/scholarship.html"
+  },
+  {
+    "id": "international-research-scholarship",
+    "name": "International Research Scholarship",
+    "country": "Australia",
+    "flag": "🇦🇺",
+    "organization": "University of Technology Sydney",
+    "degree": "Master",
+    "funding": "Not specified",
+    "field": "Agriculture and Veterinary Medicine",
+    "academicRequirements": "See source for academic requirements.",
+    "languageRequirements": {
+      "other": []
+    },
+    "otherRequirements": "See source for other requirements.",
+    "deadline": "See source",
+    "description": "The International Research Scholarship is offered by the University of Technology Sydney. This scholarship is for postgraduate students pursuing research in Agriculture and Veterinary Medicine. Specific funding details are not provided on this page.",
+    "link": "https://www.hotcoursesabroad.com/study/international-scholarships/australia/qn/agriculture-and-related-sciences/9/qid/a/scholarship.html",
+    "sourceName": "Hotcourses Australia Agriculture Scholarships",
+    "sourceUrl": "https://www.hotcoursesabroad.com/study/international-scholarships/australia/qn/agriculture-and-related-sciences/9/qid/a/scholarship.html"
+  },
+  {
+    "id": "renewable-entrance-scholarships-carleton-university",
+    "name": "Renewable Entrance Scholarships",
+    "country": "Canada",
+    "flag": "🇨🇦",
+    "organization": "Carleton University",
+    "degree": "Bachelor",
+    "funding": "Details on award page",
+    "field": "Computer Science and IT",
+    "academicRequirements": "Not specified",
+    "languageRequirements": {
+      "other": []
+    },
+    "otherRequirements": "Not specified",
+    "deadline": "Not specified",
+    "description": "The Renewable Entrance Scholarships are offered by Carleton University to undergraduate students. Specific academic and other requirements are not detailed on this page, but further information can be found on the award page. The scholarship offers a fee waiver or discount.",
+    "link": "https://www.hotcoursesabroad.com/study/canada/school-college-university/carleton-university/413978/international.html",
+    "sourceName": "Hotcourses Canada Computer and Mathematical Sciences Scholarships",
+    "sourceUrl": "https://www.hotcoursesabroad.com/study/international-scholarships/canada/qn/computer-and-mathematical-sciences/32/qid/e/scholarship.html"
+  },
+  {
+    "id": "entrance-scholarships-trent-university",
+    "name": "Entrance Scholarships",
+    "country": "Canada",
+    "flag": "🇨🇦",
+    "organization": "Trent University",
+    "degree": "Bachelor",
+    "funding": "CAD$1,500.00 (US$ 1,078) - CAD$3,000.00 (US$ 2,156)",
+    "field": "Computer Science and IT",
+    "academicRequirements": "Not specified",
+    "languageRequirements": {
+      "other": []
+    },
+    "otherRequirements": "Not specified",
+    "deadline": "Not specified",
+    "description": "Trent University offers Entrance Scholarships for undergraduate students. The scholarship value ranges from CAD$1,500.00 to CAD$3,000.00. No specific deadline or academic requirements are listed on this page.",
+    "link": "https://www.hotcoursesabroad.com/study/canada/school-college-university/trent-university/413792/international.html",
+    "sourceName": "Hotcourses Canada Computer and Mathematical Sciences Scholarships",
+    "sourceUrl": "https://www.hotcoursesabroad.com/study/international-scholarships/canada/qn/computer-and-mathematical-sciences/32/qid/e/scholarship.html"
+  },
+  {
+    "id": "international-undergraduate-entrance-scholarships-lakehead-university",
+    "name": "International Undergraduate Entrance Scholarships",
+    "country": "Canada",
+    "flag": "🇨🇦",
+    "organization": "Lakehead University",
+    "degree": "Bachelor",
+    "funding": "Details on award page",
+    "field": "Computer Science and IT",
+    "academicRequirements": "Not specified",
+    "languageRequirements": {
+      "other": []
+    },
+    "otherRequirements": "Not specified",
+    "deadline": "Not specified",
+    "description": "Lakehead University provides International Undergraduate Entrance Scholarships. These scholarships are for undergraduate study and offer a fee waiver or discount. Details regarding the exact value and specific requirements are available on the award page.",
+    "link": "https://www.hotcoursesabroad.com/study/canada/school-college-university/lakehead-university/414100/international.html",
+    "sourceName": "Hotcourses Canada Computer and Mathematical Sciences Scholarships",
+    "sourceUrl": "https://www.hotcoursesabroad.com/study/international-scholarships/canada/qn/computer-and-mathematical-sciences/32/qid/e/scholarship.html"
+  },
+  {
+    "id": "qmu-international-scholarships",
+    "name": "QMU International Scholarships",
+    "country": "United Kingdom",
+    "flag": "🇬🇧",
+    "organization": "Queen Margaret University, Edinburgh",
+    "degree": "Bachelor",
+    "funding": "Fee waiver/discount",
+    "field": "Architecture and Construction",
+    "academicRequirements": "Not specified",
+    "languageRequirements": {
+      "other": []
+    },
+    "otherRequirements": "Not specified",
+    "deadline": "2026-03-31",
+    "description": "The QMU International Scholarships are available for international students pursuing undergraduate or postgraduate degrees in Architecture and Construction at Queen Margaret University, Edinburgh. The scholarship offers a fee waiver/discount. Specific academic and other requirements are not detailed on the source page.",
+    "link": "https://www.hotcoursesabroad.com/study/international-scholarships/uk/qn/architecture-building-and-planning/210/qid/c/scholarship.html",
+    "sourceName": "Hotcourses UK Architecture Scholarships",
+    "sourceUrl": "https://www.hotcoursesabroad.com/study/international-scholarships/uk/qn/architecture-building-and-planning/210/qid/c/scholarship.html"
+  },
+  {
+    "id": "excellence-scholarships-loughborough",
+    "name": "Excellence Scholarships",
+    "country": "United Kingdom",
+    "flag": "🇬🇧",
+    "organization": "Loughborough University",
+    "degree": "Master",
+    "funding": "£3,000.00 (US$ 3,874)",
+    "field": "Architecture and Construction",
+    "academicRequirements": "Not specified",
+    "languageRequirements": {
+      "other": []
+    },
+    "otherRequirements": "Not specified",
+    "deadline": "See source",
+    "description": "Loughborough University offers Excellence Scholarships for postgraduate students in Architecture and Construction. The scholarship provides £3,000.00 (US$ 3,874) in funding. Further details on academic and other requirements are not specified on the source page.",
+    "link": "https://www.hotcoursesabroad.com/study/international-scholarships/uk/qn/architecture-building-and-planning/210/qid/c/scholarship.html",
+    "sourceName": "Hotcourses UK Architecture Scholarships",
+    "sourceUrl": "https://www.hotcoursesabroad.com/study/international-scholarships/uk/qn/architecture-building-and-planning/210/qid/c/scholarship.html"
+  },
+  {
+    "id": "ucl-hong-kong-alumni-scholarships",
+    "name": "UCL Hong Kong Alumni Scholarships",
+    "country": "United Kingdom",
+    "flag": "🇬🇧",
+    "organization": "UCL (University College London)",
+    "degree": "Master",
+    "funding": "Details on award page",
+    "field": "Architecture and Construction",
+    "academicRequirements": "Not specified",
+    "languageRequirements": {
+      "other": []
+    },
+    "otherRequirements": "Not specified",
+    "deadline": "2026-04-27",
+    "description": "The UCL Hong Kong Alumni Scholarships are available for postgraduate students at UCL (University College London) studying Architecture and Construction. The specific funding amount and other requirements are available on the award page. The application deadline is April 27, 2026.",
+    "link": "https://www.hotcoursesabroad.com/study/international-scholarships/uk/qn/architecture-building-and-planning/210/qid/c/scholarship.html",
+    "sourceName": "Hotcourses UK Architecture Scholarships",
+    "sourceUrl": "https://www.hotcoursesabroad.com/study/international-scholarships/uk/qn/architecture-building-and-planning/210/qid/c/scholarship.html"
+  },
+  {
+    "id": "honors-scholarship-colorado-state-university",
+    "name": "Honors Scholarship",
+    "country": "United States",
+    "flag": "🇺🇸",
+    "organization": "Colorado State University",
+    "degree": "Bachelor",
+    "funding": "US$4,000.00",
+    "field": "Law",
+    "academicRequirements": "Not specified",
+    "languageRequirements": {
+      "other": []
+    },
+    "otherRequirements": "Not specified",
+    "deadline": "See source",
+    "description": "The Honors Scholarship at Colorado State University offers $4,000 to eligible undergraduate students. This scholarship is available for those pursuing a degree in Law. Specific academic and language requirements are not detailed in the provided information.",
+    "link": "https://www.hotcoursesabroad.com/study/international-scholarships/us-usa/qn/law/211/qid/j/scholarship.html",
+    "sourceName": "Hotcourses USA Law Scholarships",
+    "sourceUrl": "https://www.hotcoursesabroad.com/study/international-scholarships/us-usa/qn/law/211/qid/j/scholarship.html"
+  },
+  {
+    "id": "honors-college-scholarship-pace-university",
+    "name": "Honors College Scholarship",
+    "country": "United States",
+    "flag": "🇺🇸",
+    "organization": "Pace University",
+    "degree": "Bachelor",
+    "funding": "Details on award page",
+    "field": "Law",
+    "academicRequirements": "Not specified",
+    "languageRequirements": {
+      "other": []
+    },
+    "otherRequirements": "Not specified",
+    "deadline": "See source",
+    "description": "Pace University offers the Honors College Scholarship for undergraduate students studying Law. The funding details are available on the award page. No specific academic or language requirements are provided.",
+    "link": "https://www.hotcoursesabroad.com/study/international-scholarships/us-usa/qn/law/211/qid/j/scholarship.html",
+    "sourceName": "Hotcourses USA Law Scholarships",
+    "sourceUrl": "https://www.hotcoursesabroad.com/study/international-scholarships/us-usa/qn/law/211/qid/j/scholarship.html"
+  },
+  {
+    "id": "legacy-scholarship-program-pittsburg-state-university",
+    "name": "Legacy Scholarship Program",
+    "country": "United States",
+    "flag": "🇺🇸",
+    "organization": "Pittsburg State University",
+    "degree": "Bachelor",
+    "funding": "US$6,000.00 - US$10,000.00",
+    "field": "Law",
+    "academicRequirements": "Not specified",
+    "languageRequirements": {
+      "other": []
+    },
+    "otherRequirements": "Not specified",
+    "deadline": "See source",
+    "description": "The Legacy Scholarship Program at Pittsburg State University provides funding between $6,000 and $10,000 for undergraduate Law students. Further details regarding academic and language requirements are not specified.",
+    "link": "https://www.hotcoursesabroad.com/study/international-scholarships/us-usa/qn/law/211/qid/j/scholarship.html",
+    "sourceName": "Hotcourses USA Law Scholarships",
+    "sourceUrl": "https://www.hotcoursesabroad.com/study/international-scholarships/us-usa/qn/law/211/qid/j/scholarship.html"
+  },
+  {
+    "id": "monash-high-achiever-award",
+    "name": "Monash High Achiever Award",
+    "country": "Malaysia",
+    "flag": "🇲🇾",
+    "organization": "Monash University Malaysia",
+    "degree": "Bachelor",
+    "funding": "RM5,000.00 (US$ 1,137)",
+    "field": "Other",
+    "academicRequirements": "Not specified",
+    "languageRequirements": {
+      "other": []
+    },
+    "otherRequirements": "Not specified",
+    "deadline": "Not specified",
+    "description": "The Monash High Achiever Award is available for undergraduate students at Monash University Malaysia. It provides a cash award of RM5,000.00 (US$ 1,137). Specific academic and other requirements are not detailed, nor is an application deadline.",
+    "link": "https://www.hotcoursesabroad.com/study/international-scholarships/malaysia/qn/mba/114/qid/k/scholarship.html",
+    "sourceName": "Hotcourses Malaysia MBA Scholarships",
+    "sourceUrl": "https://www.hotcoursesabroad.com/study/international-scholarships/malaysia/qn/mba/114/qid/k/scholarship.html"
+  },
+  {
+    "id": "graduate-research-pathway-scholarship",
+    "name": "Graduate Research Pathway Scholarship",
+    "country": "Malaysia",
+    "flag": "🇲🇾",
+    "organization": "Monash University Malaysia",
+    "degree": "Master",
+    "funding": "100% of fees",
+    "field": "Other",
+    "academicRequirements": "Not specified",
+    "languageRequirements": {
+      "other": []
+    },
+    "otherRequirements": "Not specified",
+    "deadline": "Not specified",
+    "description": "The Graduate Research Pathway Scholarship at Monash University Malaysia offers a full fee waiver for postgraduate students. Details on specific academic or other requirements, as well as the application deadline, are not provided.",
+    "link": "https://www.hotcoursesabroad.com/study/international-scholarships/malaysia/qn/mba/114/qid/k/scholarship.html",
+    "sourceName": "Hotcourses Malaysia MBA Scholarships",
+    "sourceUrl": "https://www.hotcoursesabroad.com/study/international-scholarships/malaysia/qn/mba/114/qid/k/scholarship.html"
+  },
+  {
+    "id": "ucsi-university-trust-graduate-scholarship",
+    "name": "UCSI University Trust Graduate Scholarship",
+    "country": "Malaysia",
+    "flag": "🇲🇾",
+    "organization": "UCSI University",
+    "degree": "Master",
+    "funding": "Fee waiver/discount",
+    "field": "Other",
+    "academicRequirements": "Not specified",
+    "languageRequirements": {
+      "other": []
+    },
+    "otherRequirements": "Not specified",
+    "deadline": "2026-07-31",
+    "description": "The UCSI University Trust Graduate Scholarship is available for postgraduate students at UCSI University, offering a fee waiver or discount. The application deadline is expected to be July 2026. Further details on academic or other requirements are not specified.",
+    "link": "https://www.hotcoursesabroad.com/study/international-scholarships/malaysia/qn/mba/114/qid/k/scholarship.html",
+    "sourceName": "Hotcourses Malaysia MBA Scholarships",
+    "sourceUrl": "https://www.hotcoursesabroad.com/study/international-scholarships/malaysia/qn/mba/114/qid/k/scholarship.html"
+  },
+  {
+    "id": "nanyang-presidents-graduate-scholarship",
+    "name": "Nanyang President's Graduate Scholarship",
+    "country": "Singapore",
+    "flag": "🇸🇬",
+    "organization": "Nanyang Technological University (NTU)",
+    "degree": "Master",
+    "funding": "Cash",
+    "field": "Business and Management",
+    "academicRequirements": "Details on award page",
+    "languageRequirements": {
+      "other": []
+    },
+    "otherRequirements": "Details on award page",
+    "deadline": "2026-11-XX",
+    "description": "The Nanyang President's Graduate Scholarship is offered by Nanyang Technological University (NTU) for postgraduate students. It provides financial support to exceptional individuals pursuing their graduate studies.",
+    "link": "https://www.hotcoursesabroad.com/study/international-scholarships/singapore/qn/business-and-administrative-studies/168/qid/d/scholarship.html",
+    "sourceName": "Hotcourses Singapore Business Scholarships",
+    "sourceUrl": "https://www.hotcoursesabroad.com/study/international-scholarships/singapore/qn/business-and-administrative-studies/168/qid/d/scholarship.html"
+  },
+  {
+    "id": "diversity-scholarship",
+    "name": "Diversity Scholarship",
+    "country": "Singapore",
+    "flag": "🇸🇬",
+    "organization": "ESSEC Asia-Pacific",
+    "degree": "Master",
+    "funding": "Cash",
+    "field": "Business and Management",
+    "academicRequirements": "Details on award page",
+    "languageRequirements": {
+      "other": []
+    },
+    "otherRequirements": "Details on award page",
+    "deadline": "Not specified",
+    "description": "The Diversity Scholarship is offered by ESSEC Asia-Pacific for postgraduate students. This scholarship aims to support students from diverse backgrounds in their pursuit of business and management studies.",
+    "link": "https://www.hotcoursesabroad.com/study/international-scholarships/singapore/qn/business-and-administrative-studies/168/qid/d/scholarship.html",
+    "sourceName": "Hotcourses Singapore Business Scholarships",
+    "sourceUrl": "https://www.hotcoursesabroad.com/study/international-scholarships/singapore/qn/business-and-administrative-studies/168/qid/d/scholarship.html"
+  },
+  {
+    "id": "asean-undergraduate-scholarship",
+    "name": "ASEAN Undergraduate Scholarship",
+    "country": "Singapore",
+    "flag": "🇸🇬",
+    "organization": "National University of Singapore (NUS)",
+    "degree": "Bachelor",
+    "funding": "Free products/services",
+    "field": "Business and Management",
+    "academicRequirements": "Details on award page",
+    "languageRequirements": {
+      "other": []
+    },
+    "otherRequirements": "Details on award page",
+    "deadline": "Not specified",
+    "description": "The ASEAN Undergraduate Scholarship is provided by the National University of Singapore (NUS) for undergraduate students. It offers support to talented students from ASEAN countries pursuing their higher education in Singapore.",
+    "link": "https://www.hotcoursesabroad.com/study/international-scholarships/singapore/qn/business-and-administrative-studies/168/qid/d/scholarship.html",
+    "sourceName": "Hotcourses Singapore Business Scholarships",
+    "sourceUrl": "https://www.hotcoursesabroad.com/study/international-scholarships/singapore/qn/business-and-administrative-studies/168/qid/d/scholarship.html"
+  },
+  {
+    "id": "refugee-academic-futures-scholarship",
+    "name": "Refugee Academic Futures Scholarship",
+    "country": "United Kingdom",
+    "flag": "🇬🇧",
+    "organization": "University of Oxford",
+    "degree": "Other",
+    "funding": "Covers course fees and provides a grant for living costs for the full duration of fee liability.",
+    "field": "Other",
+    "academicRequirements": "Applicants applying to any full-time and part-time DPhil and master's courses at Oxford.",
+    "languageRequirements": {
+      "other": []
+    },
+    "otherRequirements": "Applicants must have lived experience of displacement and select the 'refugee status' box on the application form. Eligible applicants will be invited to submit an additional scholarship application in March/April 2026.",
+    "deadline": "2026-01-31",
+    "description": "The Refugee Academic Futures Scholarship supports graduate students at Oxford with lived experience of displacement. It covers course fees and living costs for the entire duration of the program. Applicants must apply by the December or January deadline and indicate their refugee status to be considered for an invitation to apply for the scholarship.",
+    "link": "https://www.ox.ac.uk/admissions/graduate/fees-and-funding/fees-funding-and-scholarship-search/scholarships-a-z-listing",
+    "sourceName": "Oxford Scholarships A-Z",
+    "sourceUrl": "https://www.ox.ac.uk/admissions/graduate/fees-and-funding/fees-funding-and-scholarship-search/scholarships-a-z-listing"
+  },
+  {
+    "id": "crankstart-graduate-scholarship",
+    "name": "Crankstart Graduate Scholarship",
+    "country": "United Kingdom",
+    "flag": "🇬🇧",
+    "organization": "University of Oxford",
+    "degree": "Other",
+    "funding": "100% of course fees and a grant for living costs. Scholarships are awarded for the duration of your fee liability.",
+    "field": "Other",
+    "academicRequirements": "Any applicant to a postgraduate course who has at any time been in receipt of funding in the form of a Crankstart undergraduate scholarship.",
+    "languageRequirements": {
+      "other": []
+    },
+    "otherRequirements": "Available for UK residents from lower-income households who were former undergraduate Crankstart scholars.",
+    "deadline": "2026-06-30",
+    "description": "The Crankstart Graduate Scholarship supports former Crankstart undergraduate scholars from lower-income households in the UK pursuing postgraduate study at Oxford. It covers 100% of course fees and provides a living costs grant for the full duration of the degree. Applicants are considered based on academic merit and potential, with most offers sent by mid-June.",
+    "link": "https://www.ox.ac.uk/admissions/graduate/fees-and-funding/fees-funding-and-scholarship-search/crankstart-graduate-scholarship",
+    "sourceName": "Oxford Scholarships A-Z",
+    "sourceUrl": "https://www.ox.ac.uk/admissions/graduate/fees-and-funding/fees-funding-and-scholarship-search/scholarships-a-z-listing"
+  },
+  {
+    "id": "felix-scholarships",
+    "name": "Felix Scholarships",
+    "country": "United Kingdom",
+    "flag": "🇬🇧",
+    "organization": "University of Oxford",
+    "degree": "Other",
+    "funding": "100% of course fees, a grant for living costs (around £19,000) and one return flight from India/home country to the UK.",
+    "field": "Other",
+    "academicRequirements": "Outstanding students from India, or a non-Indian student ordinarily resident in a low income country outside India, to pursue graduate studies in any subject.",
+    "languageRequirements": {
+      "other": []
+    },
+    "otherRequirements": "Administered by partner universities (Oxford, Reading, SOAS).",
+    "deadline": "2026-01-31",
+    "description": "The Felix Scholarship supports outstanding graduate students, primarily from India, to study at the University of Oxford, University of Reading, or SOAS. The scholarship covers full course fees, living costs of approximately £19,000, and a return flight. A limited number of awards are also available to non-Indian students from low-income countries.",
+    "link": "https://www.ox.ac.uk/admissions/graduate/fees-and-funding/fees-funding-and-scholarship-search/felix-scholarships",
+    "sourceName": "Oxford Scholarships A-Z",
+    "sourceUrl": "https://www.ox.ac.uk/admissions/graduate/fees-and-funding/fees-funding-and-scholarship-search/scholarships-a-z-listing"
   }
 ]

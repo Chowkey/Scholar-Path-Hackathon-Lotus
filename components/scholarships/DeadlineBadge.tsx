@@ -6,7 +6,15 @@ type DeadlineBadgeProps = {
 };
 
 export function DeadlineBadge({ deadline }: DeadlineBadgeProps) {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(deadline)) {
+    return <Badge color="neutral">{deadline || "Check site"}</Badge>;
+  }
+
   const parsed = parseISO(deadline);
+  if (Number.isNaN(parsed.getTime())) {
+    return <Badge color="neutral">Check site</Badge>;
+  }
+
   const daysLeft = differenceInDays(parsed, new Date());
 
   if (daysLeft < 0) {

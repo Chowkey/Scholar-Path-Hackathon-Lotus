@@ -7,9 +7,11 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "db:init": "tsx scripts/scholarshipDB.ts"
+    "db:seed": "tsx scripts/scholarshipDB.ts",
+    "db:upload-snapshot": "tsx scripts/uploadSnapshotToSupabase.ts"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.99.3",
     "date-fns": "^4.1.0",
     "dotenv": "^17.3.1",
     "lucide-react": "^0.577.0",

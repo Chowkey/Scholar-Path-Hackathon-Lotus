@@ -28,15 +28,9 @@ export function ScholarshipCard({ scholarship }: ScholarshipCardProps) {
         <p className="mt-1 text-sm text-neutral-600">{scholarship.organization}</p>
 
         <div className="mt-4 flex flex-wrap gap-2">
-          <Badge color="blue">
-            {scholarship.funding === "full" ? "Fully Funded" : "Partial"}
-          </Badge>
-          {scholarship.degree.map((degree) => (
-            <Badge key={degree}>{degree}</Badge>
-          ))}
-          {scholarship.fields.slice(0, 2).map((field) => (
-            <Badge key={field}>{field}</Badge>
-          ))}
+          <Badge color="blue">{scholarship.funding}</Badge>
+          <Badge>{scholarship.degree}</Badge>
+          <Badge>{scholarship.field}</Badge>
         </div>
 
         <div className="mt-5 inline-flex items-center gap-1 text-sm font-medium text-brand-500">

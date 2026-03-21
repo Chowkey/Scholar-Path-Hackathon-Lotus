@@ -1,18 +1,30 @@
-import { scholarships } from "@/lib/scholarships";
 import type { RoadmapData } from "@/lib/types";
 
-export function findScholarshipByName(name: string) {
-  const normalized = name.toLowerCase();
+type ScholarshipReference = {
+  id: string;
+  name: string;
+};
 
-  return scholarships.find((scholarship) => {
-    const scholarshipName = scholarship.name.toLowerCase();
+function slugify(value: string): string {
+  return value
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 64);
+}
 
-    return (
-      scholarshipName === normalized ||
-      scholarshipName.includes(normalized) ||
-      normalized.includes(scholarshipName.replace(" scholarship", ""))
-    );
-  });
+export function findScholarshipByName(name: string): ScholarshipReference | null {
+  const trimmed = name.trim();
+  if (!trimmed) {
+    return null;
+  }
+
+  const id = slugify(trimmed);
+  if (!id) {
+    return null;
+  }
+
+  return { id, name: trimmed };
 }
 
 export function parseRoadmap(content: string): RoadmapData | null {

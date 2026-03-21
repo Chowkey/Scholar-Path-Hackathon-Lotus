@@ -5,23 +5,40 @@ import { DeadlineBadge } from "@/components/scholarships/DeadlineBadge";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
-import { scholarshipsById } from "@/lib/scholarships";
+import { createBrowserClient } from "@/lib/supabase";
+import { rowToScholarship, type ScholarshipRow } from "@/lib/scholarshipTransform";
 
 type ScholarshipDetailPageProps = {
   params: { id: string };
 };
 
-export default function ScholarshipDetailPage({ params }: ScholarshipDetailPageProps) {
-  const scholarship = scholarshipsById.get(params.id);
+function renderLanguageValue(value?: string): string {
+  return value && value.trim() ? value : "Not specified";
+}
 
-  if (!scholarship) {
+export default async function ScholarshipDetailPage({
+  params,
+}: ScholarshipDetailPageProps) {
+  const db = createBrowserClient();
+  const { data, error } = await db
+    .from("scholarships")
+    .select("*")
+    .eq("id", params.id)
+    .maybeSingle();
+
+  if (error || !data) {
     notFound();
   }
+
+  const scholarship = rowToScholarship(data as ScholarshipRow);
 
   return (
     <div className="px-6 py-8 md:px-10 md:py-10">
       <div className="mx-auto max-w-3xl">
-        <Link href="/scholarships" className="inline-flex items-center gap-2 text-sm font-medium text-neutral-600 hover:text-brand-600">
+        <Link
+          href="/scholarships"
+          className="inline-flex items-center gap-2 text-sm font-medium text-neutral-600 hover:text-brand-600"
+        >
           <ArrowLeft className="h-4 w-4" />
           <span>Directory</span>
         </Link>
@@ -40,15 +57,9 @@ export default function ScholarshipDetailPage({ params }: ScholarshipDetailPageP
           <p className="mt-2 text-neutral-600">{scholarship.organization}</p>
 
           <div className="mt-4 flex flex-wrap gap-2">
-            <Badge color="blue">
-              {scholarship.funding === "full" ? "Fully Funded" : "Partial"}
-            </Badge>
-            {scholarship.degree.map((degree) => (
-              <Badge key={degree}>{degree}</Badge>
-            ))}
-            {scholarship.fields.map((field) => (
-              <Badge key={field}>{field}</Badge>
-            ))}
+            <Badge color="blue">{scholarship.funding}</Badge>
+            <Badge>{scholarship.degree}</Badge>
+            <Badge>{scholarship.field}</Badge>
           </div>
         </section>
 
@@ -60,14 +71,28 @@ export default function ScholarshipDetailPage({ params }: ScholarshipDetailPageP
         </Card>
 
         <Card className="mt-6">
-          <h2 className="font-heading text-xl font-semibold text-neutral-900">What you need</h2>
+          <h2 className="font-heading text-xl font-semibold text-neutral-900">
+            Academic Requirements
+          </h2>
+          <p className="mt-3 whitespace-pre-line text-sm leading-6 text-neutral-600">
+            {scholarship.academicRequirements || "Not specified."}
+          </p>
+        </Card>
+
+        <Card className="mt-6">
+          <h2 className="font-heading text-xl font-semibold text-neutral-900">
+            Language Requirements
+          </h2>
           <div className="mt-4 divide-y divide-neutral-200">
             {[
-              ["GPA", scholarship.requirements.gpa ?? "Not specified"],
-              ["IELTS", scholarship.requirements.ielts ?? "Not specified"],
-              ["TOEFL", scholarship.requirements.toefl ?? "Not specified"],
-              ["Essays", scholarship.requirements.essays.join(", ")],
-              ["Other", scholarship.requirements.other.join(", ")],
+              ["IELTS", renderLanguageValue(scholarship.languageRequirements.ielts)],
+              ["TOEFL", renderLanguageValue(scholarship.languageRequirements.toefl)],
+              ["PTE", renderLanguageValue(scholarship.languageRequirements.pte)],
+              ["Duolingo", renderLanguageValue(scholarship.languageRequirements.duolingo)],
+              [
+                "Other",
+                scholarship.languageRequirements.other.join(", ") || "Not specified",
+              ],
             ].map(([label, value]) => (
               <div key={label} className="grid gap-2 py-4 md:grid-cols-[140px_1fr]">
                 <p className="text-sm font-semibold text-neutral-900">{label}</p>
@@ -77,10 +102,22 @@ export default function ScholarshipDetailPage({ params }: ScholarshipDetailPageP
           </div>
         </Card>
 
+        <Card className="mt-6">
+          <h2 className="font-heading text-xl font-semibold text-neutral-900">
+            Other Requirements
+          </h2>
+          <p className="mt-3 whitespace-pre-line text-sm leading-6 text-neutral-600">
+            {scholarship.otherRequirements || "Not specified."}
+          </p>
+        </Card>
+
         <section className="mt-6 rounded-2xl border border-brand-100 bg-brand-50 p-6">
-          <h2 className="font-heading text-xl font-semibold text-brand-900">Ready to assess your fit?</h2>
+          <h2 className="font-heading text-xl font-semibold text-brand-900">
+            Ready to assess your fit?
+          </h2>
           <p className="mt-2 text-sm leading-6 text-neutral-600">
-            Compare your profile against this scholarship and get a practical gap analysis.
+            Compare your profile against this scholarship and get a practical gap
+            analysis.
           </p>
           <div className="mt-5 flex flex-wrap gap-3">
             <Link href={`/evaluator?scholarship=${scholarship.id}`}>

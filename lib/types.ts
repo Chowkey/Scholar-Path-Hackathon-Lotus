@@ -9,25 +9,31 @@ export type RoadmapData = {
   nextSteps: string[];
 };
 
+export type LanguageRequirements = {
+  ielts?: string;
+  toefl?: string;
+  pte?: string;
+  duolingo?: string;
+  other: string[];
+};
+
 export type Scholarship = {
   id: string;
   name: string;
   country: string;
   flag: string;
   organization: string;
-  degree: ("undergraduate" | "masters" | "phd")[];
-  funding: "full" | "partial";
-  fields: string[];
+  degree: string;
+  funding: string;
+  field: string;
+  academicRequirements: string;
+  languageRequirements: LanguageRequirements;
+  otherRequirements: string;
   deadline: string;
   description: string;
-  requirements: {
-    gpa?: string;
-    ielts?: string;
-    toefl?: string;
-    essays: string[];
-    other: string[];
-  };
   link: string;
+  sourceName?: string;
+  sourceUrl?: string;
 };
 
 export type ProfileFormData = {
