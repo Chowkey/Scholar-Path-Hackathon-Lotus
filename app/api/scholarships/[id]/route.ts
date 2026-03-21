@@ -8,18 +8,19 @@ import {
 import type { Scholarship } from "@/lib/types";
 
 type RouteContext = {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 };
 
 // GET /api/scholarships/[id]
 export async function GET(_request: NextRequest, { params }: RouteContext) {
+  const { id } = await params;
   const db = createBrowserClient();
   const { data, error } = await db
     .from("scholarships")
     .select("*")
-    .eq("id", params.id)
+    .eq("id", id)
     .maybeSingle();
 
   if (error) {
@@ -34,6 +35,7 @@ export async function GET(_request: NextRequest, { params }: RouteContext) {
 
 // PUT /api/scholarships/[id]
 export async function PUT(request: NextRequest, { params }: RouteContext) {
+  const { id } = await params;
   let body: Partial<Scholarship>;
   try {
     body = await request.json();
@@ -43,7 +45,7 @@ export async function PUT(request: NextRequest, { params }: RouteContext) {
 
   const db = createServiceClient();
 
-  const updatePayload: Partial<Scholarship> = { ...body, id: params.id };
+  const updatePayload: Partial<Scholarship> = { ...body, id };
   const converted = scholarshipToRow(updatePayload as Scholarship);
   const row: Partial<ScholarshipRow> = {};
 
@@ -76,7 +78,7 @@ export async function PUT(request: NextRequest, { params }: RouteContext) {
   const { data, error } = await db
     .from("scholarships")
     .update(row)
-    .eq("id", params.id)
+    .eq("id", id)
     .select()
     .single();
 
@@ -92,8 +94,9 @@ export async function PUT(request: NextRequest, { params }: RouteContext) {
 
 // DELETE /api/scholarships/[id]
 export async function DELETE(_request: NextRequest, { params }: RouteContext) {
+  const { id } = await params;
   const db = createServiceClient();
-  const { error } = await db.from("scholarships").delete().eq("id", params.id);
+  const { error } = await db.from("scholarships").delete().eq("id", id);
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });

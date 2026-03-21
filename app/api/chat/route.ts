@@ -1,8 +1,10 @@
 import { NextResponse } from "next/server";
 import { getOpenAIClient } from "@/lib/openai";
 import { saveChatSession } from "@/lib/chat-storage";
-import { scholarships, scholarshipsById } from "@/lib/scholarships";
+import { createBrowserClient } from "@/lib/supabase";
+import { rowToScholarship, type ScholarshipRow } from "@/lib/scholarshipTransform";
 import { studyAbroadKnowledge } from "@/lib/study-abroad-knowledge";
+import type { Scholarship } from "@/lib/types";
 
 const INTENT_PROMPT = `Classify the student's latest need in a study-abroad counseling chat.
 
@@ -253,6 +255,11 @@ type RankedScholarship = {
   reasons: string[];
 };
 
+type ScholarshipLookup = {
+  scholarships: Scholarship[];
+  scholarshipsById: Map<string, Scholarship>;
+};
+
 type RetrievedKnowledge = {
   id: string;
   title: string;
@@ -316,22 +323,37 @@ function matchesCountryOrRegion(preferences: string[], country: string): boolean
   });
 }
 
-function fieldMatches(fieldOfStudy: string | null, scholarshipFields: string[]): boolean {
+function fieldMatches(fieldOfStudy: string | null, scholarshipField: string): boolean {
   if (!fieldOfStudy) {
     return true;
   }
 
-  return scholarshipFields.some((field) => field === "Any" || includesTokenMatch(field, fieldOfStudy));
+  return scholarshipField.trim() === "" || includesTokenMatch(scholarshipField, fieldOfStudy);
 }
 
-function buildShortlist(profile: ExtractedProfile): RankedScholarship[] {
+async function loadScholarshipLookup(): Promise<ScholarshipLookup> {
+  const db = createBrowserClient();
+  const { data, error } = await db.from("scholarships").select("*");
+
+  if (error) {
+    throw new Error(`Failed to load scholarships: ${error.message}`);
+  }
+
+  const scholarships = ((data ?? []) as ScholarshipRow[]).map((row) => rowToScholarship(row));
+  return {
+    scholarships,
+    scholarshipsById: new Map(scholarships.map((scholarship) => [scholarship.id, scholarship])),
+  };
+}
+
+function buildShortlist(profile: ExtractedProfile, scholarships: Scholarship[]): RankedScholarship[] {
   return scholarships
     .map((scholarship) => {
       let score = 0;
       const reasons: string[] = [];
 
       if (profile.degreeTarget) {
-        if (scholarship.degree.includes(profile.degreeTarget)) {
+        if (normalizeText(scholarship.degree) === normalizeText(profile.degreeTarget)) {
           score += 45;
           reasons.push(`supports ${profile.degreeTarget} study`);
         } else {
@@ -345,7 +367,7 @@ function buildShortlist(profile: ExtractedProfile): RankedScholarship[] {
       }
 
       if (profile.fieldOfStudy) {
-        if (fieldMatches(profile.fieldOfStudy, scholarship.fields)) {
+        if (fieldMatches(profile.fieldOfStudy, scholarship.field)) {
           score += 20;
           reasons.push("fits the student's field interest");
         } else {
@@ -399,23 +421,28 @@ function formatDeadlineHint(deadline: string): string {
   return deadline;
 }
 
-function buildFinalAssistantText(payload: ChatResponsePayload): string {
+function buildFinalAssistantText(
+  payload: ChatResponsePayload,
+  scholarshipLookup: ScholarshipLookup,
+): string {
   const message = payload.assistantMessage.trim();
 
   if (payload.phase !== "recommend") {
     return payload.followUpQuestion ? `${message}\n\n${payload.followUpQuestion}`.trim() : message;
   }
 
-  const recommendations = payload.recommendedScholarshipIds.map((id) => scholarshipsById.get(id)).filter(Boolean);
+  const recommendations = payload.recommendedScholarshipIds
+    .map((id) => scholarshipLookup.scholarshipsById.get(id))
+    .filter((value): value is Scholarship => Boolean(value));
   if (recommendations.length === 0) {
     return payload.followUpQuestion ? `${message}\n\n${payload.followUpQuestion}`.trim() : message;
   }
 
   const sourceLines = recommendations
-    .map((scholarship) => `- [${scholarship!.name}](${scholarship!.link})`)
+    .map((scholarship) => `- [${scholarship.name}](${scholarship.link})`)
     .join("\n");
   const roadmapLines = recommendations
-    .map((scholarship) => `- ${scholarship!.name} | ${scholarship!.country} | ${formatDeadlineHint(scholarship!.deadline)}`)
+    .map((scholarship) => `- ${scholarship.name} | ${scholarship.country} | ${formatDeadlineHint(scholarship.deadline)}`)
     .join("\n");
   const nextSteps = payload.nextSteps.slice(0, 5).map((step, index) => `${index + 1}. ${step}`).join("\n");
 
@@ -477,10 +504,11 @@ async function generateKnowledgeResponse(
   intent: ChatIntent,
   knowledge: RetrievedKnowledge[],
   shortlist: RankedScholarship[],
+  scholarshipLookup: ScholarshipLookup,
 ): Promise<ChatResponsePayload> {
   const openai = getOpenAIClient();
   const shortlistPayload = shortlist.map((item) => {
-    const scholarship = scholarshipsById.get(item.id);
+    const scholarship = scholarshipLookup.scholarshipsById.get(item.id);
 
     return {
       id: item.id,
@@ -488,7 +516,7 @@ async function generateKnowledgeResponse(
       country: scholarship?.country,
       degree: scholarship?.degree,
       funding: scholarship?.funding,
-      fields: scholarship?.fields,
+      field: scholarship?.field,
       officialLink: scholarship?.link,
       fitReasons: item.reasons,
     };
@@ -528,10 +556,11 @@ async function generateWebFallbackResponse(
   intent: ChatIntent,
   knowledge: RetrievedKnowledge[],
   shortlist: RankedScholarship[],
+  scholarshipLookup: ScholarshipLookup,
 ): Promise<ChatResponsePayload> {
   const openai = getOpenAIClient();
   const shortlistPayload = shortlist.map((item) => {
-    const scholarship = scholarshipsById.get(item.id);
+    const scholarship = scholarshipLookup.scholarshipsById.get(item.id);
     return {
       id: item.id,
       name: scholarship?.name,
@@ -640,16 +669,22 @@ async function streamText(text: string): Promise<ReadableStream<Uint8Array>> {
 export async function POST(request: Request) {
   try {
     const body = (await request.json()) as ChatRequestBody;
-    const [intent, profile] = await Promise.all([extractIntent(body), extractProfile(body)]);
-    const shortlist = intent.shouldUseScholarshipMatching ? buildShortlist(profile) : [];
+    const [intent, profile, scholarshipLookup] = await Promise.all([
+      extractIntent(body),
+      extractProfile(body),
+      loadScholarshipLookup(),
+    ]);
+    const shortlist = intent.shouldUseScholarshipMatching
+      ? buildShortlist(profile, scholarshipLookup.scholarships)
+      : [];
     const knowledge = intent.shouldUseKnowledgeBase ? retrieveKnowledge(body.messages, profile) : [];
 
     const rawPayload = intent.needsWebSearch
-      ? await generateWebFallbackResponse(body, profile, intent, knowledge, shortlist)
-      : await generateKnowledgeResponse(profile, intent, knowledge, shortlist);
+      ? await generateWebFallbackResponse(body, profile, intent, knowledge, shortlist, scholarshipLookup)
+      : await generateKnowledgeResponse(profile, intent, knowledge, shortlist, scholarshipLookup);
 
     const payload = validateRecommendations(rawPayload, shortlist, profile, intent);
-    const finalAssistantText = buildFinalAssistantText(payload);
+    const finalAssistantText = buildFinalAssistantText(payload, scholarshipLookup);
 
     await saveChatSession({
       messages: [...body.messages, { role: "assistant", content: finalAssistantText }],

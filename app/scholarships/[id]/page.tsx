@@ -9,7 +9,7 @@ import { createBrowserClient } from "@/lib/supabase";
 import { rowToScholarship, type ScholarshipRow } from "@/lib/scholarshipTransform";
 
 type ScholarshipDetailPageProps = {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 };
 
 function renderLanguageValue(value?: string): string {
@@ -19,11 +19,12 @@ function renderLanguageValue(value?: string): string {
 export default async function ScholarshipDetailPage({
   params,
 }: ScholarshipDetailPageProps) {
+  const { id } = await params;
   const db = createBrowserClient();
   const { data, error } = await db
     .from("scholarships")
     .select("*")
-    .eq("id", params.id)
+    .eq("id", id)
     .maybeSingle();
 
   if (error || !data) {

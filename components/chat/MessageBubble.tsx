@@ -1,3 +1,4 @@
+import { ExternalLink } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 type MessageBubbleProps = {
@@ -6,47 +7,92 @@ type MessageBubbleProps = {
   isStreaming?: boolean;
 };
 
-function renderInline(text: string) {
-  const pattern = /(\[[^\]]+\]\((https?:\/\/[^\s)]+)\)|\*\*[^*]+\*\*|`[^`]+`)/g;
-  const parts = text.split(pattern).filter(Boolean);
+function getMarkdownLink(text: string) {
+  const match = text.match(/^\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)$/);
+  if (!match) {
+    return null;
+  }
 
-  return parts.map((part, index) => {
-    const linkMatch = part.match(/^\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)$/);
-    if (linkMatch) {
-      return (
+  return { label: match[1], href: match[2] };
+}
+
+function renderInline(text: string) {
+  const pattern = /\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)|\*\*([^*]+)\*\*|`([^`]+)`/g;
+  const output: JSX.Element[] = [];
+  let lastIndex = 0;
+  let match: RegExpExecArray | null;
+
+  while ((match = pattern.exec(text)) !== null) {
+    const [fullMatch, linkLabel, linkHref, boldText, codeText] = match;
+
+    if (match.index > lastIndex) {
+      output.push(
+        <span key={`text-${lastIndex}`}>{text.slice(lastIndex, match.index)}</span>,
+      );
+    }
+
+    if (linkLabel && linkHref) {
+      output.push(
         <a
-          key={`${part}-${index}`}
-          href={linkMatch[2]}
+          key={`link-${match.index}`}
+          href={linkHref}
           target="_blank"
           rel="noreferrer"
           className="font-medium text-brand-600 underline decoration-brand-300 underline-offset-4 transition hover:text-brand-700"
         >
-          {linkMatch[1]}
-        </a>
+          {linkLabel}
+        </a>,
       );
-    }
-
-    if (part.startsWith("**") && part.endsWith("**")) {
-      return (
-        <strong key={`${part}-${index}`} className="font-semibold text-neutral-900">
-          {part.slice(2, -2)}
-        </strong>
+    } else if (boldText) {
+      output.push(
+        <strong key={`bold-${match.index}`} className="font-semibold text-neutral-900">
+          {boldText}
+        </strong>,
       );
-    }
-
-    if (part.startsWith("`") && part.endsWith("`")) {
-      return (
+    } else if (codeText) {
+      output.push(
         <code
-          key={`${part}-${index}`}
+          key={`code-${match.index}`}
           className="rounded bg-neutral-100 px-1.5 py-0.5 font-mono text-[0.9em] text-neutral-800"
         >
-          {part.slice(1, -1)}
-        </code>
+          {codeText}
+        </code>,
       );
+    } else {
+      output.push(<span key={`raw-${match.index}`}>{fullMatch}</span>);
     }
 
-    return <span key={`${part}-${index}`}>{part}</span>;
-  });
+    lastIndex = match.index + fullMatch.length;
+  }
+
+  if (lastIndex < text.length) {
+    output.push(<span key={`text-${lastIndex}`}>{text.slice(lastIndex)}</span>);
+  }
+
+  return output.length > 0 ? output : [<span key="plain">{text}</span>];
+}
+
+function renderListItem(item: string) {
+  const link = getMarkdownLink(item.trim());
+
+  if (!link) {
+    return renderInline(item);
+  }
+
+  return (
+    <a
+      href={link.href}
+      target="_blank"
+      rel="noreferrer"
+      className="group flex items-start justify-between gap-3 rounded-xl border border-brand-100 bg-brand-50/60 px-3 py-3 no-underline transition hover:border-brand-300 hover:bg-brand-50"
+    >
+      <div className="min-w-0">
+        <p className="font-medium leading-6 text-brand-700">{link.label}</p>
+        <p className="mt-1 break-all text-xs leading-5 text-neutral-500">{link.href}</p>
+      </div>
+      <ExternalLink className="mt-0.5 h-4 w-4 shrink-0 text-brand-500 transition group-hover:text-brand-700" />
+    </a>
+  );
 }
 
 function renderAssistantContent(content: string) {
@@ -64,7 +110,7 @@ function renderAssistantContent(content: string) {
       <ul key={`list-${output.length}`} className="space-y-2 pl-5 text-sm leading-6 text-neutral-700">
         {listItems.map((item) => (
           <li key={item} className="list-disc marker:text-brand-500">
-            {renderInline(item)}
+            {renderListItem(item)}
           </li>
         ))}
       </ul>,
@@ -86,7 +132,7 @@ function renderAssistantContent(content: string) {
               <ul className="mt-2 space-y-2 pl-5">
                 {item.bullets.map((bullet) => (
                   <li key={bullet} className="list-disc marker:text-brand-500">
-                    {renderInline(bullet)}
+                    {renderListItem(bullet)}
                   </li>
                 ))}
               </ul>
