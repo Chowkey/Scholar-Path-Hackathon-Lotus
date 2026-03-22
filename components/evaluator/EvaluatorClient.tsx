@@ -26,6 +26,8 @@ const initialProfile: ProfileFormData = {
   nationality: "",
   fieldOfStudy: "",
   degreeTarget: "masters",
+  projectExperience: "",
+  extracurricularActivities: "",
 };
 
 type EvaluatorClientProps = {
@@ -98,8 +100,8 @@ export function EvaluatorClient({ initialSelectedIds }: EvaluatorClientProps) {
       return;
     }
 
-    if (selectedIds.length >= 5) {
-      setWarning("You can compare up to five scholarships at once.");
+    if (selectedIds.length >= 3) {
+      setWarning("You can compare up to three scholarships at once.");
       return;
     }
 
@@ -234,7 +236,7 @@ export function EvaluatorClient({ initialSelectedIds }: EvaluatorClientProps) {
                 Pick scholarships
               </h2>
               <p className="mt-2 text-sm leading-6 text-neutral-600">
-                Choose up to five scholarships from the directory.
+                Type to search, then choose up to three scholarships from the dropdown list.
               </p>
 
               <div className="mt-4">

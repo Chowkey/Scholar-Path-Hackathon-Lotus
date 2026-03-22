@@ -129,6 +129,32 @@ export function ProfileForm({ value, onChange, errors }: ProfileFormProps) {
           <option value="phd">PhD</option>
         </select>
       </Field>
+
+      <Field
+        label="Projects or portfolio work"
+        hint="Optional, but helpful for fit analysis. Add 1-3 concrete examples if you have them."
+      >
+        <textarea
+          rows={3}
+          value={value.projectExperience ?? ""}
+          onChange={update("projectExperience")}
+          placeholder="e.g. Built a student expense tracker app, research assistant on water quality analysis, designed a campus sustainability campaign"
+          className={cn(inputClasses, "resize-y")}
+        />
+      </Field>
+
+      <Field
+        label="Extracurricular activities"
+        hint="Optional. Clubs, volunteering, competitions, leadership roles, community work, and similar experience all count."
+      >
+        <textarea
+          rows={3}
+          value={value.extracurricularActivities ?? ""}
+          onChange={update("extracurricularActivities")}
+          placeholder="e.g. Vice president of coding club, volunteer math tutor, Model UN, debate team, local NGO volunteer"
+          className={cn(inputClasses, "resize-y")}
+        />
+      </Field>
     </div>
   );
 }
@@ -137,12 +163,14 @@ type FieldProps = {
   label: string;
   children: React.ReactNode;
   error?: string;
+  hint?: string;
 };
 
-function Field({ label, children, error }: FieldProps) {
+function Field({ label, children, error, hint }: FieldProps) {
   return (
     <label className="block">
       <span className="mb-2 block text-sm font-semibold text-neutral-700">{label}</span>
+      {hint ? <span className="mb-2 block text-xs leading-5 text-neutral-500">{hint}</span> : null}
       {children}
       {error ? <span className="mt-1 block text-xs text-danger">{error}</span> : null}
     </label>
