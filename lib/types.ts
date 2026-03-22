@@ -47,6 +47,8 @@ export type ProfileFormData = {
   nationality: string;
   fieldOfStudy: string;
   degreeTarget: "undergraduate" | "masters" | "phd";
+  projectExperience?: string;
+  extracurricularActivities?: string;
 };
 
 export type EvaluationGap = {
