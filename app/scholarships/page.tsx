@@ -124,6 +124,8 @@ export default function ScholarshipsPage() {
                 value={country}
                 onChange={setCountry}
                 options={countryOptions}
+                searchable
+                searchPlaceholder="Search country..."
               />
             </label>
 
