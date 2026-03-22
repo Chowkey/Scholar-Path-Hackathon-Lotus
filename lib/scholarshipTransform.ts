@@ -26,6 +26,23 @@ const EMPTY_LANGUAGE_REQUIREMENTS: LanguageRequirements = {
   other: [],
 };
 
+function normalizeFieldText(value: string | null | undefined): string {
+  if (!value) {
+    return "Not specified";
+  }
+  const normalized = value.trim();
+  const lower = normalized.toLowerCase();
+  if (
+    lower === "see source" ||
+    lower === "see below" ||
+    lower === "details on award page" ||
+    lower === "not specified"
+  ) {
+    return "Not specified";
+  }
+  return normalized;
+}
+
 function normalizeStringArray(value: unknown): string[] {
   if (!Array.isArray(value)) {
     return [];
@@ -69,15 +86,15 @@ export function rowToScholarship(row: ScholarshipRow): Scholarship {
     name: row.name,
     country: normalizeCountry(row.country),
     flag: row.flag ?? "",
-    organization: row.organization,
+    organization: normalizeFieldText(row.organization),
     degree: normalizeDegreeLevel(row.degree),
-    funding: row.funding,
-    field: row.field_of_study ?? "",
-    academicRequirements: row.academic_requirements ?? "",
+    funding: normalizeFieldText(row.funding),
+    field: normalizeFieldText(row.field_of_study),
+    academicRequirements: normalizeFieldText(row.academic_requirements),
     languageRequirements: normalizeLanguageRequirements(row.language_requirements),
-    otherRequirements: row.other_requirements ?? "",
-    deadline: row.deadline,
-    description: row.description,
+    otherRequirements: normalizeFieldText(row.other_requirements),
+    deadline: normalizeFieldText(row.deadline),
+    description: normalizeFieldText(row.description),
     link: row.link,
     sourceName: row.source_name ?? "",
     sourceUrl: row.source_url ?? "",

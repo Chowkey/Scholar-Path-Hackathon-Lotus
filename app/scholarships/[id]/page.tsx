@@ -7,6 +7,8 @@ import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { createBrowserClient } from "@/lib/supabase";
 import { rowToScholarship, type ScholarshipRow } from "@/lib/scholarshipTransform";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 type ScholarshipDetailPageProps = {
   params: Promise<{ id: string }>;
@@ -58,26 +60,36 @@ export default async function ScholarshipDetailPage({
           <p className="mt-2 text-neutral-600">{scholarship.organization}</p>
 
           <div className="mt-4 flex flex-wrap gap-2">
-            <Badge color="blue">{scholarship.funding}</Badge>
-            <Badge>{scholarship.degree}</Badge>
-            <Badge>{scholarship.field}</Badge>
+            {scholarship.funding !== "Not specified" && (
+              <Badge color="blue">{scholarship.funding}</Badge>
+            )}
+            {scholarship.degree !== "Not specified" && (
+              <Badge>{scholarship.degree}</Badge>
+            )}
+            {scholarship.field !== "Not specified" && (
+              <Badge>{scholarship.field}</Badge>
+            )}
           </div>
         </section>
 
         <Card className="mt-6">
           <h2 className="font-heading text-xl font-semibold text-neutral-900">Overview</h2>
-          <p className="mt-3 whitespace-pre-line text-base leading-7 text-neutral-600">
-            {scholarship.description}
-          </p>
+          <div className="prose prose-sm md:prose-base mt-3 max-w-none text-neutral-600 prose-headings:font-heading prose-headings:font-semibold prose-a:text-brand-600 hover:prose-a:text-brand-700">
+            <ReactMarkdown remarkPlugins={[remarkGfm]}>
+              {scholarship.description || "Not specified."}
+            </ReactMarkdown>
+          </div>
         </Card>
 
         <Card className="mt-6">
           <h2 className="font-heading text-xl font-semibold text-neutral-900">
             Academic Requirements
           </h2>
-          <p className="mt-3 whitespace-pre-line text-sm leading-6 text-neutral-600">
-            {scholarship.academicRequirements || "Not specified."}
-          </p>
+          <div className="prose prose-sm mt-3 max-w-none text-neutral-600 prose-headings:font-heading prose-headings:font-semibold prose-a:text-brand-600 hover:prose-a:text-brand-700">
+            <ReactMarkdown remarkPlugins={[remarkGfm]}>
+              {scholarship.academicRequirements || "Not specified."}
+            </ReactMarkdown>
+          </div>
         </Card>
 
         <Card className="mt-6">
@@ -107,9 +119,11 @@ export default async function ScholarshipDetailPage({
           <h2 className="font-heading text-xl font-semibold text-neutral-900">
             Other Requirements
           </h2>
-          <p className="mt-3 whitespace-pre-line text-sm leading-6 text-neutral-600">
-            {scholarship.otherRequirements || "Not specified."}
-          </p>
+          <div className="prose prose-sm mt-3 max-w-none text-neutral-600 prose-headings:font-heading prose-headings:font-semibold prose-a:text-brand-600 hover:prose-a:text-brand-700">
+            <ReactMarkdown remarkPlugins={[remarkGfm]}>
+              {scholarship.otherRequirements || "Not specified."}
+            </ReactMarkdown>
+          </div>
         </Card>
 
         <section className="mt-6 rounded-2xl border border-brand-100 bg-brand-50 p-6">

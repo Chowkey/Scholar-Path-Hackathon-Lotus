@@ -28,9 +28,15 @@ export function ScholarshipCard({ scholarship }: ScholarshipCardProps) {
         <p className="mt-1 text-sm text-neutral-600">{scholarship.organization}</p>
 
         <div className="mt-4 flex flex-wrap gap-2">
-          <Badge color="blue">{scholarship.funding}</Badge>
-          <Badge>{scholarship.degree}</Badge>
-          <Badge>{scholarship.field}</Badge>
+          {scholarship.funding !== "Not specified" && (
+            <Badge color="blue">{scholarship.funding}</Badge>
+          )}
+          {scholarship.degree !== "Not specified" && (
+            <Badge>{scholarship.degree}</Badge>
+          )}
+          {scholarship.field !== "Not specified" && (
+            <Badge>{scholarship.field}</Badge>
+          )}
         </div>
 
         <div className="mt-5 inline-flex items-center gap-1 text-sm font-medium text-brand-500">

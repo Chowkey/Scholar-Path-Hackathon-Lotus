@@ -9,7 +9,7 @@ export function SearchBar({ value, onChange }: SearchBarProps) {
       value={value}
       onChange={(event) => onChange(event.target.value)}
       placeholder="Search by scholarship, country, organization, or field"
-      className="w-full rounded-xl border border-neutral-200 bg-white px-4 py-3 text-sm text-neutral-800 outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-100"
+      className="w-full rounded-xl border-2 border-brand-300 bg-white px-5 py-4 text-base font-medium text-neutral-900 shadow-md placeholder:text-neutral-500 outline-none transition-all hover:border-brand-400 hover:shadow-lg focus:border-brand-500 focus:ring-4 focus:ring-brand-200/50"
     />
   );
 }
