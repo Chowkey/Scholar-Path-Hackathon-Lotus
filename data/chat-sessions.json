@@ -1163,5 +1163,53 @@
     },
     "shortlistIds": [],
     "recommendations": []
+  },
+  {
+    "id": "a39b8430-93ee-4803-905f-d3ef247fcaa8",
+    "createdAt": "2026-03-22T01:16:03.967Z",
+    "messages": [
+      {
+        "role": "user",
+        "content": "Help me find suitable scholarship"
+      },
+      {
+        "role": "assistant",
+        "content": "I can recommend scholarships, but I need a bit more about your study plans first. Right now I’m missing the key details needed to match you well.\n\nWhat degree, country or region, field of study, and funding level are you looking for?"
+      }
+    ],
+    "profile": {
+      "educationLevel": null,
+      "degreeTarget": null,
+      "targetCountriesOrRegions": [],
+      "fieldOfStudy": null,
+      "nationality": null,
+      "fundingPreference": null,
+      "ielts": null,
+      "toefl": null,
+      "gpa": null,
+      "enoughInfoForRecommendations": false,
+      "missingFields": [
+        "degreeTarget",
+        "targetCountriesOrRegions",
+        "fieldOfStudy",
+        "fundingPreference"
+      ],
+      "nextBestQuestion": "What degree, country or region, field of study, and funding level are you looking for?",
+      "generalQuestionToAnswer": null,
+      "needsGeneralGuidance": false,
+      "confusionAreas": [],
+      "specificityLevel": "low",
+      "profileSummary": "The user wants help finding suitable scholarships, but no study-abroad profile details have been provided yet.",
+      "intent": {
+        "intent": "personalized_matching",
+        "needsWebSearch": false,
+        "shouldUseKnowledgeBase": false,
+        "shouldUseScholarshipMatching": true,
+        "responseGoal": "Recommend scholarships that fit the student’s profile and preferences."
+      },
+      "retrievedKnowledgeIds": []
+    },
+    "shortlistIds": [],
+    "recommendations": []
   }
 ]
