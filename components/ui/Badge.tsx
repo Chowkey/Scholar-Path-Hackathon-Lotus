@@ -2,17 +2,20 @@ import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
 type BadgeProps = {
-  color?: "blue" | "green" | "amber" | "red" | "neutral";
+  color?: "blue" | "green" | "amber" | "red" | "neutral" | "purple" | "orange" | "slate";
   children: ReactNode;
   className?: string;
 };
 
 const colors = {
-  blue: "bg-brand-50 text-brand-600",
-  green: "bg-emerald-50 text-emerald-600",
-  amber: "bg-amber-50 text-amber-600",
-  red: "bg-red-50 text-red-600",
-  neutral: "bg-neutral-100 text-neutral-600",
+  blue: "bg-blue-100 text-blue-800 border border-blue-200",
+  green: "bg-green-100 text-green-800 border border-green-200",
+  amber: "bg-yellow-100 text-yellow-800 border border-yellow-200",
+  red: "bg-red-100 text-red-800 border border-red-200",
+  neutral: "bg-neutral-200 text-neutral-800 border border-neutral-300",
+  purple: "bg-purple-100 text-purple-800 border border-purple-200",
+  orange: "bg-orange-100 text-orange-800 border border-orange-200",
+  slate: "bg-slate-200 text-slate-800 border border-slate-300",
 };
 
 export function Badge({ color = "neutral", children, className }: BadgeProps) {

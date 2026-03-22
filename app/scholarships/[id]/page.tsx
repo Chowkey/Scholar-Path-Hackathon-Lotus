@@ -60,9 +60,15 @@ export default async function ScholarshipDetailPage({
           <p className="mt-2 text-neutral-600">{scholarship.organization}</p>
 
           <div className="mt-4 flex flex-wrap gap-2">
-            <Badge color="blue">{scholarship.funding}</Badge>
-            <Badge>{scholarship.degree}</Badge>
-            <Badge>{scholarship.field}</Badge>
+            {scholarship.funding !== "Not specified" && (
+              <Badge color="blue">{scholarship.funding}</Badge>
+            )}
+            {scholarship.degree !== "Not specified" && (
+              <Badge>{scholarship.degree}</Badge>
+            )}
+            {scholarship.field !== "Not specified" && (
+              <Badge>{scholarship.field}</Badge>
+            )}
           </div>
         </section>
 

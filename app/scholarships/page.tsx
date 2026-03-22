@@ -6,6 +6,7 @@ import { ScholarshipCard } from "@/components/scholarships/ScholarshipCard";
 import { SearchBar } from "@/components/scholarships/SearchBar";
 import { Button } from "@/components/ui/Button";
 import { EmptyState } from "@/components/ui/EmptyState";
+import { Select } from "@/components/ui/Select";
 import { Spinner } from "@/components/ui/Spinner";
 import {
   COUNTRY_OPTIONS,
@@ -113,38 +114,26 @@ export default function ScholarshipsPage() {
           </p>
         </div>
 
-        <div className="sticky top-0 z-10 mt-6 space-y-4 rounded-2xl border border-neutral-200 bg-neutral-50/95 p-4 backdrop-blur">
+        <div className="sticky top-0 z-10 mt-6 space-y-5 rounded-2xl border-2 border-brand-100 bg-white/95 p-5 shadow-lg backdrop-blur">
           <SearchBar value={query} onChange={setQuery} />
 
           <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
             <label className="text-sm">
               <span className="mb-1 block font-medium text-neutral-600">Country</span>
-              <select
+              <Select
                 value={country}
-                onChange={(event) => setCountry(event.target.value)}
-                className="w-full rounded-xl border border-neutral-200 bg-white px-3 py-2 text-sm outline-none transition focus:border-brand-500"
-              >
-                {countryOptions.map((option) => (
-                  <option key={option} value={option}>
-                    {option}
-                  </option>
-                ))}
-              </select>
+                onChange={setCountry}
+                options={countryOptions}
+              />
             </label>
 
             <label className="text-sm">
               <span className="mb-1 block font-medium text-neutral-600">Degree</span>
-              <select
+              <Select
                 value={degree}
-                onChange={(event) => setDegree(event.target.value)}
-                className="w-full rounded-xl border border-neutral-200 bg-white px-3 py-2 text-sm outline-none transition focus:border-brand-500"
-              >
-                {degreeOptions.map((option) => (
-                  <option key={option} value={option}>
-                    {option}
-                  </option>
-                ))}
-              </select>
+                onChange={setDegree}
+                options={degreeOptions}
+              />
             </label>
 
             <label className="text-sm">
@@ -153,7 +142,7 @@ export default function ScholarshipsPage() {
                 value={funding}
                 onChange={(event) => setFunding(event.target.value)}
                 placeholder="e.g. 10000, full tuition"
-                className="w-full rounded-xl border border-neutral-200 bg-white px-3 py-2 text-sm outline-none transition focus:border-brand-500"
+                className="w-full rounded-xl border-2 border-neutral-200 bg-white px-4 py-2.5 text-sm font-medium text-neutral-800 placeholder:text-neutral-400 shadow-sm outline-none transition-all hover:border-brand-300 focus:border-brand-500 focus:ring-4 focus:ring-brand-100/50"
               />
             </label>
           </div>
