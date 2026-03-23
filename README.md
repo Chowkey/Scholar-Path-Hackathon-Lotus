@@ -8,7 +8,7 @@
 |------|--------|---------------|
 | **AI Counselor** | `/counselor` | Chat about timelines, documents, SOPs, and next steps with follow-up questions that narrow the path. |
 | **Scholarships** | `/scholarships` | Browse and filter programs; open a detail page for each listing. |
-| **Profile Evaluator** | `/evaluator` | Compare your profile to specific scholarships and get a practical gap analysis. |
+| **Profile Evaluator(MIP)** | `/evaluator` | Compare your profile to specific scholarships and get a practical gap analysis. |
 | **Alumni Discovery** | `/alumni` | Find alumni context around universities and fields (uses web search when configured). |
 | **Admin** | `/admin` | Internal tools for scholarship management and imports (see codebase for routes). |
 
