@@ -119,8 +119,28 @@ export async function POST(request: Request) {
   try {
     const body = (await request.json()) as EvaluateRequestBody;
 
-    if (body.scholarships.length === 0) {
+    if (!body.scholarships || body.scholarships.length === 0) {
       return NextResponse.json({ error: "Select at least one scholarship to evaluate." }, { status: 400 });
+    }
+
+    const { profile } = body;
+    const numericFields: { key: keyof ProfileFormData; max: number; label: string }[] = [
+      { key: "gpa", max: profile.gpaScale, label: "GPA" },
+      { key: "ielts", max: 9, label: "IELTS" },
+      { key: "toefl", max: 120, label: "TOEFL" },
+      { key: "sat", max: 1600, label: "SAT" },
+    ];
+
+    for (const field of numericFields) {
+      const val = profile[field.key];
+      if (typeof val === "number") {
+        if (val < 0) {
+          return NextResponse.json({ error: `${field.label} cannot be negative.` }, { status: 400 });
+        }
+        if (val > field.max) {
+          return NextResponse.json({ error: `${field.label} cannot exceed ${field.max}.` }, { status: 400 });
+        }
+      }
     }
 
     const openai = getOpenAIClient();

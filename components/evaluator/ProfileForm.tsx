@@ -14,21 +14,35 @@ const inputClasses =
 export function ProfileForm({ value, onChange, errors }: ProfileFormProps) {
   const update =
     <K extends keyof ProfileFormData>(key: K) =>
-    (event: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
-      const rawValue = event.target.value;
+      (event: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+        const rawValue = event.target.value;
+        let newValue: string | number | undefined = rawValue;
 
-      onChange({
-        ...value,
-        [key]:
-          key === "gpa"
-            ? rawValue === "" ? 0 : Number(rawValue)
-            : key === "ielts" || key === "toefl" || key === "sat"
-              ? (rawValue === "" ? undefined : Number(rawValue))
-              : key === "gpaScale"
-                ? Number(rawValue)
-                : rawValue,
-      } as ProfileFormData);
-    };
+        if (key === "gpa" || key === "ielts" || key === "toefl" || key === "sat") {
+          if (rawValue === "") {
+            newValue = key === "gpa" ? 0 : undefined;
+          } else {
+            const num = Number(rawValue);
+            const maxVal =
+              key === "gpa"
+                ? value.gpaScale
+                : key === "ielts"
+                  ? 9
+                  : key === "toefl"
+                    ? 120
+                    : 1600;
+
+            newValue = isNaN(num) ? undefined : Math.min(maxVal, Math.max(0, num));
+          }
+        } else if (key === "gpaScale") {
+          newValue = Number(rawValue);
+        }
+
+        onChange({
+          ...value,
+          [key]: newValue,
+        } as ProfileFormData);
+      };
 
   return (
     <div className="space-y-4">
@@ -46,7 +60,7 @@ export function ProfileForm({ value, onChange, errors }: ProfileFormProps) {
             type="number"
             step="0.1"
             min="0"
-            max="100"
+            max={value.gpaScale}
             value={value.gpa === 0 ? "" : value.gpa}
             onChange={update("gpa")}
             placeholder="e.g. 3.5"
@@ -76,11 +90,27 @@ export function ProfileForm({ value, onChange, errors }: ProfileFormProps) {
       </Field>
 
       <Field label="TOEFL score">
-        <input type="number" value={value.toefl ?? ""} onChange={update("toefl")} placeholder="e.g. 100" className={inputClasses} />
+        <input
+          type="number"
+          min="0"
+          max={120}
+          value={value.toefl ?? ""}
+          onChange={update("toefl")}
+          placeholder="e.g. 100"
+          className={inputClasses}
+        />
       </Field>
 
       <Field label="SAT score">
-        <input type="number" value={value.sat ?? ""} onChange={update("sat")} placeholder="e.g. 1400" className={inputClasses} />
+        <input
+          type="number"
+          min="0"
+          max={1600}
+          value={value.sat ?? ""}
+          onChange={update("sat")}
+          placeholder="e.g. 1400"
+          className={inputClasses}
+        />
       </Field>
 
       <Field label="Nationality">
