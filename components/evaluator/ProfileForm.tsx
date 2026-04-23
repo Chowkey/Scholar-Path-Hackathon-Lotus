@@ -20,11 +20,13 @@ export function ProfileForm({ value, onChange, errors }: ProfileFormProps) {
       onChange({
         ...value,
         [key]:
-          key === "gpa" || key === "ielts" || key === "toefl" || key === "sat"
-            ? (rawValue === "" ? undefined : Number(rawValue))
-            : key === "gpaScale"
-              ? Number(rawValue)
-              : rawValue,
+          key === "gpa"
+            ? rawValue === "" ? 0 : Number(rawValue)
+            : key === "ielts" || key === "toefl" || key === "sat"
+              ? (rawValue === "" ? undefined : Number(rawValue))
+              : key === "gpaScale"
+                ? Number(rawValue)
+                : rawValue,
       } as ProfileFormData);
     };
 

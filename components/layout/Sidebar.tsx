@@ -1,11 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { BarChart2, BookOpen, MessageCircle, Users } from "lucide-react";
+import { BarChart2, BookOpen, Compass, MessageCircle, Users } from "lucide-react";
 import { cn } from "@/lib/utils";
-import logo from "@/app/logo.png";
 
 const navItems = [
   { href: "/counselor", label: "Counselor", icon: MessageCircle },
@@ -20,7 +18,9 @@ export function Sidebar() {
   return (
     <aside className="flex h-screen w-16 flex-col border-r border-neutral-200 bg-white md:w-64">
       <Link href="/" className="flex items-center gap-3 border-b border-neutral-200 px-4 py-5 transition-colors hover:bg-neutral-50 md:px-6">
-        <Image src={logo} alt="ScholarPath Logo" className="h-20 w-20 shrink-0 object-contain" />
+        <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-brand-500 to-brand-600 text-white shadow-sm">
+          <Compass className="h-7 w-7" />
+        </div>
         <div className="hidden md:block">
           <p className="font-heading text-lg font-bold text-neutral-900">ScholarPath</p>
           <p className="text-xs text-neutral-400">Scholarship planning, simplified</p>

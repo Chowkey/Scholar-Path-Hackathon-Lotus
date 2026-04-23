@@ -1,13 +1,17 @@
 import { EvaluatorClient } from "@/components/evaluator/EvaluatorClient";
 
 type EvaluatorPageProps = {
-  searchParams?: {
-    scholarship?: string;
-  };
+  searchParams: Promise<{
+    scholarship?: string | string[];
+  }>;
 };
 
-export default function EvaluatorPage({ searchParams }: EvaluatorPageProps) {
-  const initialSelectedIds = searchParams?.scholarship?.split(",").filter(Boolean) ?? [];
+export default async function EvaluatorPage({ searchParams }: EvaluatorPageProps) {
+  const params = await searchParams;
+  const scholarshipParam = params?.scholarship;
+  const initialSelectedIds = Array.isArray(scholarshipParam)
+    ? scholarshipParam.flatMap((value) => value.split(",")).filter(Boolean)
+    : scholarshipParam?.split(",").filter(Boolean) ?? [];
 
   return <EvaluatorClient initialSelectedIds={initialSelectedIds} />;
 }
