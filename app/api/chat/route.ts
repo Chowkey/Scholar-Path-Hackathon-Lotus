@@ -31,9 +31,14 @@ Rules:
 const PROFILE_EXTRACTION_PROMPT = `Extract the student's study-abroad planning state from the
 conversation. Use only information explicitly stated or strongly implied by the user.
 
+You will receive an input JSON with both "messages" (the conversation) and "knownUserFacts"
+(facts already on file from prior sessions, e.g. nationality, GPA, degree target, field).
+
 Rules:
 - Do not invent facts.
 - Keep unknown values as null or empty arrays.
+- Treat knownUserFacts as already established. Do NOT mark them as missing, and do NOT propose a
+  "nextBestQuestion" that re-asks any field already present in knownUserFacts.
 - Track both scholarship-fit details and broader study-abroad process needs.
 - "gpa" should be the GPA as the user stated it (string), e.g. "3.8" or "8.5".
 - "gpaScale" must be 4, 10, or 100 — infer from the GPA value or the user's statement; null if unclear.
@@ -48,7 +53,9 @@ Rules:
   certificates, application order, or country choice.
 - "confusionAreas" should list what the student still seems unclear about.
 - "specificityLevel" should be "low" when the student's answer is vague and needs narrowing.
-- "nextBestQuestion" should be one concise question that would most improve your ability to guide them.
+- "nextBestQuestion" must advance beyond knownUserFacts — pick a deeper, related insight to surface
+  next (e.g. project/research interests, target universities, intake term, English test status,
+  specialization, work-after-study goals) rather than re-asking what is already known.
 - "generalQuestionToAnswer" should summarize any process question the user asked that deserves
   a direct answer before continuing intake.`;
 
@@ -56,14 +63,20 @@ const KB_RESPONSE_PROMPT = `You are ScholarPath Counselor, a warm and practical 
 
 You will receive:
 - the conversation planning summary
-- knownUserFacts: previously remembered facts about this user (e.g. nationality, GPA, degree target). Treat these as known — do not re-ask for them unless the user contradicts them.
+- knownUserFacts: previously remembered facts about this user (e.g. nationality, GPA, degree target, field, target country, IELTS, projects). Treat these as known — do not re-ask for them unless the user contradicts them.
 - retrieved local knowledge snippets from ScholarPath's database
 - optionally a shortlist of validated scholarships
 
 Rules:
+- Before writing your reply, scan knownUserFacts. Acknowledge what you already know about the student briefly (e.g. "Given your 3.6 GPA in CS and Vietnamese nationality...") so they feel heard.
+- NEVER ask the student for a fact that already exists in knownUserFacts. If the fact is present, treat it as settled.
+- Your follow-up question must move the conversation FORWARD into deeper, related insight — not repeat ground already covered. Examples of good forward questions when basics are known:
+  - if GPA + field are known → ask about specific project/research interests, target university tier, or English test status
+  - if country + budget are known → ask about preferred intake (Fall/Spring), language preferences, or work-after-study goals
+  - if degree target + field are known → ask about specialization, faculty/lab interests, or thesis vs coursework preference
 - Prefer the local knowledge snippets as your primary source of truth.
 - Answer concept and process questions clearly and directly.
-- If the student's question is vague, explain what is still unclear and ask exactly one focused follow-up question.
+- If the student's question is vague, explain what is still unclear and ask exactly one focused follow-up question that advances beyond knownUserFacts.
 - If enough profile information is available and the user wants personalized options, you may recommend scholarships from the validated shortlist only.
 - You may use light Markdown: short headings, bold text, bullet lists, numbered lists, inline code, and links.
 - Do not invent scholarship names or official rules not supported by the provided context.
@@ -73,15 +86,18 @@ const WEB_RESPONSE_PROMPT = `You are ScholarPath Counselor, a warm and practical
 
 You will receive:
 - the conversation planning summary
-- knownUserFacts: previously remembered facts about this user. Treat these as known — do not re-ask for them unless the user contradicts them.
+- knownUserFacts: previously remembered facts about this user (e.g. nationality, GPA, degree target, field, target country, IELTS, projects). Treat these as known — do not re-ask for them unless the user contradicts them.
 - optional local knowledge snippets
 - optional validated scholarship shortlist
 
 Rules:
+- Before writing your reply, scan knownUserFacts. Briefly acknowledge what you already know about the student so they feel heard, then build on it.
+- NEVER ask the student for a fact that already exists in knownUserFacts. If the fact is present, treat it as settled.
+- Your follow-up question must move the conversation FORWARD into deeper, related insight — not repeat ground already covered (e.g. if GPA and field are already known, ask about projects, target universities, intake, or English test status instead).
 - Use web search for up-to-date or official information.
 - Prefer official university, embassy, immigration, scholarship, or government sources when possible.
 - Give a practical answer first, then list source links the student can check.
-- If the user is vague, ask exactly one focused follow-up question after the answer.
+- If the user is vague, ask exactly one focused follow-up question after the answer that advances beyond knownUserFacts.
 - If scholarship recommendations are included, only use the validated shortlist provided to you.
 - You may use light Markdown.
 - Do not use roadmap markers in assistantMessage.`;
@@ -557,12 +573,15 @@ async function extractIntent(body: ChatRequestBody): Promise<ChatIntent> {
   return parseJsonResponse<ChatIntent>(response.output_text ?? "");
 }
 
-async function extractProfile(body: ChatRequestBody): Promise<ExtractedProfile> {
+async function extractProfile(
+  body: ChatRequestBody,
+  knownUserFacts: Record<string, unknown> = {},
+): Promise<ExtractedProfile> {
   const openai = getOpenAIClient();
   const response = await openai.responses.create({
     model: process.env.OPENAI_CHAT_MODEL ?? "gpt-5.4-mini",
     instructions: PROFILE_EXTRACTION_PROMPT,
-    input: JSON.stringify(body.messages),
+    input: JSON.stringify({ messages: body.messages, knownUserFacts }),
     text: {
       format: {
         type: "json_schema",
@@ -764,12 +783,12 @@ export async function POST(request: Request) {
       sessionId = created.id;
     }
 
-    const [intent, profile, scholarshipLookup, knownFacts] = await Promise.all([
+    const [intent, scholarshipLookup, knownFacts] = await Promise.all([
       extractIntent(body),
-      extractProfile(body),
       loadScholarshipLookup(),
       listFactsAsRecord(supabase, user.id),
     ]);
+    const profile = await extractProfile(body, knownFacts);
     const shortlist = intent.shouldUseScholarshipMatching
       ? buildShortlist(profile, scholarshipLookup.scholarships)
       : [];
