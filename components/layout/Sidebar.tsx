@@ -1,5 +1,6 @@
 "use client";
 
+import type { ReactNode } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { BarChart2, BookOpen, Compass, MessageCircle, Users } from "lucide-react";
@@ -12,7 +13,7 @@ const navItems = [
   { href: "/alumni", label: "Alumni Match", icon: Users },
 ];
 
-export function Sidebar() {
+export function Sidebar({ userSlot }: { userSlot?: ReactNode }) {
   const pathname = usePathname();
 
   return (
@@ -52,6 +53,8 @@ export function Sidebar() {
           Tip: Start at Home for the overview, then open Counselor for personalized guidance.
         </div>
       </div>
+
+      {userSlot ? <div className="border-t border-neutral-200 p-2 md:p-3">{userSlot}</div> : null}
     </aside>
   );
 }

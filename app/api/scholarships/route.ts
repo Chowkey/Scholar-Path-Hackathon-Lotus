@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createBrowserClient, createServiceClient } from "@/lib/supabase";
+import { upsertScholarshipNormalized } from "@/lib/scholarshipNormalizedWriter";
 import {
   rowToScholarship,
-  scholarshipToRow,
-  type ScholarshipRow,
+  SCHOLARSHIP_SELECT,
+  type ScholarshipJoinedRow,
 } from "@/lib/scholarshipTransform";
 import type { Scholarship } from "@/lib/types";
 
@@ -11,12 +12,11 @@ function normalizeFilter(value: string | null): string {
   return (value ?? "").trim();
 }
 
-// GET /api/scholarships
-// Supports optional query params: ?country=&degree=&funding=&query=
+// GET /api/scholarships?country=&degree=&funding=&query=
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const country = normalizeFilter(
-    searchParams.get("country") ?? searchParams.get("region")
+    searchParams.get("country") ?? searchParams.get("region"),
   );
   const degree = normalizeFilter(searchParams.get("degree"));
   const funding = normalizeFilter(searchParams.get("funding"));
@@ -25,11 +25,11 @@ export async function GET(request: NextRequest) {
   const db = createBrowserClient();
   let statement = db
     .from("scholarships")
-    .select("*")
+    .select(SCHOLARSHIP_SELECT)
     .order("created_at", { ascending: false });
 
   if (country && country !== "All") {
-    statement = statement.eq("country", country);
+    statement = statement.eq("country.name", country);
   }
   if (degree && degree !== "All") {
     statement = statement.eq("degree", degree);
@@ -43,8 +43,8 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
-  let scholarships = (data ?? []).map((row) =>
-    rowToScholarship(row as ScholarshipRow)
+  let scholarships = ((data ?? []) as unknown as ScholarshipJoinedRow[]).map(
+    rowToScholarship,
   );
 
   if (query) {
@@ -60,14 +60,14 @@ export async function GET(request: NextRequest) {
       ]
         .join(" ")
         .toLowerCase()
-        .includes(query)
+        .includes(query),
     );
   }
 
   return NextResponse.json(scholarships);
 }
 
-// POST /api/scholarships
+// POST /api/scholarships — insert via the normalized writer (admin only via service role)
 export async function POST(request: NextRequest) {
   let body: Scholarship;
   try {
@@ -77,7 +77,6 @@ export async function POST(request: NextRequest) {
   }
 
   if (
-    !body.id ||
     !body.name ||
     !body.country ||
     !body.organization ||
@@ -88,19 +87,29 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(
       {
         error:
-          "id, name, country, organization, degree, deadline, and link are required.",
+          "name, country, organization, degree, deadline, and link are required.",
       },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
-  const db = createServiceClient();
-  const row = scholarshipToRow(body);
-  const { data, error } = await db.from("scholarships").insert(row).select().single();
+  try {
+    const db = createServiceClient();
+    const id = await upsertScholarshipNormalized(db, body);
 
-  if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    const { data, error } = await db
+      .from("scholarships")
+      .select(SCHOLARSHIP_SELECT)
+      .eq("id", id)
+      .single();
+    if (error) throw error;
+
+    return NextResponse.json(
+      rowToScholarship(data as unknown as ScholarshipJoinedRow),
+      { status: 201 },
+    );
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Insert failed";
+    return NextResponse.json({ error: message }, { status: 500 });
   }
-
-  return NextResponse.json(rowToScholarship(data as ScholarshipRow), { status: 201 });
 }

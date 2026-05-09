@@ -2,9 +2,11 @@
  * scripts/scholarshipDB.ts
  *
  * Scholarship seeding pipeline:
- * 1. Scrape a fixed list of scholarship source URLs.
- * 2. Extract up to N scholarships per source with LLM-based structuring.
- * 3. Upsert normalized records into Supabase.
+ * 1. Scrape a fixed list of scholarship source URLs with an LLM.
+ * 2. Validate and de-dupe records in memory (against an existing snapshot
+ *    plus an in-run slug map).
+ * 3. Persist into the normalized Supabase schema (countries / organizations /
+ *    fields / scholarships / scholarship_fields) via upsertScholarshipNormalized.
  *
  * Required env:
  *   OPENAI_API_KEY=...
@@ -27,6 +29,7 @@ import { createClient } from "@supabase/supabase-js";
 import dotenv from "dotenv";
 import * as fs from "fs";
 import * as path from "path";
+import { upsertScholarshipNormalized } from "../lib/scholarshipNormalizedWriter";
 import { normalizeCountry, normalizeDegreeLevel } from "../lib/scholarshipOptions";
 import type { LanguageRequirements, Scholarship } from "../lib/types";
 
@@ -242,7 +245,7 @@ function buildScrapePrompt(source: SourceConfig, existingNames: string[] = []): 
     "{",
     '  "scholarships": [',
     "    {",
-    '      "id": "stable slug id",',
+    '      "id": "stable slug, e.g. oxford-rhodes-2025 — used only as an in-run dedup key; the database assigns its own UUID",',
     '      "name": "scholarship name",',
     '      "country": "country where the student will study",',
     '      "flag": "flag emoji if known, else empty string",',
@@ -340,6 +343,8 @@ function validateScholarship(
   );
   const otherRequirements = normalizeString(scraped.otherRequirements, "Not specified.");
 
+  // Local-only slug used for in-run dedup. The DB assigns the real UUID
+  // when upsertScholarshipNormalized inserts the row.
   const idInput = normalizeString(scraped.id, `${name}-${organization}-${index + 1}`);
   const id = slugify(idInput);
   if (!id) {
@@ -583,35 +588,34 @@ async function main() {
 
   fs.writeFileSync(snapshotPath, JSON.stringify(uniqueScholarships, null, 2), "utf-8");
 
-  const rows = uniqueScholarships.map((item) => ({
-    id: item.id,
-    name: item.name,
-    country: item.country,
-    flag: item.flag,
-    organization: item.organization,
-    degree: item.degree,
-    funding: item.funding,
-    field_of_study: item.field,
-    academic_requirements: item.academicRequirements,
-    language_requirements: item.languageRequirements,
-    other_requirements: item.otherRequirements,
-    deadline: item.deadline,
-    description: item.description,
-    link: item.link,
-    source_name: item.sourceName ?? "",
-    source_url: item.sourceUrl ?? "",
-  }));
-
-  const { error: upsertError } = await supabase
-    .from("scholarships")
-    .upsert(rows, { onConflict: "id" });
-
-  if (upsertError) {
-    throw new Error(`Supabase upsert failed: ${upsertError.message}`);
+  // Persist into the normalized schema. The writer upserts countries /
+  // organizations / fields by natural key and dedupes scholarships by
+  // (name, organization_id), so re-running this script is idempotent.
+  let written = 0;
+  for (const item of uniqueScholarships) {
+    try {
+      await upsertScholarshipNormalized(supabase, item);
+      written += 1;
+    } catch (error) {
+      const formatted =
+        error instanceof Error
+          ? error.message
+          : (() => {
+              try {
+                return JSON.stringify(error);
+              } catch {
+                return String(error);
+              }
+            })();
+      failed.push({
+        source: item.sourceName ?? "unknown",
+        reason: `db write: ${item.name}: ${formatted}`,
+      });
+    }
   }
 
   console.log("");
-  console.log(`Wrote ${uniqueScholarships.length} scholarships to Supabase`);
+  console.log(`Wrote ${written}/${uniqueScholarships.length} scholarships to Supabase`);
   console.log(`Saved JSON snapshot to ${snapshotPath}`);
 
   if (failed.length > 0) {

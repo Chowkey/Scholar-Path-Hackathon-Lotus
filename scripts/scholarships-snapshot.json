@@ -1957,5 +1957,813 @@
     "link": "https://www.scholarship.moe.gov.tw/",
     "sourceName": "Oxford Scholarships A-Z",
     "sourceUrl": "https://www.ox.ac.uk/admissions/graduate/fees-and-funding/fees-funding-and-scholarship-search/scholarships-a-z-listing"
+  },
+  {
+    "id": "banach-nawa-poland-2026",
+    "name": "[BA LAN] HỌC BỔNG BANACH NAWA",
+    "country": "Ba Lan",
+    "flag": "🇵🇱",
+    "organization": "Các trường đại học công lập tại Ba Lan",
+    "degree": "Master",
+    "funding": "Học bổng của Chính phủ Ba Lan dành cho bậc Thạc sĩ toàn thời gian, bao gồm miễn học phí và sinh hoạt phí.",
+    "field": "Engineering, Technical Sciences, Agricultural Sciences, Exact Sciences, Natural Sciences",
+    "academicRequirements": "Banach NAWA là học bổng của Chính phủ Ba Lan dành cho bậc Thạc sĩ toàn thời gian tại các trường đại học công lập.\n- Ứng viên cần tốt nghiệp đại học các ngành liên quan đến kỹ thuật, khoa học kỹ thuật, nông nghiệp, khoa học chính xác và khoa học tự nhiên.\n- Cần đọc kỹ yêu cầu đầu vào (GPA, số tín chỉ, điều kiện kinh nghiệm…) của từng trường cụ thể.",
+    "languageRequirements": {
+      "other": [
+        "Yêu cầu ngoại ngữ theo quy định của trường đại học tiếp nhận tại Ba Lan"
+      ],
+      "ielts": "null",
+      "toefl": "null",
+      "pte": "null",
+      "duolingo": "null"
+    },
+    "otherRequirements": "- Ứng viên là công dân của các quốc gia nằm trong danh sách ưu tiên (bao gồm Việt Nam).\n- Hồ sơ thường bao gồm bằng tốt nghiệp, bảng điểm và các giấy tờ cá nhân theo mẫu của NAWA.",
+    "deadline": "See source",
+    "description": "Chương trình học bổng mang tên Stefan Banach nhằm hỗ trợ sự phát triển kinh tế và xã hội của các quốc gia đang phát triển bằng cách nâng cao trình độ giáo dục và kỹ năng chuyên môn của công dân các nước này. Học bổng bao gồm miễn học phí tại các trường đại học công lập và cung cấp một khoản trợ cấp hàng tháng để trang trải chi phí sinh hoạt.",
+    "link": "https://hannahed.co/ba-lan-hoc-bong-banach-nawa/",
+    "sourceName": "HannahEd",
+    "sourceUrl": "https://hannahed.co/"
+  },
+  {
+    "id": "adb-jsp-scholarship-2026",
+    "name": "Học bổng toàn phần ADB-JSP",
+    "country": "Nhiều quốc gia (Châu Á - Thái Bình Dương)",
+    "flag": "🌏",
+    "organization": "Các trường đại học đối tác của ADB (như NUS, ĐH Tokyo, ĐH Melbourne...)",
+    "degree": "Master",
+    "funding": "Toàn phần bao gồm: học phí, sinh hoạt phí hàng tháng, nhà ở, bảo hiểm y tế, vé máy bay và chi phí tài liệu học tập.",
+    "field": "Economics, Management, Science and Technology",
+    "academicRequirements": "1. Giới thiệu về Chương trình Học bổng ADB-Japan (ADB-JSP):\n- Chương trình dành cho các ứng viên có năng lực học tập xuất sắc muốn theo đuổi bậc Thạc sĩ trong các lĩnh vực liên quan đến phát triển.\n- Ứng viên phải có bằng cử nhân hoặc tương đương với hồ sơ học tập xuất sắc.",
+    "languageRequirements": {
+      "other": [
+        "Phải đáp ứng yêu cầu tiếng Anh của trường đại học đối tác mà ứng viên nộp đơn."
+      ],
+      "ielts": "null",
+      "toefl": "null",
+      "pte": "null",
+      "duolingo": "null"
+    },
+    "otherRequirements": "- Có ít nhất 2 năm kinh nghiệm làm việc chuyên nghiệp sau khi tốt nghiệp đại học.\n- Không quá 35 tuổi tại thời điểm nộp đơn.\n- Cam kết quay trở về đóng góp cho quê hương sau khi hoàn thành khóa học.",
+    "deadline": "See source",
+    "description": "Chương trình Học bổng ADB-Japan (ADB-JSP) được thành lập vào năm 1988 với sự tài trợ của Chính phủ Nhật Bản. Mục tiêu là cung cấp cơ hội cho các công dân có năng lực từ các nước thành viên đang phát triển của ADB để theo đuổi nghiên cứu sau đại học về kinh tế, quản lý, khoa học và công nghệ, và các lĩnh vực liên quan đến phát triển khác.",
+    "link": "https://hannahed.co/hoc-bong-toan-phan-adb-jsp/",
+    "sourceName": "HannahEd",
+    "sourceUrl": "https://hannahed.co/"
+  },
+  {
+    "id": "vice-chancellors-academic-excellence-undergraduate-scholarships-western-sydney",
+    "name": "Vice-Chancellor's Academic Excellence Undergraduate Scholarships",
+    "country": "Australia",
+    "flag": "🇦🇺",
+    "organization": "Western Sydney University",
+    "degree": "Bachelor",
+    "funding": "50% of fees",
+    "field": "Agriculture and related sciences",
+    "academicRequirements": "Academic requirements are based on high school results or equivalent prior study. Specific GPA or ATAR equivalents are typically required for excellence-tier awards as per Western Sydney University's international admissions criteria.",
+    "languageRequirements": {
+      "other": [
+        "Requirements vary by course; standard undergraduate entry usually requires IELTS 6.5 or equivalent."
+      ],
+      "ielts": "6.5"
+    },
+    "otherRequirements": "Applicants must be international students and have received an offer of admission to an undergraduate degree at Western Sydney University.",
+    "deadline": "Rolling",
+    "description": "This scholarship offers a 50% tuition fee waiver for the duration of the course. It is awarded to high-achieving international students enrolling in undergraduate programs, including those within the field of Agriculture and related sciences.",
+    "link": "https://www.hotcoursesabroad.com/study/australia/school-college-university/western-sydney-university/72244/international.html",
+    "sourceName": "Hotcourses Australia Agriculture Scholarships",
+    "sourceUrl": "https://www.hotcoursesabroad.com/study/international-scholarships/australia/qn/agriculture-and-related-sciences/9/qid/a/scholarship.html"
+  },
+  {
+    "id": "university-excellence-scholarships-wollongong",
+    "name": "University Excellence Scholarships",
+    "country": "Australia",
+    "flag": "🇦🇺",
+    "organization": "University of Wollongong",
+    "degree": "Bachelor",
+    "funding": "30% of fees",
+    "field": "Agriculture and related sciences",
+    "academicRequirements": "Available to students who have achieved excellent results in their secondary school studies or equivalent foundation programs.",
+    "languageRequirements": {
+      "other": [
+        "Must meet the University of Wollongong's English language proficiency requirements for the chosen course."
+      ]
+    },
+    "otherRequirements": "Candidates must be international students paying full tuition fees and must not be in receipt of any other UOW scholarship or grant.",
+    "deadline": "Rolling",
+    "description": "The University Excellence Scholarship (UES) provides a 30% reduction in tuition fees for the minimum duration of an undergraduate degree. It aims to support outstanding international students across various disciplines including science and agriculture-related fields.",
+    "link": "https://www.hotcoursesabroad.com/study/australia/school-college-university/university-of-wollongong/72245/international.html",
+    "sourceName": "Hotcourses Australia Agriculture Scholarships",
+    "sourceUrl": "https://www.hotcoursesabroad.com/study/international-scholarships/australia/qn/agriculture-and-related-sciences/9/qid/a/scholarship.html"
+  },
+  {
+    "id": "university-of-manitoba-international-undergraduate-student-entrance-2027",
+    "name": "International Undergraduate Student Entrance Scholarships",
+    "country": "Canada",
+    "flag": "🇨🇦",
+    "organization": "University of Manitoba",
+    "degree": "Bachelor",
+    "funding": "Details on award page",
+    "field": "Computer Science",
+    "academicRequirements": "Applicants must be international students applying for an undergraduate program. Specific academic criteria are usually based on high school performance or previous post-secondary records as detailed on the University of Manitoba award page.",
+    "languageRequirements": {
+      "other": [
+        "English proficiency required for admission to University of Manitoba"
+      ]
+    },
+    "otherRequirements": "Candidates must be international students (non-Canadian citizens or permanent residents) who have applied for admission to the University of Manitoba.",
+    "deadline": "2027-03-01",
+    "description": "These scholarships are designed to recognize the academic achievements of international students entering the University of Manitoba for the first time as undergraduates.",
+    "link": "https://www.hotcoursesabroad.com/study/canada/school-college-university/university-of-manitoba/413846/international.html",
+    "sourceName": "Hotcourses Canada Computer and Mathematical Sciences Scholarships",
+    "sourceUrl": "https://www.hotcoursesabroad.com/study/international-scholarships/canada/qn/computer-and-mathematical-sciences/32/qid/e/scholarship.html"
+  },
+  {
+    "id": "capilano-university-international-student-entrance-award-2027",
+    "name": "International Student Entrance Award",
+    "country": "Canada",
+    "flag": "🇨🇦",
+    "organization": "Capilano University",
+    "degree": "Bachelor",
+    "funding": "Details on award page",
+    "field": "Computer Science",
+    "academicRequirements": "Open to new international students entering an undergraduate program at Capilano University. Academic standing from previous studies is a primary consideration for the award.",
+    "languageRequirements": {
+      "other": [
+        "Must meet Capilano University's English language requirements"
+      ]
+    },
+    "otherRequirements": "Awarded to international students who demonstrate potential to contribute to the university community. Requires a formal application to Capilano University.",
+    "deadline": "2027-03-01",
+    "description": "The International Student Entrance Award supports incoming international students at Capilano University, helping to offset tuition costs for their first year of study.",
+    "link": "https://www.hotcoursesabroad.com/study/canada/school-college-university/capilano-university/413974/international.html",
+    "sourceName": "Hotcourses Canada Computer and Mathematical Sciences Scholarships",
+    "sourceUrl": "https://www.hotcoursesabroad.com/study/international-scholarships/canada/qn/computer-and-mathematical-sciences/32/qid/e/scholarship.html"
+  },
+  {
+    "id": "loughborough-university-excellence-scholarships-2027",
+    "name": "Excellence Scholarships",
+    "country": "United Kingdom",
+    "flag": "🇬🇧",
+    "organization": "Loughborough University",
+    "degree": "Master",
+    "funding": "£3,000.00 (US$ 3,874)",
+    "field": "Architecture",
+    "academicRequirements": "Detailed requirements are available on the institutional award page. Generally, these are awarded to high-achieving international students based on academic merit.",
+    "languageRequirements": {
+      "other": []
+    },
+    "otherRequirements": "Applicants must be self-funding international students who have been offered a place on an eligible postgraduate taught program.",
+    "deadline": "2027-03-31",
+    "description": "The Excellence Scholarship is designed to support high-caliber international students pursuing postgraduate studies at Loughborough University, specifically within the fields of Architecture and Construction.",
+    "link": "https://www.hotcoursesabroad.com/scholarships/excellence-scholarships/",
+    "sourceName": "Hotcourses UK Architecture Scholarships",
+    "sourceUrl": "https://www.hotcoursesabroad.com/study/international-scholarships/uk/qn/architecture-building-and-planning/210/qid/c/scholarship.html"
+  },
+  {
+    "id": "greenwich-international-scholarship-award",
+    "name": "International Scholarship Award",
+    "country": "United Kingdom",
+    "flag": "🇬🇧",
+    "organization": "University of Greenwich",
+    "degree": "Bachelor",
+    "funding": "£7,000.00 (US$ 9,040)",
+    "field": "Architecture, Building and Planning",
+    "academicRequirements": "Candidates must have applied for an undergraduate course and received an offer. Academic excellence in previous studies is a key consideration for the award.",
+    "languageRequirements": {
+      "other": []
+    },
+    "otherRequirements": "The award is typically applied as a fee waiver. Applicants must be classified as international students for fee-paying purposes.",
+    "deadline": "See source",
+    "description": "The International Scholarship Award at the University of Greenwich provides financial assistance to international students enrolling in undergraduate programs, including those in the Architecture and Construction sectors.",
+    "link": "https://www.hotcoursesabroad.com/scholarships/international-scholarship-award/",
+    "sourceName": "Hotcourses UK Architecture Scholarships",
+    "sourceUrl": "https://www.hotcoursesabroad.com/study/international-scholarships/uk/qn/architecture-building-and-planning/210/qid/c/scholarship.html"
+  },
+  {
+    "id": "wright-state-ucie-undergraduate-merit-2025",
+    "name": "University Center for International Education (UCIE) Undergraduate Merit Scholarship",
+    "country": "United States",
+    "flag": "🇺🇸",
+    "organization": "Wright State University",
+    "degree": "Bachelor",
+    "funding": "US$6,000.00 - US$10,000.00",
+    "field": "Law",
+    "academicRequirements": "Details for academic requirements are not explicitly listed in the search results. Please refer to the award page for specific GPA and standardized test requirements.",
+    "languageRequirements": {
+      "other": [
+        "English proficiency requirements apply for international students"
+      ]
+    },
+    "otherRequirements": "Documents typically required include:\n* Academic transcripts\n* Proof of English proficiency\n* International student application forms",
+    "deadline": "See source",
+    "description": "The UCIE Undergraduate Merit Scholarship is designed for high-achieving international students applying to Wright State University. \n\n* **Value:** Ranges from US$6,000 to US$10,000.\n* **Funding Type:** Fee waiver/discount.\n* **Eligibility:** Targeted at undergraduate international students based on merit.",
+    "link": "https://www.hotcoursesabroad.com/study/us-usa/school-college-university/wright-state-university/72203/international.html",
+    "sourceName": "Hotcourses USA Law Scholarships",
+    "sourceUrl": "https://www.hotcoursesabroad.com/study/international-scholarships/us-usa/qn/law/211/qid/j/scholarship.html"
+  },
+  {
+    "id": "colorado-state-honors-scholarship-2025",
+    "name": "Honors Scholarship",
+    "country": "United States",
+    "flag": "🇺🇸",
+    "organization": "Colorado State University",
+    "degree": "Bachelor",
+    "funding": "US$4,000.00",
+    "field": "Law",
+    "academicRequirements": "Applicants must meet the standards for admission to Colorado State University and the University Honors Program. Academic merit is a primary consideration.",
+    "languageRequirements": {
+      "other": [
+        "English - Global"
+      ]
+    },
+    "otherRequirements": "Requirements generally include:\n* Admission to an undergraduate degree program\n* Enrollment in the Honors College\n* Maintenance of specific GPA for renewal",
+    "deadline": "See source",
+    "description": "This scholarship is awarded to students who are accepted into the Honors Program at Colorado State University. \n\n* **Value:** US$4,000.00.\n* **Funding Type:** Fee waiver/discount.\n* **Focus:** Academic excellence and participation in the university's honors community.",
+    "link": "https://www.hotcoursesabroad.com/study/us-usa/school-college-university/colorado-state-university/72019/international.html",
+    "sourceName": "Hotcourses USA Law Scholarships",
+    "sourceUrl": "https://www.hotcoursesabroad.com/study/international-scholarships/us-usa/qn/law/211/qid/j/scholarship.html"
+  },
+  {
+    "id": "high-achievers-scholarship-for-undergraduate-new-students-nottingham-malaysia",
+    "name": "High Achiever's Scholarship for Undergraduate (New Students)",
+    "country": "Malaysia",
+    "flag": "🇲🇾",
+    "organization": "University of Nottingham Malaysia",
+    "degree": "Bachelor",
+    "funding": "Details on award page",
+    "field": "MBA",
+    "academicRequirements": "*   Applicable for new students.\n*   Undergraduate level of study.\n*   Academic excellence criteria as per university standards.",
+    "languageRequirements": {
+      "other": []
+    },
+    "otherRequirements": "Not specified in the source summary.",
+    "deadline": "Rolling",
+    "description": "Discover MBA scholarships available in Malaysia. This scholarship is designed for high-achieving new undergraduate students at the University of Nottingham Malaysia.",
+    "link": "https://www.hotcoursesabroad.com/study/malaysia/school-college-university/university-of-nottingham-malaysia/142573/international.html",
+    "sourceName": "Hotcourses Malaysia MBA Scholarships",
+    "sourceUrl": "https://www.hotcoursesabroad.com/study/international-scholarships/malaysia/qn/mba/114/qid/k/scholarship.html"
+  },
+  {
+    "id": "graduate-research-pathway-scholarship-monash-malaysia",
+    "name": "Graduate Research Pathway Scholarship",
+    "country": "Malaysia",
+    "flag": "🇲🇾",
+    "organization": "Monash University Malaysia",
+    "degree": "Master",
+    "funding": "100% of fees",
+    "field": "MBA",
+    "academicRequirements": "*   Postgraduate level of study.\n*   Specifically for students on a Graduate Research Pathway.",
+    "languageRequirements": {
+      "other": []
+    },
+    "otherRequirements": "Not specified in the source summary.",
+    "deadline": "Rolling",
+    "description": "This scholarship offers a 100% fee waiver for eligible students pursuing a Graduate Research Pathway at Monash University Malaysia.",
+    "link": "https://www.hotcoursesabroad.com/study/malaysia/school-college-university/monash-university-malaysia/142571/international.html",
+    "sourceName": "Hotcourses Malaysia MBA Scholarships",
+    "sourceUrl": "https://www.hotcoursesabroad.com/study/international-scholarships/malaysia/qn/mba/114/qid/k/scholarship.html"
+  },
+  {
+    "id": "nus-international-undergraduate-scholarship-2025",
+    "name": "NUS International Undergraduate Scholarship",
+    "country": "Singapore",
+    "flag": "🇸🇬",
+    "organization": "National University of Singapore (NUS)",
+    "degree": "Bachelor",
+    "funding": "Free products/services",
+    "field": "Business and Management",
+    "academicRequirements": "Candidates must be applying for admission to a full-time undergraduate degree program at NUS (excluding Dentistry, Medicine, Music, and Nursing). Applicants are expected to have:\n\n* Outstanding academic results\n* Strong leadership qualities\n* Good co-curricular activities record",
+    "languageRequirements": {
+      "other": [
+        "English proficiency requirements follow the standard NUS undergraduate admission criteria for international students."
+      ]
+    },
+    "otherRequirements": "Applicants must be international students (non-Singapore Citizens and non-Singapore Permanent Residents).",
+    "deadline": "See source",
+    "description": "The NUS International Undergraduate Scholarship is highly competitive and awarded to freshmen with exceptional academic potential and leadership qualities. It covers tuition fees (after MOE Tuition Grant subsidy) and provides an annual living allowance.",
+    "link": "https://www.hotcoursesabroad.com/study/singapore/school-college-university/national-university-of-singapore-nus/72395/international.html",
+    "sourceName": "Hotcourses Singapore Business Scholarships",
+    "sourceUrl": "https://www.hotcoursesabroad.com/study/international-scholarships/singapore/qn/business-and-administrative-studies/168/qid/d/scholarship.html"
+  },
+  {
+    "id": "hannahed-tsinghua-psycho-summer-school",
+    "name": "[TRUNG QUỐC] TRƯỜNG HÈ THANH HOA – TÂM LÝ HỌC",
+    "country": "Trung Quốc",
+    "flag": "🇨🇳",
+    "organization": "Đại học Thanh Hoa",
+    "degree": "Other",
+    "funding": "Tài trợ một phần hoặc toàn phần (tùy theo chương trình cụ thể của trường hè)",
+    "field": "Psychology",
+    "academicRequirements": "– SV đại học, thạc sĩ, mới tốt nghiệp các ngành liên quan đến Tâm lý học, Khoa học Xã hội hoặc các lĩnh vực tương đương.\n– Có kết quả học tập tốt.",
+    "languageRequirements": {
+      "other": [
+        "Tiếng Anh thành thạo để tham gia bài giảng và thảo luận"
+      ]
+    },
+    "otherRequirements": "– Đơn đăng ký theo mẫu của trường.\n– CV/Resume.\n– Bảng điểm học tập.\n– Bài luận cá nhân (Statement of Purpose).",
+    "deadline": "2026-05-10",
+    "description": "Trường hè về tâm lý học tại Đại học Thanh Hoa cung cấp các bài giảng chuyên sâu, thảo luận nhóm và trải nghiệm văn hóa tại Bắc Kinh dành cho sinh viên quốc tế.",
+    "link": "https://hannahed.co/tsinghua-psycho-summer-school/",
+    "sourceName": "HannahEd",
+    "sourceUrl": "https://hannahed.co/"
+  },
+  {
+    "id": "hannahed-global-youth-midori-gym",
+    "name": "[NHẬT BẢN] GLOBAL YOUTH MIDORI (GYM)",
+    "country": "Nhật Bản",
+    "flag": "🇯🇵",
+    "organization": "Global Youth MIDORI",
+    "degree": "Other",
+    "funding": "Free online training và chuyến đi tới Tokyo miễn phí ngắn ngày",
+    "field": "Environment & Leadership",
+    "academicRequirements": "– Dành cho các bạn trẻ quan tâm đến vấn đề môi trường, phát triển bền vững.\n– Không giới hạn ngành học cụ thể nhưng cần chứng minh được sự nhiệt huyết với cộng đồng.",
+    "languageRequirements": {
+      "other": [
+        "Khả năng giao tiếp tiếng Anh tốt"
+      ]
+    },
+    "otherRequirements": "– Độ tuổi: Thường dành cho thanh niên (Global Youth).\n– Cam kết tham gia đầy đủ các buổi tập huấn online trước khi tham gia chuyến đi thực tế tại Nhật Bản.",
+    "deadline": "2026-05-10",
+    "description": "Chương trình bao gồm các khóa đào tạo trực tuyến về môi trường và cơ hội nhận tài trợ toàn phần cho một chuyến đi học tập ngắn ngày tại Tokyo, Nhật Bản.",
+    "link": "https://hannahed.co/jp-global-youth-midori/",
+    "sourceName": "HannahEd",
+    "sourceUrl": "https://hannahed.co/"
+  },
+  {
+    "id": "hannahed-sit-asean-scholarship",
+    "name": "[SINGAPORE] HỌC BỔNG SINGAPORE INSTITUTE OF TECHNOLOGY (SIT)",
+    "country": "Singapore",
+    "flag": "🇸🇬",
+    "organization": "Singapore Institute of Technology (SIT)",
+    "degree": "Bachelor",
+    "funding": "Học bổng bao gồm học phí và các khoản trợ cấp sinh hoạt phí cho sinh viên khối ASEAN.",
+    "field": "Technology & Engineering",
+    "academicRequirements": "– Ứng viên phải có thành tích học tập xuất sắc (GPA cao).\n– Đã được nhận vào một chương trình đào tạo cử nhân tại SIT.",
+    "languageRequirements": {
+      "other": [],
+      "ielts": "Sử dụng theo yêu cầu đầu vào của trường SIT"
+    },
+    "otherRequirements": "– Quốc tịch: Các nước thành viên ASEAN (trừ Singapore).\n– Có tố chất lãnh đạo và tham gia tích cực các hoạt động ngoại khóa.",
+    "deadline": "2026-04-24",
+    "description": "Học bổng dành cho sinh viên xuất sắc từ các nước ASEAN theo học bậc cử nhân tại SIT, một trong những trường đại học công lập hàng đầu về công nghệ tại Singapore.",
+    "link": "https://hannahed.co/singapore-sit-asean-undergraduate/",
+    "sourceName": "HannahEd",
+    "sourceUrl": "https://hannahed.co/"
+  },
+  {
+    "id": "hannahed-invest-your-talent-italy",
+    "name": "HỌC BỔNG CHÍNH PHỦ Ý – INVEST YOUR TALENT IN ITALY",
+    "country": "Ý",
+    "flag": "🇮🇹",
+    "organization": "Các trường Đại học tại Ý",
+    "degree": "Master",
+    "funding": "Miễn học phí, trợ cấp hàng tháng và hỗ trợ thực tập tại các công ty Ý.",
+    "field": "Engineering, Economics, Management, Design",
+    "academicRequirements": "– Đã tốt nghiệp Đại học.\n– Đáp ứng yêu cầu đầu vào của chương trình Thạc sĩ tại các trường đối tác của IYT.",
+    "languageRequirements": {
+      "other": [
+        "Chứng chỉ tiếng Anh tương đương trình độ B2"
+      ],
+      "ielts": "Tối thiểu 6.0"
+    },
+    "otherRequirements": "– Ứng viên đến từ các quốc gia trong danh sách (bao gồm Việt Nam).\n– Video giới thiệu bản thân (Personal Statement Video).",
+    "deadline": "2026-04-28",
+    "description": "Chương trình kết hợp giữa đào tạo học thuật bậc Thạc sĩ và thực tập thực tế tại các tập đoàn lớn của Ý nhằm phát triển tài năng quốc tế.",
+    "link": "https://hannahed.co/invest-your-talent-in-italy/",
+    "sourceName": "HannahEd",
+    "sourceUrl": "https://hannahed.co/"
+  },
+  {
+    "id": "hannahed-sheffield-full-scholarship",
+    "name": "[UK] HỌC BỔNG TOÀN PHẦN ĐẠI HỌC SHEFFIELD",
+    "country": "United Kingdom",
+    "flag": "🇬🇧",
+    "organization": "University of Sheffield",
+    "degree": "Bachelor",
+    "funding": "Tài trợ 100% học phí cho toàn bộ khóa học.",
+    "field": "Diverse Fields",
+    "academicRequirements": "– Thành tích học tập đặc biệt xuất sắc.\n– Có thư mời nhập học (Offer) từ Đại học Sheffield cho kỳ học 2026.",
+    "languageRequirements": {
+      "other": [],
+      "ielts": "Theo yêu cầu của ngành học"
+    },
+    "otherRequirements": "– Bài luận học bổng chứng minh tiềm năng đóng góp cho cộng đồng.\n– Thư giới thiệu từ giáo viên.",
+    "deadline": "2026-04-24",
+    "description": "Học bổng danh giá dành cho sinh viên quốc tế có năng lực học thuật vượt trội và khát vọng thay đổi thế giới thông qua giáo dục tại Anh.",
+    "link": "https://hannahed.co/uk-sheffield/",
+    "sourceName": "HannahEd",
+    "sourceUrl": "https://hannahed.co/"
+  },
+  {
+    "id": "hannahed-geneva-master-scholarship",
+    "name": "HỌC BỔNG THẠC SĨ – ĐẠI HỌC GENEVA",
+    "country": "Thụy Sĩ",
+    "flag": "🇨🇭",
+    "organization": "University of Geneva",
+    "degree": "Master",
+    "funding": "Hỗ trợ tài chính hàng năm lên tới 10,000 - 15,000 CHF.",
+    "field": "Science",
+    "academicRequirements": "– Ứng viên phải nằm trong top 10% sinh viên xuất sắc nhất của khóa tốt nghiệp đại học.\n– Có kế hoạch nghiên cứu hoặc học tập rõ ràng.",
+    "languageRequirements": {
+      "other": [
+        "Tiếng Anh hoặc tiếng Pháp tùy theo ngôn ngữ giảng dạy của chương trình"
+      ]
+    },
+    "otherRequirements": "– CV.\n– Bảng điểm.\n– Hai thư giới thiệu từ các giáo sư đại học.",
+    "deadline": "See source",
+    "description": "Học bổng xuất sắc (Excellence Master Fellowships) dành cho các sinh viên quốc tế muốn theo đuổi bậc Thạc sĩ tại Khoa Khoa học của Đại học Geneva.",
+    "link": "https://hannahed.co/hoc-bong-thac-si-dai-hoc-geneva/",
+    "sourceName": "HannahEd",
+    "sourceUrl": "https://hannahed.co/"
+  },
+  {
+    "id": "hannahed-kaist-scholarship",
+    "name": "HỌC BỔNG VIỆN KHOA HỌC VÀ CÔNG NGHỆ HÀN QUỐC – KAIST",
+    "country": "Hàn Quốc",
+    "flag": "🇰🇷",
+    "organization": "KAIST",
+    "degree": "Master",
+    "funding": "Toàn phần: Học phí, sinh hoạt phí hàng tháng, bảo hiểm y tế.",
+    "field": "STEM, Engineering, Natural Sciences",
+    "academicRequirements": "– Tốt nghiệp Đại học với GPA ấn tượng.\n– Năng lực nghiên cứu được đánh giá qua các bài báo hoặc dự án đã thực hiện.",
+    "languageRequirements": {
+      "other": [
+        "Chấp nhận các chứng chỉ tiếng Anh quốc tế khác theo quy định của viện"
+      ],
+      "ielts": "Tối thiểu 6.5",
+      "toefl": "iBT 80"
+    },
+    "otherRequirements": "– Thư giới thiệu.\n– Kế hoạch học tập và nghiên cứu (Study Plan).\n– Hộ chiếu và giấy tờ chứng minh quốc tịch.",
+    "deadline": "See source",
+    "description": "Một trong những học bổng danh giá nhất Hàn Quốc dành cho khối ngành kỹ thuật và khoa học tại viện nghiên cứu công nghệ hàng đầu châu Á.",
+    "link": "https://hannahed.co/master-phd-kaist/",
+    "sourceName": "HannahEd",
+    "sourceUrl": "https://hannahed.co/"
+  },
+  {
+    "id": "hannahed-helmut-veith-tu-wien",
+    "name": "[ÁO] HỌC BỔNG HELMUT VEITH – TU WIEN",
+    "country": "Áo",
+    "flag": "🇦🇹",
+    "organization": "TU Wien",
+    "degree": "Master",
+    "funding": "6,000 EUR mỗi năm và miễn học phí.",
+    "field": "Computer Science",
+    "academicRequirements": "– Dành riêng cho ứng viên nữ trong lĩnh vực Khoa học Máy tính.\n– Có bằng cử nhân liên quan và thành tích học tập tốt.",
+    "languageRequirements": {
+      "other": [
+        "Tiếng Anh thành thạo"
+      ]
+    },
+    "otherRequirements": "– Đơn xin học bổng.\n– Thư động lực (Motivation Letter).\n– CV.",
+    "deadline": "2026-04-23",
+    "description": "Học bổng tưởng niệm Helmut Veith dành cho các nữ sinh viên xuất sắc theo học Thạc sĩ Khoa học Máy tính tại TU Wien để thúc đẩy sự tham gia của phụ nữ trong công nghệ.",
+    "link": "https://hannahed.co/austria-helmut-veith-tu-wien-femaleonly/",
+    "sourceName": "HannahEd",
+    "sourceUrl": "https://hannahed.co/"
+  },
+  {
+    "id": "hannahed-taiwan-teep",
+    "name": "CHƯƠNG TRÌNH THỰC TẬP ĐÀI LOAN TEEP",
+    "country": "Đài Loan",
+    "flag": "🇹🇼",
+    "organization": "Các trường Đại học tại Đài Loan",
+    "degree": "Other",
+    "funding": "Trợ cấp sinh hoạt phí hàng tháng và hỗ trợ chi phí nghiên cứu.",
+    "field": "Diverse Research Fields",
+    "academicRequirements": "– Sinh viên đại học hoặc sau đại học quốc tế.\n– Có năng lực nghiên cứu phù hợp với các dự án của giáo sư tại Đài Loan.",
+    "languageRequirements": {
+      "other": [
+        "Tiếng Anh hoặc tiếng Trung tùy theo yêu cầu của dự án"
+      ]
+    },
+    "otherRequirements": "– Đăng ký trực tiếp với giáo sư hoặc qua cổng thông tin TEEP.\n– Cam kết thời gian thực tập từ 2-6 tháng.",
+    "deadline": "2026-03-24",
+    "description": "Taiwan Experience Education Program (TEEP) cho phép sinh viên quốc tế tham gia các dự án nghiên cứu và thực tập tại các trường đại học hàng đầu Đài Loan.",
+    "link": "https://hannahed.co/chuong-trinh-thuc-tap-dai-loan-teep/",
+    "sourceName": "HannahEd",
+    "sourceUrl": "https://hannahed.co/"
+  },
+  {
+    "id": "hannahed-bucharest-summer-school",
+    "name": "Bucharest Summer School",
+    "country": "Romania",
+    "flag": "🇷🇴",
+    "organization": "Bucharest University of Economic Studies (ASE)",
+    "degree": "Other",
+    "funding": "Có funding hỗ trợ chi phí tham gia (ăn ở, học tập).",
+    "field": "Economics, Business",
+    "academicRequirements": "– Sinh viên đang theo học bậc Cử nhân, Thạc sĩ hoặc Tiến sĩ.\n– Độ tuổi từ 18 - 26 tuổi.",
+    "languageRequirements": {
+      "other": [
+        "Tiếng Anh giao tiếp tốt"
+      ]
+    },
+    "otherRequirements": "– Bài luận về chủ đề kinh tế theo yêu cầu của năm.\n– CV.",
+    "deadline": "2026-05-01",
+    "description": "Chương trình hè kéo dài 2 tuần tại Romania, tập trung vào các vấn đề kinh tế đương đại và giao lưu văn hóa quốc tế.",
+    "link": "https://hannahed.co/bucharest-summer-school/",
+    "sourceName": "HannahEd",
+    "sourceUrl": "https://hannahed.co/"
+  },
+  {
+    "id": "swinburne-international-scholarship-2026",
+    "name": "Swinburne International Scholarship",
+    "country": "Australia",
+    "flag": "🇦🇺",
+    "organization": "Swinburne University of Technology",
+    "degree": "Other",
+    "funding": "20% of fees",
+    "field": "Agriculture and related sciences",
+    "academicRequirements": "Detailed academic requirements are available on the award page. Generally applies to students enrolled in undergraduate or postgraduate coursework programs.",
+    "languageRequirements": {
+      "other": [
+        "Requirements vary by course and level of study."
+      ]
+    },
+    "otherRequirements": "Available to international students who are not citizens of Australia or New Zealand, or permanent residents of Australia.",
+    "deadline": "Rolling",
+    "description": "The Swinburne International Scholarship provides a 20% reduction in tuition fees for the duration of the course for eligible international students.",
+    "link": "https://www.hotcoursesabroad.com/study/australia/school-college-university/swinburne-university-of-technology/877/international.html",
+    "sourceName": "Hotcourses Australia Agriculture Scholarships",
+    "sourceUrl": "https://www.hotcoursesabroad.com/study/international-scholarships/australia/qn/agriculture-and-related-sciences/9/qid/a/scholarship.html"
+  },
+  {
+    "id": "vice-chancellors-international-scholarships-scheme-sydney",
+    "name": "Vice-Chancellor's International Scholarships Scheme",
+    "country": "Australia",
+    "flag": "🇦🇺",
+    "organization": "The University of Sydney",
+    "degree": "Other",
+    "funding": "Details on award page",
+    "field": "Agriculture and related sciences",
+    "academicRequirements": "- Selection is based on academic merit as assessed from the student’s application for admission to an undergraduate or postgraduate coursework degree.",
+    "languageRequirements": {
+      "other": [
+        "Must meet the University's English language proficiency requirements for the chosen course."
+      ]
+    },
+    "otherRequirements": "Applicants must be international students and have a valid offer of admission.",
+    "deadline": "2026-05-31",
+    "description": "This scholarship supports high-achieving international students to pursue coursework studies at the University of Sydney.",
+    "link": "https://www.hotcoursesabroad.com/study/australia/school-college-university/university-of-sydney/72239/international.html",
+    "sourceName": "Hotcourses Australia Agriculture Scholarships",
+    "sourceUrl": "https://www.hotcoursesabroad.com/study/international-scholarships/australia/qn/agriculture-and-related-sciences/9/qid/a/scholarship.html"
+  },
+  {
+    "id": "geli-direct-entry-program-scholarship-griffith",
+    "name": "GELI Direct Entry Program Scholarship",
+    "country": "Australia",
+    "flag": "🇦🇺",
+    "organization": "Griffith University",
+    "degree": "Other",
+    "funding": "A$1,000.00 (US$ 659)",
+    "field": "Agriculture and related sciences",
+    "academicRequirements": "Students must be applying for the Griffith English Language Institute (GELI) Direct Entry Program (DEP).",
+    "languageRequirements": {
+      "other": [
+        "Designed for students who need to improve their English skills before starting a degree."
+      ]
+    },
+    "otherRequirements": "Must be an international student and meet the specific entry requirements for the GELI program.",
+    "deadline": "See source",
+    "description": "A one-off scholarship to assist international students with the costs of the Direct Entry English program at Griffith University.",
+    "link": "https://www.hotcoursesabroad.com/study/australia/school-college-university/griffith-university/72218/international.html",
+    "sourceName": "Hotcourses Australia Agriculture Scholarships",
+    "sourceUrl": "https://www.hotcoursesabroad.com/study/international-scholarships/australia/qn/agriculture-and-related-sciences/9/qid/a/scholarship.html"
+  },
+  {
+    "id": "international-student-support-scholarship-csu",
+    "name": "International Student Support Scholarship",
+    "country": "Australia",
+    "flag": "🇦🇺",
+    "organization": "Charles Sturt University",
+    "degree": "Other",
+    "funding": "10% of fees",
+    "field": "Agriculture and related sciences",
+    "academicRequirements": "Applicants must meet the academic entry requirements for their chosen undergraduate or postgraduate course at Charles Sturt University.",
+    "languageRequirements": {
+      "other": [
+        "Must meet standard university English language requirements."
+      ]
+    },
+    "otherRequirements": "Available to new international students commencing their studies at a CSU campus.",
+    "deadline": "2026-12-31",
+    "description": "This scholarship provides a 10% tuition fee reduction to support international students during their studies in Australia.",
+    "link": "https://www.hotcoursesabroad.com/study/australia/school-college-university/charles-sturt-university/72213/international.html",
+    "sourceName": "Hotcourses Australia Agriculture Scholarships",
+    "sourceUrl": "https://www.hotcoursesabroad.com/study/international-scholarships/australia/qn/agriculture-and-related-sciences/9/qid/a/scholarship.html"
+  },
+  {
+    "id": "fleming-college-international-education-flow-through-bursaries",
+    "name": "International Education Flow-Through Bursaries",
+    "country": "Canada",
+    "flag": "🇨🇦",
+    "organization": "Fleming College",
+    "degree": "Diploma",
+    "funding": "CAD$340.00 (US$ 244)",
+    "field": "Computer Science and IT",
+    "academicRequirements": "* Study level: Career based/Vocational, Postgraduate\n* Funding type: Fee waiver/discount",
+    "languageRequirements": {
+      "other": []
+    },
+    "otherRequirements": "* Not specified",
+    "deadline": "See source",
+    "description": "The International Education Flow-Through Bursaries are available for international students at Fleming College. The scholarship provides a value of CAD$340.00 to support students in Career-based/Vocational and Postgraduate study levels within the field of Computer Science and IT.",
+    "link": "https://www.hotcoursesabroad.com/study/canada/school-college-university/fleming-college/416306/international.html",
+    "sourceName": "Hotcourses Canada Computer and Mathematical Sciences Scholarships",
+    "sourceUrl": "https://www.hotcoursesabroad.com/study/international-scholarships/canada/qn/computer-and-mathematical-sciences/32/qid/e/scholarship.html"
+  },
+  {
+    "id": "pace-university-honors-college-scholarship",
+    "name": "Honors College Scholarship",
+    "country": "United States",
+    "flag": "🇺🇸",
+    "organization": "Pace University",
+    "degree": "Bachelor",
+    "funding": "Details on award page",
+    "field": "Law",
+    "academicRequirements": "* Study level: Undergraduate",
+    "languageRequirements": {
+      "other": [
+        "See Source"
+      ]
+    },
+    "otherRequirements": "* Academic excellence",
+    "deadline": "See source",
+    "description": "### Scholarship Overview\n* **Study level:** Undergraduate\n* **Funding type:** Other Discount\n* **Value:** Details on award page\n\nThis scholarship is offered by Pace University for students pursuing undergraduate studies in fields including Law.",
+    "link": "https://www.hotcoursesabroad.com/study/us-usa/school-college-university/pace-university/72084/international.html",
+    "sourceName": "Hotcourses USA Law Scholarships",
+    "sourceUrl": "https://www.hotcoursesabroad.com/study/international-scholarships/us-usa/qn/law/211/qid/j/scholarship.html"
+  },
+  {
+    "id": "pittsburg-state-university-legacy-scholarship-program",
+    "name": "Legacy Scholarship Program",
+    "country": "United States",
+    "flag": "🇺🇸",
+    "organization": "Pittsburg State University",
+    "degree": "Bachelor",
+    "funding": "Details on award page",
+    "field": "Law",
+    "academicRequirements": "* Study level: Undergraduate +1 other (Postgraduate)",
+    "languageRequirements": {
+      "other": [
+        "See Source"
+      ]
+    },
+    "otherRequirements": "* Other",
+    "deadline": "See source",
+    "description": "### Scholarship Overview\n* **Study level:** Undergraduate +1 other\n* **Funding type:** Fee waiver/discount\n* **Value:** Details on award page\n\nThe Legacy Scholarship Program at Pittsburg State University provides fee waivers or discounts for eligible students in the Law field.",
+    "link": "https://www.hotcoursesabroad.com/study/us-usa/school-college-university/pittsburg-state-university/2655/international.html",
+    "sourceName": "Hotcourses USA Law Scholarships",
+    "sourceUrl": "https://www.hotcoursesabroad.com/study/international-scholarships/us-usa/qn/law/211/qid/j/scholarship.html"
+  },
+  {
+    "id": "iowa-state-university-international-merit-scholarships",
+    "name": "International Merit Scholarships",
+    "country": "United States",
+    "flag": "🇺🇸",
+    "organization": "Iowa State University",
+    "degree": "Bachelor",
+    "funding": "Details on award page",
+    "field": "Law",
+    "academicRequirements": "* Study level: Undergraduate",
+    "languageRequirements": {
+      "other": [
+        "See Source"
+      ]
+    },
+    "otherRequirements": "* Academic excellence",
+    "deadline": "See source",
+    "description": "### Scholarship Overview\n* **Study level:** Undergraduate\n* **Funding type:** Fee waiver/discount\n* **Value:** Details on award page\n\nIowa State University offers International Merit Scholarships based on academic excellence for undergraduate students.",
+    "link": "https://www.hotcoursesabroad.com/study/us-usa/school-college-university/iowa-state-university/72048/international.html",
+    "sourceName": "Hotcourses USA Law Scholarships",
+    "sourceUrl": "https://www.hotcoursesabroad.com/study/international-scholarships/us-usa/qn/law/211/qid/j/scholarship.html"
+  },
+  {
+    "id": "oklahoma-state-university-international-achievement-freshman-scholarship",
+    "name": "International Achievement Freshman Scholarship",
+    "country": "United States",
+    "flag": "🇺🇸",
+    "organization": "Oklahoma State University",
+    "degree": "Bachelor",
+    "funding": "Details on award page",
+    "field": "Law",
+    "academicRequirements": "* Study level: Undergraduate",
+    "languageRequirements": {
+      "other": [
+        "See Source"
+      ]
+    },
+    "otherRequirements": "* Academic excellence",
+    "deadline": "See source",
+    "description": "### Scholarship Overview\n* **Study level:** Undergraduate\n* **Funding type:** Fee waiver/discount\n* **Value:** Details on award page\n\nSpecifically for incoming freshmen, this scholarship at Oklahoma State University recognizes high-achieving international students.",
+    "link": "https://www.hotcoursesabroad.com/study/us-usa/school-college-university/oklahoma-state-university-stillwater/386836/international.html",
+    "sourceName": "Hotcourses USA Law Scholarships",
+    "sourceUrl": "https://www.hotcoursesabroad.com/study/international-scholarships/us-usa/qn/law/211/qid/j/scholarship.html"
+  },
+  {
+    "id": "siue-geographic-enhancement-opportunity-award",
+    "name": "Geographic Enhancement Opportunity (GEO) Award",
+    "country": "United States",
+    "flag": "🇺🇸",
+    "organization": "Southern Illinois University Edwardsville",
+    "degree": "Bachelor",
+    "funding": "Details on award page",
+    "field": "Law",
+    "academicRequirements": "* Study level: Undergraduate +1 other (Postgraduate)",
+    "languageRequirements": {
+      "other": [
+        "See Source"
+      ]
+    },
+    "otherRequirements": "* Other",
+    "deadline": "See source",
+    "description": "### Scholarship Overview\n* **Study level:** Undergraduate +1 other\n* **Funding type:** Fee waiver/discount\n* **Value:** Details on award page\n\nThe GEO Award at SIUE provides tuition savings for international students meeting specific geographic and academic criteria.",
+    "link": "https://www.hotcoursesabroad.com/study/us-usa/school-college-university/southern-illinois-university-edwardsville/74173/international.html",
+    "sourceName": "Hotcourses USA Law Scholarships",
+    "sourceUrl": "https://www.hotcoursesabroad.com/study/international-scholarships/us-usa/qn/law/211/qid/j/scholarship.html"
+  },
+  {
+    "id": "northeastern-university-merit-based-scholarships",
+    "name": "Merit-Based Scholarships",
+    "country": "United States",
+    "flag": "🇺🇸",
+    "organization": "Northeastern University",
+    "degree": "Bachelor",
+    "funding": "Details on award page",
+    "field": "Law",
+    "academicRequirements": "* Study level: Undergraduate +1 other (Postgraduate)",
+    "languageRequirements": {
+      "other": [
+        "See Source"
+      ]
+    },
+    "otherRequirements": "* Academic excellence",
+    "deadline": "See source",
+    "description": "### Scholarship Overview\n* **Study level:** Undergraduate +1 other\n* **Funding type:** Fee waiver/discount\n* **Value:** Details on award page\n\nNortheastern University provides merit-based financial support for international students demonstrating exceptional academic performance.",
+    "link": "https://www.hotcoursesabroad.com/study/us-usa/school-college-university/northeastern-university/72073/international.html",
+    "sourceName": "Hotcourses USA Law Scholarships",
+    "sourceUrl": "https://www.hotcoursesabroad.com/study/international-scholarships/us-usa/qn/law/211/qid/j/scholarship.html"
+  },
+  {
+    "id": "clarendon-fund-oxford-2026",
+    "name": "Clarendon Fund",
+    "country": "United Kingdom",
+    "flag": "🇬🇧",
+    "organization": "University of Oxford",
+    "degree": "Doctorate",
+    "funding": "Fully funded scholarships (around 200 new awards each year)",
+    "field": "All Fields",
+    "academicRequirements": "*   Awarded to outstanding graduate scholars.\n*   Selection is based on academic merit and potential.",
+    "languageRequirements": {
+      "other": []
+    },
+    "otherRequirements": "*   No separate application process; candidates are automatically considered if they apply for their course by the relevant December or January deadline.",
+    "deadline": "See source",
+    "description": "The Clarendon Fund offers around 200 new fully funded scholarships each year to outstanding graduate scholars. It is one of Oxford's most prestigious scholarship schemes, supporting students from all subject areas and all nationalities.",
+    "link": "https://www.ox.ac.uk/admissions/graduate/fees-and-funding/funding/clarendon",
+    "sourceName": "Oxford Scholarships A-Z",
+    "sourceUrl": "https://www.ox.ac.uk/admissions/graduate/fees-and-funding/fees-funding-and-scholarship-search/scholarships-a-z-listing"
+  },
+  {
+    "id": "felix-scholarships-oxford-2026",
+    "name": "Felix Scholarships",
+    "country": "United Kingdom",
+    "flag": "🇬🇧",
+    "organization": "University of Oxford",
+    "degree": "Master",
+    "funding": "Covers course fees and a grant for living costs",
+    "field": "All Fields",
+    "academicRequirements": "*   Open to high-achieving students.\n*   Must apply for a full-time master's or DPhil course.",
+    "languageRequirements": {
+      "other": []
+    },
+    "otherRequirements": "*   Primarily aimed at Indian nationals, but also open to students from other developing countries.",
+    "deadline": "See source",
+    "description": "The Felix Scholarships are designed to help high-achieving students from India and other developing countries to pursue graduate studies at the University of Oxford. The scholarship typically covers course fees and living costs.",
+    "link": "https://www.ox.ac.uk/admissions/graduate/fees-and-funding/fees-funding-and-scholarship-search/felix-scholarships",
+    "sourceName": "Oxford Scholarships A-Z",
+    "sourceUrl": "https://www.ox.ac.uk/admissions/graduate/fees-and-funding/fees-funding-and-scholarship-search/scholarships-a-z-listing"
+  },
+  {
+    "id": "vicky-noon-oxford-scholarships-2026",
+    "name": "Vicky Noon Educational Foundation Oxford Scholarships",
+    "country": "United Kingdom",
+    "flag": "🇬🇧",
+    "organization": "University of Oxford",
+    "degree": "Other",
+    "funding": "Full or partial scholarships (size and duration vary)",
+    "field": "All Fields",
+    "academicRequirements": "*   Ordinarily resident in and nationals of Pakistan.\n*   Applying to any full or part-time Master’s or DPhil course at Oxford.\n*   Study outside Pakistan is normally not allowed unless exceptional circumstances exist.",
+    "languageRequirements": {
+      "other": []
+    },
+    "otherRequirements": "*   Shortlisted applicants must complete a short form with a statement on how they intend to contribute to Pakistan on their return.\n*   Not open to PGCert, PGDip, or non-matriculated courses.",
+    "deadline": "See source",
+    "description": "Up to two scholarships for Pakistani students intending to return to their home country to contribute using the skills and knowledge gained at Oxford.",
+    "link": "https://www.noon-foundation.org/",
+    "sourceName": "Oxford Scholarships A-Z",
+    "sourceUrl": "https://www.ox.ac.uk/admissions/graduate/fees-and-funding/fees-funding-and-scholarship-search/scholarships-a-z-listing"
   }
 ]

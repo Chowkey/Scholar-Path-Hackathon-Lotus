@@ -6,7 +6,11 @@ import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { createBrowserClient } from "@/lib/supabase";
-import { rowToScholarship, type ScholarshipRow } from "@/lib/scholarshipTransform";
+import {
+  rowToScholarship,
+  SCHOLARSHIP_SELECT,
+  type ScholarshipJoinedRow,
+} from "@/lib/scholarshipTransform";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
@@ -25,7 +29,7 @@ export default async function ScholarshipDetailPage({
   const db = createBrowserClient();
   const { data, error } = await db
     .from("scholarships")
-    .select("*")
+    .select(SCHOLARSHIP_SELECT)
     .eq("id", id)
     .maybeSingle();
 
@@ -33,7 +37,7 @@ export default async function ScholarshipDetailPage({
     notFound();
   }
 
-  const scholarship = rowToScholarship(data as ScholarshipRow);
+  const scholarship = rowToScholarship(data as unknown as ScholarshipJoinedRow);
 
   return (
     <div className="px-6 py-8 md:px-10 md:py-10">

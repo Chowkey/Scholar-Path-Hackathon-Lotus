@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { AlertTriangle, SearchX } from "lucide-react";
+import { AlertTriangle, Bookmark, SearchX } from "lucide-react";
 import { ScholarshipCard } from "@/components/scholarships/ScholarshipCard";
 import { SearchBar } from "@/components/scholarships/SearchBar";
 import { Button } from "@/components/ui/Button";
@@ -12,6 +12,7 @@ import {
   COUNTRY_OPTIONS,
   DEGREE_LEVEL_OPTIONS,
 } from "@/lib/scholarshipOptions";
+import { cn } from "@/lib/utils";
 import type { Scholarship } from "@/lib/types";
 
 const ALL = "All";
@@ -26,6 +27,52 @@ export default function ScholarshipsPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [reloadNonce, setReloadNonce] = useState(0);
+
+  const [savedOnly, setSavedOnly] = useState(false);
+  const [savedIds, setSavedIds] = useState<Set<string> | null>(null);
+  const [isSignedIn, setIsSignedIn] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    let active = true;
+    async function loadSavedIds() {
+      try {
+        const res = await fetch("/api/saved-scholarships", { cache: "no-store" });
+        if (!active) return;
+        if (res.status === 401) {
+          setIsSignedIn(false);
+          return;
+        }
+        if (!res.ok) {
+          setIsSignedIn(true);
+          setSavedIds(new Set());
+          return;
+        }
+        const json = (await res.json()) as { ids: string[] };
+        setIsSignedIn(true);
+        setSavedIds(new Set(json.ids));
+      } catch {
+        if (active) setIsSignedIn(false);
+      }
+    }
+    void loadSavedIds();
+
+    function onSavedChanged(e: Event) {
+      const detail = (e as CustomEvent<{ scholarshipId: string; saved: boolean }>).detail;
+      if (!detail) return;
+      setSavedIds((prev) => {
+        const next = new Set(prev ?? []);
+        if (detail.saved) next.add(detail.scholarshipId);
+        else next.delete(detail.scholarshipId);
+        return next;
+      });
+    }
+    window.addEventListener("scholarpath:saved-changed", onSavedChanged);
+
+    return () => {
+      active = false;
+      window.removeEventListener("scholarpath:saved-changed", onSavedChanged);
+    };
+  }, [reloadNonce]);
 
   const countryOptions = useMemo(() => [ALL, ...COUNTRY_OPTIONS], []);
   const degreeOptions = useMemo(() => [ALL, ...DEGREE_LEVEL_OPTIONS], []);
@@ -148,6 +195,30 @@ export default function ScholarshipsPage() {
               />
             </label>
           </div>
+
+          {isSignedIn ? (
+            <div className="flex items-center justify-between gap-3">
+              <button
+                type="button"
+                onClick={() => setSavedOnly((v) => !v)}
+                aria-pressed={savedOnly}
+                className={cn(
+                  "inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium transition-colors",
+                  savedOnly
+                    ? "border-brand-300 bg-brand-50 text-brand-700"
+                    : "border-neutral-200 bg-white text-neutral-600 hover:border-brand-300 hover:text-brand-600",
+                )}
+              >
+                <Bookmark className={cn("h-4 w-4", savedOnly && "fill-current")} />
+                {savedOnly ? "Showing saved only" : "Saved only"}
+                {savedIds ? (
+                  <span className="rounded-full bg-white/70 px-2 text-xs text-neutral-500">
+                    {savedIds.size}
+                  </span>
+                ) : null}
+              </button>
+            </div>
+          ) : null}
         </div>
 
         {isLoading ? (
@@ -166,21 +237,37 @@ export default function ScholarshipsPage() {
               <Button onClick={() => setReloadNonce((value) => value + 1)}>Try again</Button>
             </div>
           </div>
-        ) : scholarships.length === 0 ? (
-          <div className="mt-8">
-            <EmptyState
-              icon={SearchX}
-              title="No scholarships match those filters"
-              subtitle="Try widening the country or degree filters, or search with a broader keyword."
-            />
-          </div>
-        ) : (
-          <div className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {scholarships.map((scholarship) => (
-              <ScholarshipCard key={scholarship.id} scholarship={scholarship} />
-            ))}
-          </div>
-        )}
+        ) : (() => {
+          const visible = savedOnly && savedIds
+            ? scholarships.filter((s) => savedIds.has(s.id))
+            : scholarships;
+          if (visible.length === 0) {
+            return (
+              <div className="mt-8">
+                <EmptyState
+                  icon={savedOnly ? Bookmark : SearchX}
+                  title={
+                    savedOnly
+                      ? "No saved scholarships match those filters"
+                      : "No scholarships match those filters"
+                  }
+                  subtitle={
+                    savedOnly
+                      ? "Bookmark scholarships from the directory to see them here, or turn off the Saved-only filter."
+                      : "Try widening the country or degree filters, or search with a broader keyword."
+                  }
+                />
+              </div>
+            );
+          }
+          return (
+            <div className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+              {visible.map((scholarship) => (
+                <ScholarshipCard key={scholarship.id} scholarship={scholarship} />
+              ))}
+            </div>
+          );
+        })()}
       </div>
     </div>
   );

@@ -1,5 +1,9 @@
 import { NextResponse } from "next/server";
 import { getOpenAIClient } from "@/lib/openai";
+import { saveEvaluation } from "@/lib/evaluations";
+import { evaluatorProfileToFacts } from "@/lib/profile-facts";
+import { createServerClient } from "@/lib/supabase/server";
+import { upsertFacts } from "@/lib/user-facts";
 import { normalizeGpa } from "@/lib/utils";
 import type { EvaluationResult, ProfileFormData, Scholarship } from "@/lib/types";
 
@@ -117,6 +121,14 @@ function stripMarkdownFences(value: string): string {
 
 export async function POST(request: Request) {
   try {
+    const supabase = await createServerClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) {
+      return NextResponse.json({ error: "Sign in to evaluate scholarships." }, { status: 401 });
+    }
+
     const body = (await request.json()) as EvaluateRequestBody;
 
     if (!body.scholarships || body.scholarships.length === 0) {
@@ -171,6 +183,15 @@ export async function POST(request: Request) {
 
     try {
       const parsed = JSON.parse(stripMarkdownFences(text)) as { results: EvaluationResult[] };
+
+      await Promise.all([
+        saveEvaluation(supabase, user.id, {
+          profile: body.profile,
+          scholarshipIds: body.scholarships.map((s) => s.id),
+          results: parsed.results,
+        }),
+        upsertFacts(supabase, user.id, evaluatorProfileToFacts(body.profile, "evaluator")),
+      ]);
 
       return NextResponse.json(parsed);
     } catch (parseError) {

@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 import { MessageCircle } from "lucide-react";
 import { ChatInput } from "@/components/chat/ChatInput";
 import { MessageBubble } from "@/components/chat/MessageBubble";
@@ -15,8 +16,15 @@ const quickStarts = [
   "Find me fully-funded options for a master's degree",
 ];
 
-export function ChatWindow() {
-  const [messages, setMessages] = useState<Message[]>([]);
+type ChatWindowProps = {
+  initialMessages?: Message[];
+  initialSessionId?: string | null;
+};
+
+export function ChatWindow({ initialMessages = [], initialSessionId = null }: ChatWindowProps) {
+  const router = useRouter();
+  const [messages, setMessages] = useState<Message[]>(initialMessages);
+  const [sessionId, setSessionId] = useState<string | null>(initialSessionId);
   const [isStreaming, setIsStreaming] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -36,10 +44,14 @@ export function ChatWindow() {
       const response = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messages: nextMessages }),
+        body: JSON.stringify({ messages: nextMessages, sessionId }),
       });
 
       if (!response.ok) {
+        if (response.status === 401) {
+          window.location.href = "/login?next=/counselor";
+          return;
+        }
         const payload = (await response.json().catch(() => null)) as
           | { error?: string }
           | null;
@@ -49,6 +61,12 @@ export function ChatWindow() {
 
       if (!response.body) {
         throw new Error("The counselor response stream was empty.");
+      }
+
+      const returnedSessionId = response.headers.get("X-Session-Id");
+      const isFirstSession = !sessionId && returnedSessionId;
+      if (returnedSessionId && returnedSessionId !== sessionId) {
+        setSessionId(returnedSessionId);
       }
 
       const reader = response.body.getReader();
@@ -64,6 +82,9 @@ export function ChatWindow() {
 
         assistantText += decoder.decode(value, { stream: true });
         setMessages([...nextMessages, { role: "assistant", content: assistantText }]);
+      }
+      if (isFirstSession && returnedSessionId) {
+        router.replace(`/counselor/${returnedSessionId}`);
       }
     } catch (caughtError) {
       const message =

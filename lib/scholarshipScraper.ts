@@ -1,5 +1,6 @@
 import OpenAI from "openai";
 import { createServiceClient } from "@/lib/supabase";
+import { upsertScholarshipNormalized } from "@/lib/scholarshipNormalizedWriter";
 import { normalizeCountry, normalizeDegreeLevel } from "@/lib/scholarshipOptions";
 import type { LanguageRequirements, Scholarship } from "@/lib/types";
 
@@ -151,7 +152,7 @@ function buildScrapePrompt(source: SourceConfig): string {
     "{",
     '  "scholarships": [',
     "    {",
-    '      "id": "stable slug id",',
+    '      "id": "stable slug, e.g. oxford-rhodes-2025 — used only for in-run dedup; the database assigns its own UUID",',
     '      "name": "scholarship name",',
     '      "country": "country where the student will study",',
     '      "flag": "flag emoji if known, else empty string",',
@@ -201,6 +202,7 @@ function validateScholarship(scraped: Partial<Scholarship>, source: SourceConfig
     return { record: null, reason: "link points to source listing URL instead of detail/apply page" };
   }
 
+  // Local-only slug used for in-run dedup. The DB assigns the real UUID.
   const id = slugify(normalizeString(scraped.id, `${name}-${organization}-${index + 1}`));
   if (!id) return { record: null, reason: "invalid id" };
 
@@ -329,32 +331,9 @@ export async function scrapeScholarshipSources(sources: SourceConfig[]): Promise
 }
 
 export async function upsertScholarshipsToSupabase(items: Scholarship[]): Promise<void> {
-  if (items.length === 0) {
-    return;
-  }
-
+  if (items.length === 0) return;
   const db = createServiceClient();
-  const rows = items.map((item) => ({
-    id: item.id,
-    name: item.name,
-    country: item.country,
-    flag: item.flag,
-    organization: item.organization,
-    degree: item.degree,
-    funding: item.funding,
-    field_of_study: item.field,
-    academic_requirements: item.academicRequirements,
-    language_requirements: item.languageRequirements,
-    other_requirements: item.otherRequirements,
-    deadline: item.deadline,
-    description: item.description,
-    link: item.link,
-    source_name: item.sourceName ?? "",
-    source_url: item.sourceUrl ?? "",
-  }));
-
-  const { error } = await db.from("scholarships").upsert(rows, { onConflict: "id" });
-  if (error) {
-    throw new Error(`Supabase upsert failed: ${error.message}`);
+  for (const item of items) {
+    await upsertScholarshipNormalized(db, item);
   }
 }
