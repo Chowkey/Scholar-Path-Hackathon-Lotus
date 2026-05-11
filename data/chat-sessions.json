@@ -1211,5 +1211,287 @@
     },
     "shortlistIds": [],
     "recommendations": []
+  },
+  {
+    "id": "90085131-71d2-4ad7-ac72-fc275a4e3cb7",
+    "createdAt": "2026-03-22T01:45:31.677Z",
+    "messages": [
+      {
+        "role": "user",
+        "content": "I want to study abroad but I don't know where to start"
+      },
+      {
+        "role": "assistant",
+        "content": "A good place to start is to **work backwards from your deadline**. For most study-abroad applications, students begin **9–15 months before enrollment**. First, shortlist a few countries and programs, then prepare your tests, SOP, and recommendation letters.\n\n## Basic study-abroad steps\n1. **Choose a country or region**\n   - Compare tuition and living costs\n   - Check scholarship availability\n   - Look at visa and post-study options\n   - Make sure the country is strong in your intended field\n   - Check language requirements and lifestyle fit\n\n2. **Decide your degree level and program**\n   - For example: bachelor’s, master’s, PhD, or diploma\n   - Then narrow down the subject area and universities\n\n3. **Check admission requirements early**\n   - Each program may ask for different documents and test scores\n   - Scholarship deadlines can be earlier than university deadlines\n\n4. **Prepare your application documents**\n   Common documents include:\n   - Transcripts\n   - Degree certificate or expected graduation proof\n   - Passport\n   - CV/resume\n   - Statement of Purpose (SOP)\n   - Recommendation letters\n   - IELTS/TOEFL or other language test results, when required\n   - Sometimes: portfolio, research proposal, or writing sample\n   - For scholarships: financial forms, leadership essays, or work experience proof may also be needed\n\n5. **Submit applications and track deadlines**\n   - Apply to both universities and scholarships carefully\n   - Keep a checklist so you do not miss earlier scholarship deadlines\n\n## What to prepare first\nIf you are just starting, gather these now:\n- Passport\n- Latest transcripts\n- Degree certificate or expected graduation proof\n- Updated CV/resume\n- Draft SOP\n- Names of potential referees for recommendation letters\n- Language test plan, if needed\n\nIf you want, I can help you build a simple step-by-step plan based on your degree level and destination.\n\nWhat degree do you want to study abroad for, and in which country or region are you interested?"
+      }
+    ],
+    "profile": {
+      "educationLevel": null,
+      "degreeTarget": null,
+      "targetCountriesOrRegions": [],
+      "fieldOfStudy": null,
+      "nationality": null,
+      "fundingPreference": null,
+      "ielts": null,
+      "toefl": null,
+      "gpa": null,
+      "enoughInfoForRecommendations": false,
+      "missingFields": [
+        "degreeTarget",
+        "targetCountriesOrRegions",
+        "fieldOfStudy",
+        "fundingPreference"
+      ],
+      "nextBestQuestion": "What degree do you want to study abroad for, and in which country or region are you interested?",
+      "generalQuestionToAnswer": "Where should I start with the study-abroad process?",
+      "needsGeneralGuidance": true,
+      "confusionAreas": [
+        "starting the study-abroad process",
+        "choosing a country or region",
+        "choosing a degree level",
+        "choosing a field of study",
+        "understanding application steps and required documents"
+      ],
+      "specificityLevel": "low",
+      "profileSummary": "The student wants to study abroad but is unsure where to start. No destination, degree level, field, or funding preference has been provided yet.",
+      "intent": {
+        "intent": "application_guidance",
+        "needsWebSearch": false,
+        "shouldUseKnowledgeBase": true,
+        "shouldUseScholarshipMatching": false,
+        "responseGoal": "Explain the basic study-abroad steps and documents the student should start with."
+      },
+      "retrievedKnowledgeIds": [
+        "common-documents",
+        "application-timeline",
+        "country-choice"
+      ]
+    },
+    "shortlistIds": [],
+    "recommendations": []
+  },
+  {
+    "id": "5578207d-4c28-4e16-a18d-89b3bc89b062",
+    "createdAt": "2026-03-22T01:46:00.586Z",
+    "messages": [
+      {
+        "role": "user",
+        "content": "I want to study abroad but I don't know where to start"
+      },
+      {
+        "role": "assistant",
+        "content": "A good place to start is to **work backwards from your deadline**. For most study-abroad applications, students begin **9–15 months before enrollment**. First, shortlist a few countries and programs, then prepare your tests, SOP, and recommendation letters.\n## Basic study-abroad steps\n1. **Choose a country or region**\n   - Compare tuition and living costs\n   - Check scholarship availability\n   - Look at visa and post-study options\n   - Make sure the country is strong in your intended field\n   - Check language requirements and lifestyle fit\n2. **Decide your degree level and program**\n   - For example: bachelor’s, master’s, PhD, or diploma\n   - Then narrow down the subject area and universities\n3. **Check admission requirements early**\n   - Each program may ask for different documents and test scores\n   - Scholarship deadlines can be earlier than university deadlines\n4. **Prepare your application documents**\n   Common documents include:\n   - Transcripts\n   - Degree certificate or expected graduation proof\n   - Passport\n   - CV/resume\n   - Statement of Purpose (SOP)\n   - Recommendation letters\n   - IELTS/TOEFL or other language test results, when required\n   - Sometimes: portfolio, research proposal, or writing sample\n   - For scholarships: financial forms, leadership essays, or work experience proof may also be needed\n5. **Submit applications and track deadlines**\n   - Apply to both universities and scholarships carefully\n   - Keep a checklist so you do not miss earlier scholarship deadlines\n## What to prepare first\nIf you are just starting, gather these now:\n- Passport\n- Latest transcripts\n- Degree certificate or expected graduation proof\n- Updated CV/resume\n- Draft SOP\n- Names of potential referees for recommendation letters\n- Language test plan, if needed\nIf you want, I can help you build a simple step-by-step plan based on your degree level and destination.\nWhat degree do you want to study abroad for, and in which country or region are you interested?"
+      },
+      {
+        "role": "user",
+        "content": "bachelor, germany"
+      },
+      {
+        "role": "assistant",
+        "content": "A good place to start is to treat Germany as a **longer planning project** and work in this order:\n\n### 1) Pick your major first\nFor a bachelor’s in Germany, the **subject or major** matters a lot because it affects which universities, language requirements, and admission route fit you best.\n\n### 2) Check the basic admission requirements\nAt minimum, you’ll usually need to prepare:\n- Transcripts\n- Passport\n- CV/resume\n- Statement of Purpose (SOP)\n- Recommendation letters, if required\n- Language test results such as IELTS or TOEFL when needed\n- Sometimes additional items like a portfolio or writing sample\n\n### 3) Plan early\nA typical study-abroad timeline starts **9 to 15 months before enrollment**. It’s smart to plan backward from the **earliest deadline**, because scholarship deadlines can come before university deadlines.\n\n### 4) Build your application materials\nRequest recommendation letters early from professors, supervisors, or mentors who know your work well. Strong letters include specific examples of your academic ability, leadership, communication, or impact.\n\n### 5) Compare Germany with other countries only after clarifying your goals\nWhen choosing a country, compare:\n- Tuition and living costs\n- Scholarship availability\n- Visa policy\n- Language requirements\n- Strength in your intended field\n- Post-study goals\n\nBecause your profile is still broad, I’d start with your major and then narrow down universities, language route, and funding options.\n\nWhat subject or major do you want to study in Germany?"
+      }
+    ],
+    "profile": {
+      "educationLevel": null,
+      "degreeTarget": "undergraduate",
+      "targetCountriesOrRegions": [
+        "Germany"
+      ],
+      "fieldOfStudy": null,
+      "nationality": null,
+      "fundingPreference": null,
+      "ielts": null,
+      "toefl": null,
+      "gpa": null,
+      "enoughInfoForRecommendations": false,
+      "missingFields": [
+        "fieldOfStudy",
+        "fundingPreference"
+      ],
+      "nextBestQuestion": "What subject or major do you want to study in Germany?",
+      "generalQuestionToAnswer": "The user asked where to start with studying abroad.",
+      "needsGeneralGuidance": true,
+      "confusionAreas": [
+        "study-abroad process",
+        "application order",
+        "required documents",
+        "country choice"
+      ],
+      "specificityLevel": "low",
+      "profileSummary": "The student wants to study abroad for a bachelor's degree in Germany, but has not yet specified a field of study, funding preference, or other application details.",
+      "intent": {
+        "intent": "personalized_matching",
+        "needsWebSearch": false,
+        "shouldUseKnowledgeBase": true,
+        "shouldUseScholarshipMatching": true,
+        "responseGoal": "Recommend a suitable study-abroad starting plan for a bachelor’s in Germany, tailored to the student’s profile and likely application needs."
+      },
+      "retrievedKnowledgeIds": [
+        "common-documents",
+        "lor-basics",
+        "application-timeline",
+        "country-choice"
+      ]
+    },
+    "shortlistIds": [],
+    "recommendations": []
+  },
+  {
+    "id": "d7ecce21-996f-49c7-8a29-6e1349076444",
+    "createdAt": "2026-03-22T01:46:25.601Z",
+    "messages": [
+      {
+        "role": "user",
+        "content": "I want to study abroad but I don't know where to start"
+      },
+      {
+        "role": "assistant",
+        "content": "A good place to start is to **work backwards from your deadline**. For most study-abroad applications, students begin **9–15 months before enrollment**. First, shortlist a few countries and programs, then prepare your tests, SOP, and recommendation letters.\n## Basic study-abroad steps\n1. **Choose a country or region**\n   - Compare tuition and living costs\n   - Check scholarship availability\n   - Look at visa and post-study options\n   - Make sure the country is strong in your intended field\n   - Check language requirements and lifestyle fit\n2. **Decide your degree level and program**\n   - For example: bachelor’s, master’s, PhD, or diploma\n   - Then narrow down the subject area and universities\n3. **Check admission requirements early**\n   - Each program may ask for different documents and test scores\n   - Scholarship deadlines can be earlier than university deadlines\n4. **Prepare your application documents**\n   Common documents include:\n   - Transcripts\n   - Degree certificate or expected graduation proof\n   - Passport\n   - CV/resume\n   - Statement of Purpose (SOP)\n   - Recommendation letters\n   - IELTS/TOEFL or other language test results, when required\n   - Sometimes: portfolio, research proposal, or writing sample\n   - For scholarships: financial forms, leadership essays, or work experience proof may also be needed\n5. **Submit applications and track deadlines**\n   - Apply to both universities and scholarships carefully\n   - Keep a checklist so you do not miss earlier scholarship deadlines\n## What to prepare first\nIf you are just starting, gather these now:\n- Passport\n- Latest transcripts\n- Degree certificate or expected graduation proof\n- Updated CV/resume\n- Draft SOP\n- Names of potential referees for recommendation letters\n- Language test plan, if needed\nIf you want, I can help you build a simple step-by-step plan based on your degree level and destination.\nWhat degree do you want to study abroad for, and in which country or region are you interested?"
+      },
+      {
+        "role": "user",
+        "content": "bachelor, germany"
+      },
+      {
+        "role": "assistant",
+        "content": "A good place to start is to treat Germany as a **longer planning project** and work in this order:\n### 1) Pick your major first\nFor a bachelor’s in Germany, the **subject or major** matters a lot because it affects which universities, language requirements, and admission route fit you best.\n### 2) Check the basic admission requirements\nAt minimum, you’ll usually need to prepare:\n- Transcripts\n- Passport\n- CV/resume\n- Statement of Purpose (SOP)\n- Recommendation letters, if required\n- Language test results such as IELTS or TOEFL when needed\n- Sometimes additional items like a portfolio or writing sample\n### 3) Plan early\nA typical study-abroad timeline starts **9 to 15 months before enrollment**. It’s smart to plan backward from the **earliest deadline**, because scholarship deadlines can come before university deadlines.\n### 4) Build your application materials\nRequest recommendation letters early from professors, supervisors, or mentors who know your work well. Strong letters include specific examples of your academic ability, leadership, communication, or impact.\n### 5) Compare Germany with other countries only after clarifying your goals\nWhen choosing a country, compare:\n- Tuition and living costs\n- Scholarship availability\n- Visa policy\n- Language requirements\n- Strength in your intended field\n- Post-study goals\nBecause your profile is still broad, I’d start with your major and then narrow down universities, language route, and funding options.\nWhat subject or major do you want to study in Germany?"
+      },
+      {
+        "role": "user",
+        "content": "computer science"
+      },
+      {
+        "role": "assistant",
+        "content": "Great place to start. For a bachelor’s in Germany, the process is usually: 1) choose whether you want **German-taught or English-taught** programs, 2) check the **admission requirements** for each university, 3) prepare your documents, and 4) plan funding early.\n\nFor computer science, the main things to sort out first are:\n- **Program language**: many bachelor’s programs in Germany are taught in German, while some are in English.\n- **Academic eligibility**: your school leaving qualification must be accepted for direct university entry or may require a preparatory route.\n- **Funding**: tuition is often low at public universities, but you still need to budget for living costs and possible semester fees.\n- **Documents**: typically transcripts, diploma/certificate, passport, language proof, CV, and sometimes motivation letter.\n\nA practical first step is to shortlist 5–8 programs, then compare their language, entry rules, deadlines, and costs before applying.\n\n**Best next steps:**\n1. Decide whether you prefer **German or English** study.\n2. Gather your **school transcripts and diploma**.\n3. Check if your qualification is accepted for **direct entry** in Germany.\n4. Look at **funding options** early, including personal budget and scholarships.\n5. Build a shortlist of universities and deadlines.\n\nIf you want, I can help you build that shortlist next—but I need one key detail first: **Do you want to study in Germany with full funding, partial funding, or are you not sure yet?**\n\nDo you want to study in Germany with full funding, partial funding, or are you not sure yet?"
+      }
+    ],
+    "profile": {
+      "educationLevel": null,
+      "degreeTarget": "undergraduate",
+      "targetCountriesOrRegions": [
+        "Germany"
+      ],
+      "fieldOfStudy": "computer science",
+      "nationality": null,
+      "fundingPreference": null,
+      "ielts": null,
+      "toefl": null,
+      "gpa": null,
+      "enoughInfoForRecommendations": false,
+      "missingFields": [
+        "funding preference",
+        "nationality",
+        "academic record/GPA",
+        "language test scores",
+        "specific university goals or language route"
+      ],
+      "nextBestQuestion": "Do you want to study in Germany with full funding, partial funding, or are you not sure yet?",
+      "generalQuestionToAnswer": "Where to start with the study-abroad process for a bachelor’s in Germany",
+      "needsGeneralGuidance": true,
+      "confusionAreas": [
+        "study-abroad application order",
+        "which documents to prepare first",
+        "how to choose programs/universities",
+        "funding and scholarship planning"
+      ],
+      "specificityLevel": "high",
+      "profileSummary": "The student wants to study abroad for a bachelor’s degree in Germany, likely in computer science. They are at an early planning stage and still need guidance on the application process, documents, and funding.",
+      "intent": {
+        "intent": "personalized_matching",
+        "needsWebSearch": false,
+        "shouldUseKnowledgeBase": false,
+        "shouldUseScholarshipMatching": true,
+        "responseGoal": "Recommend suitable bachelor’s options in Germany for computer science based on the student’s profile and explain the best next steps."
+      },
+      "retrievedKnowledgeIds": []
+    },
+    "shortlistIds": [],
+    "recommendations": []
+  },
+  {
+    "id": "d0318977-47ca-4f82-866a-b3ce02dcced0",
+    "createdAt": "2026-03-22T01:46:36.808Z",
+    "messages": [
+      {
+        "role": "user",
+        "content": "I want to study abroad but I don't know where to start"
+      },
+      {
+        "role": "assistant",
+        "content": "A good place to start is to **work backwards from your deadline**. For most study-abroad applications, students begin **9–15 months before enrollment**. First, shortlist a few countries and programs, then prepare your tests, SOP, and recommendation letters.\n## Basic study-abroad steps\n1. **Choose a country or region**\n   - Compare tuition and living costs\n   - Check scholarship availability\n   - Look at visa and post-study options\n   - Make sure the country is strong in your intended field\n   - Check language requirements and lifestyle fit\n2. **Decide your degree level and program**\n   - For example: bachelor’s, master’s, PhD, or diploma\n   - Then narrow down the subject area and universities\n3. **Check admission requirements early**\n   - Each program may ask for different documents and test scores\n   - Scholarship deadlines can be earlier than university deadlines\n4. **Prepare your application documents**\n   Common documents include:\n   - Transcripts\n   - Degree certificate or expected graduation proof\n   - Passport\n   - CV/resume\n   - Statement of Purpose (SOP)\n   - Recommendation letters\n   - IELTS/TOEFL or other language test results, when required\n   - Sometimes: portfolio, research proposal, or writing sample\n   - For scholarships: financial forms, leadership essays, or work experience proof may also be needed\n5. **Submit applications and track deadlines**\n   - Apply to both universities and scholarships carefully\n   - Keep a checklist so you do not miss earlier scholarship deadlines\n## What to prepare first\nIf you are just starting, gather these now:\n- Passport\n- Latest transcripts\n- Degree certificate or expected graduation proof\n- Updated CV/resume\n- Draft SOP\n- Names of potential referees for recommendation letters\n- Language test plan, if needed\nIf you want, I can help you build a simple step-by-step plan based on your degree level and destination.\nWhat degree do you want to study abroad for, and in which country or region are you interested?"
+      },
+      {
+        "role": "user",
+        "content": "bachelor, germany"
+      },
+      {
+        "role": "assistant",
+        "content": "A good place to start is to treat Germany as a **longer planning project** and work in this order:\n### 1) Pick your major first\nFor a bachelor’s in Germany, the **subject or major** matters a lot because it affects which universities, language requirements, and admission route fit you best.\n### 2) Check the basic admission requirements\nAt minimum, you’ll usually need to prepare:\n- Transcripts\n- Passport\n- CV/resume\n- Statement of Purpose (SOP)\n- Recommendation letters, if required\n- Language test results such as IELTS or TOEFL when needed\n- Sometimes additional items like a portfolio or writing sample\n### 3) Plan early\nA typical study-abroad timeline starts **9 to 15 months before enrollment**. It’s smart to plan backward from the **earliest deadline**, because scholarship deadlines can come before university deadlines.\n### 4) Build your application materials\nRequest recommendation letters early from professors, supervisors, or mentors who know your work well. Strong letters include specific examples of your academic ability, leadership, communication, or impact.\n### 5) Compare Germany with other countries only after clarifying your goals\nWhen choosing a country, compare:\n- Tuition and living costs\n- Scholarship availability\n- Visa policy\n- Language requirements\n- Strength in your intended field\n- Post-study goals\nBecause your profile is still broad, I’d start with your major and then narrow down universities, language route, and funding options.\nWhat subject or major do you want to study in Germany?"
+      },
+      {
+        "role": "user",
+        "content": "computer science"
+      },
+      {
+        "role": "assistant",
+        "content": "Great place to start. For a bachelor’s in Germany, the process is usually: 1) choose whether you want **German-taught or English-taught** programs, 2) check the **admission requirements** for each university, 3) prepare your documents, and 4) plan funding early.\nFor computer science, the main things to sort out first are:\n- **Program language**: many bachelor’s programs in Germany are taught in German, while some are in English.\n- **Academic eligibility**: your school leaving qualification must be accepted for direct university entry or may require a preparatory route.\n- **Funding**: tuition is often low at public universities, but you still need to budget for living costs and possible semester fees.\n- **Documents**: typically transcripts, diploma/certificate, passport, language proof, CV, and sometimes motivation letter.\nA practical first step is to shortlist 5–8 programs, then compare their language, entry rules, deadlines, and costs before applying.\n**Best next steps:**\n1. Decide whether you prefer **German or English** study.\n2. Gather your **school transcripts and diploma**.\n3. Check if your qualification is accepted for **direct entry** in Germany.\n4. Look at **funding options** early, including personal budget and scholarships.\n5. Build a shortlist of universities and deadlines.\nIf you want, I can help you build that shortlist next—but I need one key detail first: **Do you want to study in Germany with full funding, partial funding, or are you not sure yet?**\nDo you want to study in Germany with full funding, partial funding, or are you not sure yet?"
+      },
+      {
+        "role": "user",
+        "content": "full funding"
+      },
+      {
+        "role": "assistant",
+        "content": "Great goal — Germany can be a strong choice for a bachelor’s in computer science, especially if you’re planning early and want full funding.\n\n## How to start\nA good first path is:\n1. **Choose your study route**: German-taught or English-taught.\n2. **Check eligibility**: for Germany, your school-leaving qualification must be accepted for undergraduate entry.\n3. **Plan language proof**: German programs usually need German proficiency; English programs may require IELTS/TOEFL.\n4. **Shortlist universities and deadlines**: application and scholarship deadlines can differ.\n5. **Prepare documents early**: transcripts, passport, CV, SOP, recommendation letters, and language test results if needed.\n\n## What to prepare first\nBased on the usual application process, the first things to work on are:\n- **Your study route**: German or English instruction\n- **Your eligibility document**: school-leaving qualification / expected graduation proof\n- **Language testing plan**: IELTS/TOEFL for English-taught options, or German proficiency for German-taught options\n- **A basic application file**: CV, transcripts, SOP, and recommenders\n\n## Funding planning for full funding\nFor a full-funding goal, it’s smart to plan backwards from the **earliest scholarship deadline**, because scholarship deadlines often come before university deadlines.\n\n## Important note\nI don’t yet have enough verified scholarship data in the local knowledge to recommend specific scholarships for Germany right now, so I can’t name funding options without checking official sources.\n\nIf you want, I can help you build a **step-by-step Germany application plan** next.\",\"followUpQuestion\":\"What is your nationality, and do you want a German-taught or English-taught program?\",\"recommendedScholarshipIds\":[],\"nextSteps\":[\"Decide whether you want German-taught or English-taught programs.\",\"Confirm that your school-leaving qualification is accepted for undergraduate admission in Germany.\",\"Start language preparation for the route you choose.\",\"Prepare transcripts, passport, CV, SOP, and recommendation letters.\",\"Build a timeline starting 9 to 15 months before enrollment.\"]}】to=assistant to=final  天天购彩票 to=final 娱乐总代理  తప్ప to=final ೀಕ್ಷణ to=final  天天中彩票有人 to=final ]},{\n\nWhat is your nationality, and do you want a German-taught or English-taught program?"
+      }
+    ],
+    "profile": {
+      "educationLevel": "high_school",
+      "degreeTarget": "undergraduate",
+      "targetCountriesOrRegions": [
+        "Germany"
+      ],
+      "fieldOfStudy": "computer science",
+      "nationality": null,
+      "fundingPreference": "full",
+      "ielts": null,
+      "toefl": null,
+      "gpa": null,
+      "enoughInfoForRecommendations": true,
+      "missingFields": [
+        "nationality",
+        "IELTS/TOEFL score",
+        "GPA/grades",
+        "preferred language of study (German or English)",
+        "school-leaving qualification type / eligibility"
+      ],
+      "nextBestQuestion": "What is your nationality, and do you want a German-taught or English-taught program?",
+      "generalQuestionToAnswer": "How to start studying abroad in Germany and what to prepare first",
+      "needsGeneralGuidance": true,
+      "confusionAreas": [
+        "application order",
+        "required documents",
+        "country/program choice",
+        "language route",
+        "funding and scholarship planning"
+      ],
+      "specificityLevel": "medium",
+      "profileSummary": "Student is planning an undergraduate computer science degree in Germany and wants full funding. They are at an early stage and still need guidance on application steps, language route, eligibility, and scholarship planning.",
+      "intent": {
+        "intent": "personalized_matching",
+        "needsWebSearch": false,
+        "shouldUseKnowledgeBase": true,
+        "shouldUseScholarshipMatching": true,
+        "responseGoal": "Recommend Germany study-abroad options and funding paths for a bachelor’s in computer science that fit a full-funding goal."
+      },
+      "retrievedKnowledgeIds": [
+        "common-documents",
+        "application-timeline",
+        "english-tests",
+        "lor-basics"
+      ]
+    },
+    "shortlistIds": [],
+    "recommendations": []
   }
 ]

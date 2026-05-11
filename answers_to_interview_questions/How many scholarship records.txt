@@ -1,0 +1,69 @@
+  Direct answer (one sentence)
+
+  ▎ "The Supabase scholarships table holds 96 scholarship records ingested from 8 manually-curated source URLs. For the hackathon MVP the ingestion was run
+  ▎ as a one-off batch; the pipeline is re-runnable and idempotent, so moving to a scheduled cadence is a config change rather than a rewrite."
+
+  The exact numbers (so you can cite them confidently)
+
+  - Total records: 96 (counted from scripts/scholarships-snapshot.json — the committed snapshot that was upserted into Supabase).
+  - Source URLs: 8, hardcoded in FIXED_SOURCES (scripts/scholarshipDB.ts:42-72): HannahEd, Oxford's scholarships A-Z page, and 6 Hotcourses category pages
+  (Australia Agriculture, Canada CS, UK Architecture, USA Law, Malaysia MBA, Singapore Business).
+  - Per-source breakdown (rounded to the nearest few):
+    - Hotcourses Canada CS: 16
+    - Oxford A-Z: 15
+    - HannahEd and Hotcourses UK Architecture: 14 each
+    - Hotcourses Malaysia MBA: 12
+    - Hotcourses Australia Agriculture & USA Law: 10 each
+    - Hotcourses Singapore Business: 5
+  - Throughput cap per source: SCHOLARSHIPS_PER_SOURCE, env var, default 10 in the script (scripts/scholarshipDB.ts:74). The variation above means the
+  pipeline was re-run several times with the exclusion list (existingNames in buildScrapePrompt) telling the LLM "don't re-extract these names," so each run
+   added fresh scholarships and accumulated in the snapshot.
+
+  On frequency — be honest, then reframe
+
+  The CV bullet says "continuously refreshed and query-ready". That phrase is slightly overstated — there's no cron, no webhook, no scheduler. An
+  interviewer who pulls the repo will see that immediately, so don't double down on it. Say this instead:
+
+  ▎ "Frequency is the honest soft spot in this project. For the hackathon we ran the pipeline manually a handful of times via npm run db:seed and committed
+  ▎ the resulting snapshot. What is production-quality is the ingestion shape itself: every record is upserted by a stable slug id ({ onConflict: 'id' } in
+  ▎ scripts/scholarshipDB.ts:605-607), so re-runs are idempotent — I can't create duplicates by running it twice. That means scheduling it is literally a
+  ▎ GitHub Actions cron or a Vercel Cron pointing at the same script, not a code change. If I were shipping this to a real user base I'd schedule it weekly
+  ▎ per source group with simple rate-limiting between calls."
+
+  That reframe is defensible because:
+  1. It's true. The upsert + snapshot pattern genuinely is the hard part; scheduling is boilerplate on top.
+  2. It shows you know what "production" looks like — you can name the missing piece without being caught pretending it exists.
+  3. It quietly corrects the CV overreach without contradicting yourself.
+
+  Anticipated follow-ups
+
+  "Why only 96? Why not scrape thousands?"
+
+  ▎ Hackathon scope + cost control. Each source call is an LLM request with web-scraping tool use; at 8 sources × ~10 scholarships × several runs, that's a
+  ▎ few hundred tool calls. For an MVP demo I only needed enough variety across countries, degrees, and fields to make matching feel real. The architecture
+  ▎ scales horizontally — add sources to FIXED_SOURCES and the same pipeline handles them.
+
+  "Why a fixed list of sources instead of discovering them?"
+
+  ▎ Trust and quality control. LLM-driven source discovery would have produced a lot of noise (blogs, dead listings, affiliate spam). I curated 8 known-good
+  ▎  scholarship index pages and let the LLM do the per-page extraction where its value is highest.
+
+  "How do you handle scholarships that disappear from the source?"
+
+  ▎ Honest answer: I don't yet. The upsert adds or updates; it doesn't mark rows stale. The fix is either a last_seen_at column updated on each run and a
+  ▎ cleanup job, or a tombstone flag on records that didn't appear in the latest run for a given source.
+
+  "How do you dedupe across runs?"
+
+  ▎ Two layers. (1) The LLM prompt includes an exclusion list of already-known scholarship names (existingNames passed into buildScrapePrompt), so the model
+  ▎  is steered away from re-extracting them. (2) The DB enforces uniqueness on the slug id via upsert(..., { onConflict: 'id' }), so even if the LLM
+  ▎ ignores the exclusion hint, re-inserts are idempotent.
+
+  Soft-fix for the CV
+
+  If you're rewriting the bullet to avoid stretching the truth while keeping the strong verbs, a safer phrasing is:
+
+  ▎ "Built an LLM-driven scholarship ingestion pipeline (Interfaze + OpenAI fallback) with idempotent upserts into Supabase; seeded 96 records across 8
+  ▎ curated sources. Designed to be scheduled but run manually for the hackathon demo."
+
+  That keeps the substantive claims and lets you talk about scheduling as planned future work instead of having to defend it as existing.

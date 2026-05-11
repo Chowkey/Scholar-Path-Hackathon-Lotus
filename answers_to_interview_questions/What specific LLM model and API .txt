@@ -1,0 +1,23 @@
+  Direct answer
+
+  ▎ "The pipeline uses two pluggable LLM providers selected by the SCHOLARSHIP_SCRAPE_PROVIDER env var — Interfaze is the default, OpenAI is the alternate.
+  ▎ Interfaze runs the interfaze-beta model via its OpenAI-compatible Chat Completions API (POST /v1/chat/completions at https://api.interfaze.ai/v1), using
+  ▎  a web_scrape function-tool so the provider fetches the URL server-side. OpenAI uses the newer Responses API (client.responses.create) with the
+  ▎ web_search_preview built-in tool."
+
+  Per-provider details:
+
+  Interfaze (default) — lib/scholarshipScraper.ts:229-252, scripts/scholarshipDB.ts:371-410
+  - Model: env INTERFAZE_MODEL, default "interfaze-beta".
+  - API: OpenAI's JS SDK pointed at a different base URL: new OpenAI({ apiKey, baseURL: "https://api.interfaze.ai/v1" }). Interfaze implements an
+  OpenAI-shaped endpoint — that's why you can reuse the openai npm package against it.
+  - Endpoint: client.chat.completions.create(...).
+  - Tool: a custom function tool named web_scrape that the Interfaze backend executes for you (that's its value-add — you don't run a headless browser
+  yourself).
+  - Temperature 0.8 (script version only) for diversity.
+
+  OpenAI (alternate) — lib/scholarshipScraper.ts:254-274, scripts/scholarshipDB.ts:412-453
+  - Model: env OPENAI_SCRAPE_MODEL, default "gpt-5.4-mini".
+  - Endpoint: client.responses.create(...) — OpenAI's Responses API, newer than Chat Completions.
+  - Tool: built-in { type: "web_search_preview" }.
+  - reasoning: { effort: "medium", summary: "auto" } — reasoning-mode controls for the model.

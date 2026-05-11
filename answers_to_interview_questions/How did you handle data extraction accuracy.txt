@@ -1,0 +1,88 @@
+  Direct answer (one sentence)
+
+  ▎ "Validation today is post-hoc and rule-based: the LLM returns JSON, then a validateScholarship function in Node rejects entries that are missing
+  ▎ required fields, point their 'link' at the source listing URL, or are dominated by vague placeholders. What I'd add with more time is upstream schema
+  ▎ enforcement, a hand-curated eval set to measure accuracy, and a human-in-the-loop review queue for low-confidence rows."
+
+  What's actually in the code today (you built this)
+
+  Point the interviewer to scripts/scholarshipDB.ts:286-369 (validateScholarship) — it's the most defensible part:
+
+  1. Prompt engineering guardrails (buildScrapePrompt, scripts/scholarshipDB.ts:230-284):
+    - Returns JSON-only with an exact top-level shape spelled out.
+    - Explicitly forbids inventing values ("when uncertain, use concise fallback text").
+    - Preserves original markdown formatting rather than summarizing.
+    - Includes an exclusion list of already-known scholarship names so re-runs don't re-extract duplicates.
+  2. Hard-required fields — missing name, organization, description, or link → rejected outright.
+  3. Link sanity check — isSameUrl(link, source.url) rejects entries whose "link" is just the source listing page rather than a scholarship detail page.
+  This was a real failure mode I hit.
+  4. Vagueness threshold — counts how many of country / funding / field / academicRequirements / description match a placeholder list ("See source", "Not
+  specified", "Unknown", "General", empty). If 3 or more are vague, the row is rejected as a likely "trash link." This is the piece I'm most proud of
+  because it's the realistic failure mode for LLM scraping — the model produces a shaped JSON object but half the fields are stubs.
+  5. Normalization — normalizeCountry and normalizeDegreeLevel map free-text LLM output to a controlled vocabulary, so "U.S.", "USA", and "united states"
+  all land in the same bucket.
+  6. Dedup + idempotent upsert — slugified id + onConflict: 'id' means the same scholarship extracted twice just gets updated, not duplicated.
+
+  The honest limit — own it before the interviewer finds it
+
+  ▎ "The real accuracy constraint wasn't the extraction layer, it was the reach of my scraper. I manually curated 8 source URLs that render every
+  ▎ scholarship on initial page load — HannahEd, Oxford's A-Z page, Hotcourses category pages. Sites like DAAD require a user to interact with filters,
+  ▎ search, and paginated lists to reveal the data, and the Interfaze web_scrape tool I was using couldn't drive that kind of UI state. Given the 36-hour
+  ▎ hackathon deadline I excluded those sources rather than ship a half-working crawler."
+
+  That's both honest and shows you understand why those sites are hard (client-side rendering, stateful filters, not just "I didn't have time").
+
+  What I'd build with unlimited time — two prongs
+
+  Prong 1 — Reach (handle DAAD-class sites):
+
+  - Headless browser layer (Playwright or Puppeteer) for sites that need clicks, scrolls, or waits. Run it as a separate worker service that produces a
+  snapshot HTML, then feed that HTML to the LLM extractor. Keeps extraction model-agnostic.
+  - Site-specific adapters for the top 5-10 high-value sources (DAAD, Chevening, Fulbright, MEXT). Generic LLM extraction is great for the long tail;
+  hand-written selectors win on the head for both accuracy and cost.
+  - Provider fallback that actually falls back — today SCRAPE_PROVIDER is an either/or switch; I'd chain Interfaze → OpenAI web-search → Playwright scrape
+  so the pipeline degrades gracefully instead of skipping a source entirely.
+
+  Prong 2 — Extraction quality (measure it, don't just hope):
+
+  - JSON-Schema structured outputs on the scrape call. The chat and evaluate routes already use OpenAI's strict json_schema format; the scraper path still
+  parses free-form JSON and strips markdown fences. Upgrading it means zero malformed-output retries.
+  - Golden eval set — 30-50 hand-verified scholarships with known ground truth. On every pipeline run, re-extract the same sources and compute
+  precision/recall per field. Without this, "accuracy" is vibes, not a number.
+  - Self-consistency / multi-sample. Run the extractor 3× with temperature 0.8 (which I already do for diversity) and take the majority-vote value per
+  field. Disagreement flags the row for review.
+  - URL liveness probe — a HEAD request to every scholarship link. If it's 404 or redirects to a generic page, mark needs_review. This catches staleness the
+   LLM can't see.
+  - Cross-source corroboration — when the same scholarship name appears from two different sources and key fields agree, boost confidence; when they
+  disagree, queue for review.
+  - Human-in-the-loop review queue — the /admin/imports route is the natural home. Route any row below a confidence threshold there; admin approves or edits
+   before it goes live. Supabase makes this cheap because you already have RLS and service-key writes.
+  - Observability — log failed[] reasons per run (the script already collects them in memory; it just doesn't persist them). A weekly rejection-reason
+  breakdown tells you whether a source is drifting or the prompt needs updating.
+  - last_seen_at column on scholarships — bump it every time a scholarship reappears in a scrape; scholarships not seen in N runs get marked stale and
+  filtered out of the live list.
+
+  Anticipated follow-ups
+
+  "How did you know the accuracy was good enough?"
+
+  ▎ Honest answer — I didn't measure it. For the hackathon I sanity-checked a sample of rows against the source pages by eye. That's exactly why I put
+  ▎ "golden eval set" at the top of my quality prong: "accuracy" without a benchmark is a vibe.
+
+  "What was your typical LLM rejection rate?"
+
+  ▎ I don't have the exact number because I didn't persist run logs, but anecdotally the failed[] array at the end of npm run db:seed typically had a
+  ▎ handful of "link points to source listing URL" and "too many vague fields" entries per run. Those were the two dominant failure modes.
+
+  "Why didn't you just use JSON-Schema structured outputs from the start?"
+
+  ▎ The scraper was the earliest piece I wrote — before I'd internalized that pattern, which I adopted for the chat and evaluate routes later. Retrofitting
+  ▎ it is on my list and is a ~30-line change, not a rewrite.
+
+  "Would you trust this pipeline to publish data to real users today?"
+
+  ▎ Not without the HITL review queue. The rule-based validator catches structural errors but can't tell you whether the scholarship name or deadline is
+  ▎ correct — just that the shape is plausible. I'd gate new rows behind admin approval until the eval set shows stable precision on the fields users care
+  ▎ about.
+
+  That last answer is the one that wins the interview — it shows you know the difference between "the pipeline runs" and "the data is trustworthy."

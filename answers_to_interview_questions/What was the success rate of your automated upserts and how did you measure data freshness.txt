@@ -1,0 +1,112 @@
+  Corrected direct answer
+
+  ▎ "Upserts were 100%, and so was the validation step — the failed[] array in the script was empty, meaning every row the LLM returned passed
+  ▎ validateScholarship and every validated row landed in Supabase via a single atomic upsert(..., { onConflict: 'id' }). End-to-end conversion from LLM
+  ▎ output to DB row was 1:1."
+
+  That's a stronger, truer claim than what I wrote before. Now here's the one nuance to volunteer before an interviewer probes it, because without it "100%"
+   can still be picked apart:
+
+  The one caveat to flag yourself
+
+  "100%" measures extracted-rows → DB-rows, not source-page-scholarships → DB-rows. The LLM was instructed to return up to SCHOLARSHIPS_PER_SOURCE distinct
+  entries per source (default 10 in the script). A source page might list 50 scholarships; the LLM chose which subset to return. I can confidently say every
+   one it chose to emit made it into the database; I can't claim 100% coverage of what existed on the source.
+
+  Phrase it like this:
+
+  ▎ "The 100% number is the pipeline's conversion rate — every row the LLM emitted passed validation and landed in Supabase, with no entries in the failed[]
+  ▎  array. What that metric doesn't measure is coverage — each source was capped at SCHOLARSHIPS_PER_SOURCE and the LLM chose which subset to extract, so
+  ▎ '100%' isn't 'every scholarship on every page.' For a production pipeline the coverage number is the one I'd want to benchmark against a golden eval
+  ▎ set."
+
+  Why failed[] being empty is itself a signal worth mentioning
+
+  Two reasons the rejection count was zero, both worth naming:
+
+  1. Source curation did the heavy lifting. I picked 8 URLs that render full scholarship data on initial load — well-structured index pages like Oxford's
+  A-Z, Hotcourses category pages, HannahEd. The validateScholarship rules (missing fields, self-referential links, ≥3 vague placeholders) are the failure
+  modes you hit on messy sources. Clean sources never trigger them.
+  2. Prompt-level filtering upstream. buildScrapePrompt tells the LLM to skip entries it can't populate confidently ("when uncertain, use concise fallback
+  text"; "prioritize scholarships that clearly show study location and host institution"). So the LLM was self-censoring before validation ever saw the row.
+   That's also why you should be cautious about calling this "100% extraction accuracy" — it's "100% of what the LLM was willing to return."
+
+  So the honest narrative for an interviewer is:
+
+  ▎ "Zero validator rejections on the run that produced the snapshot. That's a combination of curated source quality and conservative prompting — the LLM
+  ▎ was told to skip rows it couldn't populate confidently, so the validator was more of a safety net than a filter. For a production pipeline with noisier
+  ▎ sources, the validator is the layer that would catch drift."
+
+  The rest of my previous answer — the atomic upsert, the updated_at trigger behavior, the freshness gaps, the production improvements — still stands. Sorry
+   for the fabrication in the validation section.
+
+
+  Why the upsert step is 100% (the defensible part)
+
+  - Single bulk call: scripts/scholarshipDB.ts:605-607 does one .upsert(rows, { onConflict: 'id' }) for all ~96 rows at once.
+  - Atomic: if the batch succeeds, every row lands; if Supabase returns an error, the script throws and nothing is considered committed.
+  - Idempotent: id is a text primary key derived from a stable slug, so re-running the pipeline upserts the same rows onto themselves rather than
+  duplicating.
+  - No per-row partial failures to account for. Unlike a loop that inserts row-by-row, there's no "73 of 96 succeeded" scenario to explain.
+
+  So when the user-facing outcome is "the DB has 96 scholarships," yes, the upsert was 100% of what was sent. Just be clear that "what was sent" = "what
+  survived validation," not "what the LLM produced."
+
+  Data freshness — what the code actually gives you
+
+  Two mechanisms, both passive:
+
+  1. updated_at timestamptz not null default now() on every row (supabase/migrations/001_scholarships.sql:15).
+  2. A BEFORE UPDATE trigger scholarships_updated_at (lines 27-30) that calls update_updated_at() and sets new.updated_at = now() on every UPDATE.
+
+  Postgres ON CONFLICT DO UPDATE fires the BEFORE UPDATE trigger even when the row's content is unchanged, so every re-run of the pipeline bumps updated_at
+  for every scholarship that reappeared in the scrape. That means updated_at effectively doubles as a "last time the scraper confirmed this still exists"
+  timestamp.
+
+  Concretely, a freshness query you can demo:
+
+  select id, name, updated_at, now() - updated_at as age
+  from scholarships
+  order by updated_at desc;
+
+  The honest freshness gaps (name them before they do)
+
+  - No scheduler. npm run db:seed is manual. "Freshness" for the hackathon meant "I reran it before the demo."
+  - No separate last_seen_at column. If a scholarship disappears from the source, its updated_at just stops advancing — nothing marks it stale. The query
+  above tells you "oldest row," not "row that vanished."
+  - No deadline-expiry filter. The DB happily stores and serves scholarships whose deadline is in the past. That's a data-quality bug masquerading as a
+  freshness bug.
+  - No monitoring / alerting. No Supabase-side check that rings a bell if the oldest updated_at exceeds N days.
+  - No per-run metrics persisted — the failed[] rejections go to stdout and die there, so I can't graph extraction quality over time.
+
+  The production version (how I'd answer "what would you build?")
+
+  - Schedule npm run db:seed via GitHub Actions cron or Vercel Cron, weekly per source group. The upsert is already idempotent, so the only cost of running
+  it more is API spend.
+  - Add last_seen_at timestamptz to scholarships, bumped by the scraper only when a scholarship is re-extracted in that run. Rows whose last_seen_at drifts
+  beyond N days get a status = 'stale' flag and are hidden from the public list.
+  - Deadline-aware view: a Supabase view that filters out deadline < now() for the frontend, leaving raw history intact.
+  - Run-metrics table: persist failed[] and accepted[] counts per run with timestamp + source. Suddenly "success rate" is a number on a dashboard, not a
+  vibe.
+  - Freshness SLA alert: a scheduled check that opens an issue if max(now() - updated_at) exceeds threshold.
+
+  Anticipated follow-ups
+
+  "If you can't quote a number, did you validate correctness at all?"
+
+  ▎ Yes — just manually, not programmatically. I spot-checked a sample of rows against their source pages by eye before the demo. For a production pipeline
+  ▎ I'd replace that with a golden eval set of 30-50 hand-verified scholarships and measure field-level precision on every run. That's the piece that would
+  ▎ let me quote a number I'd defend.
+
+  "Why not track freshness as a user-visible 'last updated' badge?"
+
+  ▎ Good call — the data is already in updated_at. Rendering "Updated 3 days ago" on each scholarship card is one date-fns call. I didn't build it because
+  ▎ the hackathon demo didn't need it, but it's the kind of trust signal I'd add first in a real release.
+
+  "How would you detect a broken scrape before users see stale data?"
+
+  ▎ Compare row counts between runs. If a run produces <80% of the previous run's count or <50% of a specific source's count, block the upsert and alert.
+  ▎ Combined with last_seen_at, this catches both "source went down" and "source changed its layout and the LLM can't extract anymore."
+
+  That last answer is the strongest — it shows you can think about pipeline health, not just pipeline code.
+

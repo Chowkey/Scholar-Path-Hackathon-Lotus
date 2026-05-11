@@ -1,0 +1,23 @@
+Table scholarships {
+  id           text         [pk]
+  name         text         [not null]
+  country      text         [not null, default: '']
+  flag         text         [not null, default: '']
+  organization text         [not null]
+  degree       "text[]"     [not null, default: `'{}'`]
+  funding      text         [not null, note: "CHECK (funding IN ('full','partial'))"]
+  fields       "text[]"     [not null, default: `'{}'`]
+  deadline     text         [not null]
+  description  text         [not null]
+  requirements jsonb        [not null, default: `'{}'`]
+  link         text         [not null]
+  created_at   timestamptz  [not null, default: `now()`]
+  updated_at   timestamptz  [not null, default: `now()`]
+
+  Note: '''
+  RLS: ENABLED. Policy "Public read" — SELECT USING (true).
+  Writes require the service role key (RLS-bypass).
+  Trigger scholarships_updated_at: BEFORE UPDATE, sets updated_at = now()
+  via the update_updated_at() plpgsql function.
+  '''
+}

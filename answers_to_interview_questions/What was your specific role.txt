@@ -1,0 +1,78 @@
+  Direct answer (one sentence)
+
+  ▎ "I owned the data layer end-to-end: the Supabase schema for scholarships, the RAG schema extension with pgvector and the similarity-search SQL function,
+  ▎  and the Interfaze-powered scraping/upsert pipeline that populates it. My teammates built the frontend UI and the OpenAI-driven chat/evaluator features
+  ▎ that consume what my pipeline produces."
+
+  The specific pieces you can defensibly claim
+
+  1. scholarships schema + constraints (supabase/migrations/001_scholarships.sql)
+
+  Non-obvious design choices you made — each of these is worth mentioning because they're real decisions, not boilerplate:
+
+  - id text primary key — not auto-increment. The scraper produces a stable slug from {name}-{organization}-{index}, so the natural key enables idempotent
+  upsert (onConflict: 'id'). Running the pipeline twice doesn't produce duplicates.
+  - funding text not null check (funding in ('full', 'partial')) — a CHECK constraint instead of a Postgres enum. Enums need a migration to add a value; a
+  CHECK constraint can be relaxed with one ALTER. Hackathon-appropriate flexibility.
+  - requirements jsonb — the nested languageRequirements shape (ielts / toefl / pte / other[]) doesn't justify a separate table. jsonb keeps the whole
+  structure in one column and Supabase serializes it automatically.
+  - text[] for degree and fields — a scholarship often supports multiple degree levels or fields. Postgres arrays beat a join table for a read-heavy
+  workload.
+  - updated_at trigger — a plpgsql function + row-level trigger so the timestamp is kept by the database, not trusted from app code.
+  - Row-Level Security with "Public read" — the frontend reads with the anon key and RLS lets it through; writes require the service-role key. Principle of
+  least privilege baked into the schema.
+
+  2. RAG extension (supabase/migrations/002_knowledge_rag.sql)
+
+  This is the most technically meaty piece you built. Talking points:
+
+  - Enabled pgvector (create extension if not exists vector) — kept embeddings in Postgres instead of bolting on a dedicated vector DB. One connection, one
+  backup story, one security model.
+  - Split documents from chunks with an FK on delete cascade. Document-level metadata (title, category, status) stays normalized; deleting a document
+  removes its chunks automatically.
+  - unique (document_id, chunk_index) — prevents duplicate chunks if the ingestion script is re-run.
+  - vector(1536) — the dimension must match the embedding model's output. 1536 is the output size of OpenAI's text-embedding-3-small; mismatching dimensions
+   makes inserts fail.
+  - IVFFLAT index with cosine ops and lists = 100 — approximate nearest-neighbor index; exact search doesn't scale. lists partitions the space; 100 is a
+  reasonable default for small-to-medium corpora.
+  - Three B-tree indexes on category, status, and document_id for the metadata filter paths.
+  - match_knowledge_chunks(query_embedding, match_count, filter jsonb) — the SQL function is the piece I'd emphasize:
+    - Exposed as a Supabase RPC so app code just calls db.rpc('match_knowledge_chunks', …) and gets a result set back — vector math stays in the database,
+  where it belongs.
+    - Uses the <=> cosine-distance operator and returns 1 - distance as similarity, because the app wants "1 = identical" semantics.
+    - Takes a generic jsonb filter so adding a new filter key (e.g. source_type, category) doesn't change the function signature or require a redeploy.
+    - Orders on kc.embedding <=> query_embedding and limits — that's what triggers the IVFFLAT index.
+
+  3. The ingestion pipeline (lib/scholarshipScraper.ts, scripts/scholarshipDB.ts)
+
+  Covered in the earlier question — Interfaze as the default provider via an OpenAI-compatible base URL, OpenAI as the alternate, validation
+  (validateScholarship) that rejects entries with vague fields or self-referential links, and idempotent upsert(..., { onConflict: 'id' }) writing to the
+  schema you designed.
+
+  What your teammates did — a safe framing
+
+  You don't need to list every teammate task. Say something like:
+
+  ▎ "The team split cleanly around the data boundary. I owned everything from the source URL to a row in Supabase: the schema, the pgvector extension, the
+  ▎ match_knowledge_chunks function, and the scraping + upsert script. Teammates built the React UI across the pages — counselor chat window, evaluator
+  ▎ form, scholarships list — and wrote the OpenAI-backed route handlers for the chat pipeline and profile evaluation. We agreed on lib/types.ts as the
+  ▎ shared contract between our pieces."
+
+  If asked "who wrote lib/types.ts?" — "It was a shared file; I contributed the Scholarship and LanguageRequirements types to match the DB shape I was
+  designing." That's honest if it matches your memory.
+
+  Anticipated follow-ups (the interviewer will pick one)
+
+  - "Walk me through the match_knowledge_chunks function line by line." You should be ready. Key phrases: cosine distance operator <=>, jsonb filter with ?
+  existence check, greatest(match_count, 1) as a safety floor, left-to-right: filter active docs → optional category/source filters → order by distance →
+  limit.
+  - "Why pgvector instead of Pinecone/Weaviate?" One database. One auth story. Transactional consistency — when a document is deleted, its chunks are gone
+  in the same transaction, not eventually.
+  - "How did you pick lists = 100?" It's a conventional starting point for <1M rows; the recommended formula is roughly rows / 1000. At ~100 chunks I'm
+  nowhere near where tuning would matter, but it's the right shape to scale.
+  - "Why store embedding as NOT NULL?" A chunk without an embedding is useless — the retrieval can't see it. Enforcing non-null in the schema means a broken
+   ingestion fails fast instead of silently writing unusable rows.
+  - "What would you change about the schema if you rebuilt it?" Add a last_seen_at column to scholarships so the scraper can mark rows stale when they
+  disappear from a source. Add an embedding_model column to knowledge_chunks so you can re-embed with a different model without nuking the table.
+
+  That last one is the cleanest "I'd improve my own work" answer — interviewers love it.

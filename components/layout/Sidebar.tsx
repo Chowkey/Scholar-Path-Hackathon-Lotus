@@ -5,7 +5,7 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { BarChart2, BookOpen, MessageCircle, Users } from "lucide-react";
 import { cn } from "@/lib/utils";
-import logo from "@/app/logo.png";
+import logo from "@/app/Logo.png";
 
 const navItems = [
   { href: "/counselor", label: "Counselor", icon: MessageCircle },

@@ -1,0 +1,68 @@
+  ▎ "I structured it as a layered prompt assembled programmatically from five concerns — role, source context, output schema, behavioral rules, and an
+  ▎ exclusion list for dedup — so the same builder function could feed both the Interfaze and OpenAI providers."
+
+  The five layers (talk through these if asked)
+
+  1. Role + source context at the top.
+
+  ▎ "You are extracting scholarship records from a specific source page" + injected source.name, source.url, and the per-source extraction cap. Classic
+  ▎ system-prompt pattern — tell the model what it is and what page it's looking at before anything else.
+
+  2. Output schema inline, field by field.
+  Exact JSON shape spelled out with field-level guidance: id (stable slug), name, country, flag, organization, degree as an enumerated choice (Bachelor /
+  Master / Doctorate / Associate / Diploma / Certificate / Foundation / MBA / Professional / Postdoctoral / Other), funding as raw text, field as a single
+  label, academicRequirements / otherRequirements / description as preserved Markdown, languageRequirements as a nested object with slots for
+  IELTS/TOEFL/PTE/Duolingo plus an other[] array, deadline as either YYYY-MM-DD or a short fallback like "Rolling", and the source trace fields. Honest
+  caveat to volunteer: this is schema-as-prose-inside-the-prompt, not enforced via the API's structured-output feature — my chat and evaluate routes use
+  strict json_schema, but the scraper path predates that pattern. It works because the downstream validateScholarship and parseJson layers catch anything
+  malformed.
+
+  3. Behavioral rules as a separate block.
+  Each rule addresses a specific failure mode I observed:
+  - "Do not invent values; when uncertain, use concise fallback text" — hallucination guardrail.
+  - "Do NOT summarize the requirements. Keep the original bullet points, lists, and full details using Markdown" — stops the model from collapsing
+  multi-point requirements into one sentence.
+  - "The link field must be the scholarship detail/apply page URL — do not reuse the source URL" — this was the most common real failure I saw; LLMs love to
+   put the listing page back as the "link."
+  - "Pick a RANDOM and DIVERSE subset — don't just pick the first ones, scroll deep" — combats ordering/recency bias on long listings.
+  - "Use only information from the source page and clearly linked details" — anti-confabulation anchor.
+  - "Return JSON only, no markdown" — prevents the model from wrapping the payload in fences (though the parser also strips ```json just in case).
+
+  4. Exclusion list, passed in at call time.
+  On each run I load the existing snapshot and inject the already-known scholarship names as a CRITICAL EXCLUSION rule. This is dedup at the prompt layer,
+  before the slug-id primary-key dedup at the DB layer catches it — so the LLM spends its extraction budget on new scholarships instead of re-emitting ones
+  we already have.
+
+  5. Assembly style.
+  The prompt is built from an array of lines joined with newlines rather than a giant template string. Makes it easy to conditionally include the exclusion
+  block and to share the builder across both provider paths.
+
+  The two-message pattern (in the OpenAI path)
+
+  Instead of one big prompt, the OpenAI call splits it into a developer role (the full schema + rules) and a short user role ("Extract scholarships from
+  {url} as requested and return JSON only"). That mirrors real chat conventions: standing instructions go in the system/developer slot, the concrete task
+  goes in the user slot. Interfaze's Chat Completions endpoint only accepts user-role messages, so in that path it's collapsed into one user turn.
+
+  What I'd add in a harder version
+
+  - Strict json_schema structured outputs (same pattern my chat/evaluate routes use) — eliminates the need to strip code fences and guarantees shape.
+  - Few-shot examples — one or two hand-written ideal extractions would improve accuracy on messier sources more than any prompt rule.
+  - Retry with a "critic" prompt on low-confidence rows — a second LLM pass that compares the extraction to the source HTML and flags mismatches.
+  - Version the prompt as a named constant so I can A/B different prompt revisions against the golden eval set.
+
+  Anticipated follow-ups
+
+  "Why prose schema instead of strict JSON Schema?"
+
+  ▎ Honest answer: the scraper was the earliest piece I wrote, before I'd adopted the structured-output pattern I use in my chat and evaluate routes.
+  ▎ Retrofitting is a ~30-line change and the validator catches malformed rows, so it hasn't been a real bug — but it's the first thing I'd harden.
+
+  "Why temperature 0.8 for an extraction task?"
+
+  ▎ Counterintuitive but deliberate — I pair high temperature with the "pick a random and diverse subset" rule so re-runs explore different scholarships on
+  ▎ long listing pages. With temperature near zero the model keeps extracting the same top few entries each time.
+
+  "How did you iterate on the prompt?"
+
+  ▎ Manually — ran npm run db:seed, inspected the snapshot + stdout, added a rule for each failure mode I spotted (self-referential links, summarized
+  ▎ requirements, first-N selection bias). No formal eval loop. That's what the golden eval set would fix.
