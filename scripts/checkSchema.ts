@@ -1,5 +1,6 @@
 import { createClient } from "@supabase/supabase-js";
 import dotenv from "dotenv";
+import ws from "ws";
 
 dotenv.config({ override: true });
 
@@ -12,6 +13,11 @@ async function main() {
   }
   const db = createClient(url, key, {
     auth: { persistSession: false, autoRefreshToken: false },
+        // Node <22 lacks native WebSocket. @supabase/realtime-js needs one even
+        // for one-shot REST queries (it's wired up in the SupabaseClient ctor).
+        // We never open a subscription, but the transport must be set for the
+        // client to construct at all.
+        realtime: { transport: ws as unknown as typeof WebSocket },
   });
 
   const checks: Array<{ name: string; ok: boolean; reason?: string }> = [];

@@ -17,6 +17,16 @@ export type LanguageRequirements = {
   other: string[];
 };
 
+export type FundingKind =
+  | "full_tuition_plus_stipend"
+  | "full_tuition_only"
+  | "partial"
+  | "stipend_only"
+  | "allowance"
+  | "unspecified";
+
+export type FundingAmountPeriod = "per_year" | "per_month" | "one_time" | "none";
+
 export type Scholarship = {
   id: string;
   name: string;
@@ -26,6 +36,10 @@ export type Scholarship = {
   universities?: string[]; // Specific universities where the scholarship can be used
   degree: string;
   funding: string;
+  fundingKind?: FundingKind;
+  fundingAmountValue?: number | null;
+  fundingAmountCurrency?: string | null;
+  fundingAmountPeriod?: FundingAmountPeriod;
   field: string;
   academicRequirements: string;
   languageRequirements: LanguageRequirements;

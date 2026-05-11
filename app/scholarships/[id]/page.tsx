@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, ExternalLink } from "lucide-react";
 import { DeadlineBadge } from "@/components/scholarships/DeadlineBadge";
+import { SimilarScholarships } from "@/components/scholarships/SimilarScholarships";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
@@ -150,6 +151,8 @@ export default async function ScholarshipDetailPage({
             </a>
           </div>
         </section>
+
+        <SimilarScholarships scholarshipId={scholarship.id} />
       </div>
     </div>
   );

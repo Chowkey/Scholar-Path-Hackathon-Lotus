@@ -139,15 +139,20 @@ ScholarPath is an AI-powered scholarship discovery and planning platform for Sou
 
 `/counselor` → `POST /api/chat` (auth required)
 
-Each user turn fires **three sequential OpenAI calls** plus two parallel Supabase reads:
+Each user turn fires **three OpenAI calls**. The first runs in parallel with two Supabase reads; the second is sequential because it consumes one of those reads.
 
-1. **Intent classification** (LLM, `INTENT_PROMPT` + `INTENT_SCHEMA`) — input: full message history. Returns `intent`, `needsWebSearch`, `shouldUseKnowledgeBase`, `shouldUseScholarshipMatching`, `responseGoal`.
-2. **Profile extraction** (LLM, `PROFILE_EXTRACTION_PROMPT` + `PROFILE_SCHEMA`) — input: full message history. Returns an `ExtractedProfile` (educationLevel, degreeTarget, gpa, gpaScale, ielts, toefl, sat, projectExperience, extracurricularActivities, fundingPreference, targetCountriesOrRegions, …).
-3. **Parallel reads:** `loadScholarshipLookup()` from Supabase + `listFactsAsRecord(user)` from `user_scholarship_facts`.
-4. **Build shortlist + retrieve knowledge** (no LLM): rank scholarships by score against the extracted profile; keyword-match `studyAbroadKnowledge` chunks against profile + messages.
-5. **Response generation** (LLM, `KB_RESPONSE_PROMPT` or `WEB_RESPONSE_PROMPT` + `CHAT_RESPONSE_SCHEMA`) — input JSON contains `intent`, `profile`, `knownUserFacts`, `localKnowledge`, `validatedScholarships`, `recommendationMode`. The web variant additionally enables the `web_search_preview` tool.
-6. **Persist** (parallel): full message thread → `chat_sessions`, profile → `user_scholarship_facts` via `profileToFacts()` (only changed values are written).
-7. Stream the assistant text back; the response also carries an `X-Session-Id` header so the client can resume.
+1. **Parallel block** — three things kick off together:
+   - `extractIntent()` (LLM, `INTENT_PROMPT` + `INTENT_SCHEMA`) — input is `JSON.stringify(messages)` only. Returns `intent`, `needsWebSearch`, `shouldUseKnowledgeBase`, `shouldUseScholarshipMatching`, `responseGoal`.
+   - `loadScholarshipLookup()` — Supabase read of all scholarships via `select(SCHOLARSHIP_SELECT)`.
+   - `listFactsAsRecord(user)` — Supabase read of `user_scholarship_facts` for the signed-in user.
+2. **Profile extraction** (LLM, `PROFILE_EXTRACTION_PROMPT` + `PROFILE_SCHEMA`) — awaits the parallel block above. Input is `{messages, knownUserFacts}`, **not just messages** — the prompt instructs the model to treat `knownUserFacts` as already established and never propose a `nextBestQuestion` that re-asks any known field. Returns an `ExtractedProfile` (educationLevel, degreeTarget, gpa, gpaScale, ielts, toefl, sat, projectExperience, extracurricularActivities, fundingPreference, targetCountriesOrRegions, plus planning meta: `enoughInfoForRecommendations`, `missingFields`, `nextBestQuestion`, `generalQuestionToAnswer`, `needsGeneralGuidance`, `confusionAreas`, `specificityLevel`, `profileSummary`).
+3. **Build shortlist + retrieve knowledge** (no LLM): `buildShortlist()` ranks scholarships against the extracted profile (only when `intent.shouldUseScholarshipMatching`); `retrieveKnowledge()` keyword-matches `studyAbroadKnowledge` chunks against messages + profile (only when `intent.shouldUseKnowledgeBase`).
+4. **Response generation** (LLM, branches on `intent.needsWebSearch`, both return `CHAT_RESPONSE_SCHEMA` and cap `max_output_tokens: 1200`):
+   - KB variant `generateKnowledgeResponse` (`KB_RESPONSE_PROMPT`) — input JSON contains `intent`, `profile`, `knownUserFacts`, `localKnowledge`, `validatedScholarships`, `recommendationMode` (`shouldUseScholarshipMatching && enoughInfoForRecommendations && specificityLevel !== "low" && shortlist.length > 0`).
+   - Web variant `generateWebFallbackResponse` (`WEB_RESPONSE_PROMPT`) — input adds `latestUserMessage` and a `note` nudging 2-5 official-source links; additionally enables `tools: [{type: "web_search_preview"}]`.
+5. **Validate** (no LLM): `validateRecommendations()` filters `recommendedScholarshipIds` to the shortlist and downgrades `phase: "recommend"` to `"ask_more"` / `"guide"` if the recommendation gates aren't satisfied.
+6. **Persist** (parallel): full message thread → `chat_sessions` via `persistTurn()`; extracted profile → `user_scholarship_facts` via `upsertFacts(profileToFacts(...))` (only changed values are written).
+7. Stream the assistant text back via `streamText()`; the response carries an `X-Session-Id` header so the client can resume.
 
 The page itself is server-rendered: `/counselor` lists the user's past sessions; `/counselor/[sessionId]` rehydrates messages from `chat_sessions`; `/counselor/new` starts a fresh chat.
 
@@ -338,16 +343,18 @@ INTERFAZE_MODEL=interfaze-beta
 User message
   → middleware refreshes session → 401 if not signed in
   → /api/chat handler:
-      ├─ Intent classification        (OpenAI #1)
-      ├─ Profile extraction           (OpenAI #2)        ┐ run in parallel
+      ├─ extractIntent                (OpenAI #1)        ┐ run in parallel
       ├─ loadScholarshipLookup        (Supabase read)    │ with each other
       └─ listFactsAsRecord            (Supabase read)    ┘
-  → Build shortlist (in-memory ranking)
-  → Retrieve knowledge (keyword scoring vs studyAbroadKnowledge)
-  → Response generation               (OpenAI #3, optional web_search_preview)
+      ↓
+      extractProfile                  (OpenAI #2, input includes knownUserFacts)
+  → Build shortlist (in-memory ranking,   gated by intent.shouldUseScholarshipMatching)
+  → Retrieve knowledge (keyword scoring,  gated by intent.shouldUseKnowledgeBase)
+  → Response generation               (OpenAI #3 — KB variant, or Web variant with web_search_preview)
+  → validateRecommendations           (filter IDs to shortlist; downgrade phase if gates fail)
   → Persist (parallel):
-      ├─ chat_sessions row update     (messages + profile + recs)
-      └─ upsertFacts                  (profile fields → user_scholarship_facts)
+      ├─ persistTurn → chat_sessions  (messages + profile + intent + shortlistIds + recs)
+      └─ upsertFacts                  (profileToFacts → user_scholarship_facts)
   → Streamed text response (header X-Session-Id)
 ```
 

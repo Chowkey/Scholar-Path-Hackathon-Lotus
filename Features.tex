@@ -1,0 +1,203 @@
+\section{Key Features Design}
+
+ScholarPath is built around four key features that address the main challenges students face when searching and preparing for scholarship applications: the Scholarship AI Chat, the structured Scholarship Database, Evaluate Profile Fit, and Discover Alumni.
+
+\subsection{Scholarship AI Chat}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{img/AiChat.jpg}
+    \caption{Screenshot of Chatbox feature}
+\end{figure}
+
+The Scholarship AI Chat provides an interactive interface where students can ask questions about scholarships, application requirements, and preparation strategies. Instead of manually searching through multiple pages, users can receive personalized answers and recommendations based on the information stored in the system.
+
+The chatbot is implemented using the OpenAI API combined with a Retrieval-Augmented Generation (RAG) pipeline. This allows the system to retrieve relevant scholarship information from the database before generating responses, improving both accuracy and contextual relevance.
+
+\subsubsection{Storing Chat Sessions}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{img/Sessions.jpg}
+    \caption{Screenshot of storing chat sessions}
+\end{figure}
+
+Each conversation between the user and the AI counselor is stored as a chat session. A session contains the conversation history, timestamps, and any scholarships referenced during the discussion. Persisting chat sessions allows users to revisit previous conversations, continue unfinished discussions, and track the recommendations they have received over time. It also provides context for future interactions, enabling the AI to generate more relevant and personalized responses.
+
+\subsubsection{Retrieval-Augmented Generation (RAG) Pipeline}
+
+\textbf{Goal.} The AI Chat is designed so that when a student asks for scholarship suggestions, the language model never has to recall programs from its training data. Instead, ScholarPath plans to retrieve a small, pre-filtered set of candidate scholarships directly from its own database and provide them as context to the model. This grounds every recommendation in records that have been scraped, normalized, and verified by the platform, eliminating the risk of hallucinated programs and ensuring that any scholarship surfaced to the student can actually be applied for.
+
+\textbf{Approach.} The pipeline is planned to trigger whenever the system classifies the user's intent as \textit{application guidance} or \textit{personalized matching}. It will combine deterministic SQL-level filters with vector-similarity comparison, so that strict eligibility criteria (such as degree level and funding type) are enforced exactly, while looser concepts (such as the student's field of study or research interests) are matched semantically. Embeddings for both the scholarship side (description, organization, field) and the user side (profile text, field of study) will be computed with OpenAI's \texttt{text-embedding-3-small} model and stored in PostgreSQL using the \texttt{pgvector} extension. Heavy embeddings on the scholarship side are planned to be pre-computed at scrape time, so each chat turn only needs to embed the user's query, keeping per-turn cost and latency low.
+
+\textbf{Planned workflow.} The pipeline will proceed in the following stages:
+
+\begin{enumerate}
+    \item \textbf{Profile assembly.} Gather the student's known facts --- field of study, degree target, target countries, funding preference, GPA, language scores, projects, and extracurriculars --- from the current conversation and the persistent \texttt{user\_scholarship\_facts} store. Concatenate them into a single free-text profile paragraph that captures the student's overall application context.
+
+    \item \textbf{Query embedding.} In a single OpenAI API call, compute two embeddings: one for the user's field of study as a short phrase, and one for the full profile paragraph. The first will drive the field-similarity gate; the second will drive ranking.
+
+    \item \textbf{Hard filtering (SQL).} Query the \texttt{scholarships} table applying the user's deterministic preferences. The student's profile-level degree target (e.g., \textit{masters}) is expanded to the matching set of canonical scholarship degrees (\textit{Master}, \textit{MBA}, \textit{Professional}). Funding preference is mapped to a set of normalized funding kinds, with rows whose funding category has not yet been classified kept in the pool so they are not silently discarded. When a preference is not specified, the corresponding filter is skipped --- the student is treated as open to any option, and the omission is later passed to the language model so it can transparently state the assumption.
+
+    \item \textbf{Field gate (vector).} For every scholarship that survives the hard filters, compute the cosine similarity between the user's field embedding and the embedding of each of the scholarship's linked fields. Retain the scholarship if at least one of its fields exceeds a configurable threshold (default $0.7$). Because field embeddings live on the \texttt{fields} lookup table rather than on each scholarship row, the same vector is reused across many programs that share the same discipline, saving storage and improving cache locality.
+
+    \item \textbf{Ranking (vector).} Sort the survivors in descending order by the cosine similarity between the user's profile-paragraph embedding and each scholarship's pre-computed description embedding. Take the top five forward.
+
+    \item \textbf{Response generation (LLM).} Pass the top five candidates --- each carrying its name, country, degree level, funding details, official application link, and the similarity scores that placed it in the shortlist --- to the language model alongside the student's profile and the list of preferences they did not specify. The model is instructed to re-rank the shortlist by overall fit, to write a short explanation for each recommended scholarship that references the student's specific qualifications (GPA, language scores, field, projects, etc.), and to include a direct Markdown link to the official application page. For each preference the student left unspecified, the model is asked to state the assumption it made (for example, ``because you have not yet told me a target country, I included programs across multiple destinations''), so the student understands exactly how the shortlist was produced and how to narrow it further.
+\end{enumerate}
+
+\textbf{Design rationale.} Limiting the language model's input to a small, pre-filtered, and pre-ranked candidate set keeps per-turn API cost low and avoids exposing the model to the entire scholarship corpus. At the same time, the use of embeddings for the field and description stages preserves the conceptual flexibility that makes the chat feel natural: a student who describes their interest as ``machine learning'' can be matched with a scholarship whose stored field is ``Computer Science'' without any manual keyword mapping.
+
+\paragraph{Pipeline-at-a-glance.} The planned data flow is summarized in the diagram and table below.
+
+\begin{verbatim}
+   User message
+       |
+       v
+  +-----------------------+
+  | Intent classifier     |  (LLM, JSON schema)
+  +-----------+-----------+
+              | application_guidance OR personalized_matching
+              v
+  +-----------------------+         +-----------------------+
+  | Profile assembly      |<--------| user_scholarship_facts|
+  |  (facts + chat hist.) |         +-----------------------+
+  +-----------+-----------+
+              | profile text + field phrase
+              v
+  +-----------------------+
+  | Query embedding       |  (OpenAI text-embedding-3-small)
+  +-----------+-----------+
+              | profile_vec, field_vec
+              v
+  +-----------------------+         +-----------------------+
+  | SQL hard filter       |-------->| scholarships          |
+  |  (degree, funding_kind)|        +-----------------------+
+  +-----------+-----------+
+              | candidate set
+              v
+  +-----------------------+         +-----------------------+
+  | Field gate (cos>=0.7) |-------->| fields.embedding_field|
+  +-----------+-----------+         +-----------------------+
+              | filtered set
+              v
+  +---------------------------+     +-------------------------------+
+  | Description ranking       |<----| scholarships.description_embed|
+  |  (cos vs profile_vec)     |     +-------------------------------+
+  +-----------+---------------+
+              | top 5
+              v
+  +-----------------------+
+  | LLM re-rank + explain |  (OpenAI, structured output)
+  +-----------+-----------+
+              | ranked recs + per-row rationale + links
+              v
+   Assistant message to student
+\end{verbatim}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{|l|l|l|l|}
+\hline
+\textbf{Stage} & \textbf{Input} & \textbf{Output} & \textbf{Tool} \\
+\hline
+Profile assembly        & chat + persistent facts            & profile text                       & --- \\
+Query embedding         & profile text, field phrase         & 2 dense vectors (1536-d)           & OpenAI embeddings \\
+SQL hard filter         & degree, funding\_kind              & candidate set                      & PostgreSQL \\
+Field gate              & field\_vec, fields.embedding\_field & filtered set (cos $\geq 0.7$)     & pgvector \\
+Description ranking     & profile\_vec, descr.\ embedding    & top 5 by cosine                    & pgvector \\
+LLM re-rank + explain   & top 5 + profile + missing prefs    & ranked recs with rationale + links & OpenAI chat \\
+\hline
+\end{tabular}
+\caption{Stages of the planned RAG pipeline for scholarship recommendations.}
+\end{table}
+
+
+\subsection{Scholarship Database}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{img/ViewScholarship.jpg}
+    \caption{Screenshot of scholarships with detail structures}
+\end{figure}
+
+
+The scholarship database is the foundation of ScholarPath. Scholarship information is collected automatically from trusted scholarship websites using the Interfaze API. During the design phase, a detailed schema was defined based on research into the most common attributes students consider when searching for scholarships.
+
+Each scholarship record contains structured fields such as:
+\begin{itemize}
+    \item Scholarship name
+    \item Host country
+    \item Organization or sponsoring institution
+    \item Degree level (Bachelor, Master, PhD)
+    \item Field of study
+    \item Funding type (full or partial)
+    \item Application deadline
+    \item Description
+    \item Eligibility requirements
+    \item Application link
+\end{itemize}
+
+Additional metadata, such as the source website and source URL, is also stored to support data verification and future updates.
+
+By storing scholarship information in a structured format, ScholarPath enables efficient filtering based on criteria such as country, degree level, field of study, and funding type. The same database also serves as the knowledge base for the AI Chat and the Evaluate Profile Fit feature, ensuring that recommendations and responses are grounded in reliable and consistent data.
+
+\subsection{Similar Scholarship Recommendations}
+
+% TODO: replace with an actual screenshot of the detail page with the
+% "Show 10 similar scholarships" section expanded.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{img/SimilarScholarships.jpg}
+    \caption{Screenshot of the similar scholarships feature on the scholarship detail page}
+\end{figure}
+
+While browsing the directory, students often want to compare a scholarship they have just opened against others with the same profile --- same destination, same funding model, or simply the same kind of academic focus. The Similar Scholarship Recommendations feature surfaces this directly on the scholarship detail page: a single \texttt{Show 10 similar scholarships} button reveals the ten programs whose stored description embedding is closest to the current one.
+
+The feature reuses the \texttt{description\_embedding} column that the scraper already populates for deduplication, so no additional data needs to be computed at recommendation time. When the button is clicked, the client component issues a request to \texttt{GET /api/scholarships/[id]/similar}, which calls a single PostgreSQL function, \texttt{match\_similar\_to\_scholarship}, that performs the lookup and the ranking in one round-trip:
+
+\begin{enumerate}
+    \item Read the source row's \texttt{description\_embedding} vector by id.
+    \item Compute the cosine similarity between that vector and every other scholarship's \texttt{description\_embedding} using the \texttt{pgvector} cosine distance operator (\texttt{<=>}).
+    \item Exclude the source row itself, drop any candidate whose embedding is null, and return the top ten rows ordered by ascending cosine distance.
+\end{enumerate}
+
+The API route then re-fetches the joined scholarship rows for those ten ids --- so countries, organizations, and fields come back in a single query --- and preserves the rank order returned by the database. The client renders each result with the same card component used in the directory and adds a small badge (e.g.\ \textit{87\% similar}) in the bottom-right corner of every card so the student can see how close each recommendation is to the program they were originally looking at. Results are cached on the client after the first fetch, so closing and re-opening the section is instantaneous.
+
+\textbf{Design rationale.} Two decisions keep this feature cheap to operate at scale. First, the embedding column is shared with the deduplication pipeline, so the rank-time cost is a single SQL query rather than a fresh OpenAI call --- the heavy embedding work has already been amortized at scrape time. Second, the comparison happens entirely inside PostgreSQL via \texttt{pgvector}'s indexed cosine search (an IVFFlat index on \texttt{description\_embedding}), so even with thousands of scholarships the operation remains a sub-second lookup. The result is a recommendation surface that loads on demand, scales with the database, and stays grounded in the same verified records the rest of the application uses.
+
+\subsection{Evaluate Profile Fit}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{img/MatchProfile.jpg}
+    \caption{Screenshot of scoring profile against scholarship feature}
+\end{figure}
+
+The Evaluate Profile Fit feature estimates how well a student's profile matches the requirements and competitiveness of a scholarship. To provide a more reliable assessment, ScholarPath uses a hybrid approach that combines rule-based checks, weighted scoring, and semantic similarity analysis.
+
+First, both the scholarship requirements and the user's profile are converted into structured attributes, such as GPA, language scores, research experience, leadership activities, and certifications.
+
+The evaluation process consists of three steps:
+\begin{enumerate}
+    \item \textbf{Hard Requirement Validation}: Checks mandatory criteria such as minimum GPA, degree level, and required language certificates.
+    
+    \item \textbf{Weighted Criteria Matching}: Computes scores for key categories (e.g., academics, language proficiency, research, and extracurricular activities) and combines them using predefined weights.
+    
+    \item \textbf{Semantic Analysis}: Uses OpenAI embeddings to measure how closely the user's experiences and achievements align with the scholarship's preferred candidate profile.
+\end{enumerate}
+
+The results are aggregated into a compatibility score from 0 to 100. Based on unmet or weak criteria, the system also generates a personalized improvement plan, recommending actions such as improving language scores, gaining research experience, or strengthening leadership involvement.
+
+\subsection{Discover Alumni}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{img/Alumni.jpg}
+    \caption{Screenshot of Finding Alumni Feature}
+\end{figure}
+The Discover Alumni feature helps students find previous scholarship recipients and alumni who studied at specific universities or in particular countries. Users can enter simple queries such as a university name, scholarship name, or destination country.
+
+To support this feature, ScholarPath uses the Exa API to search and extract publicly available information from sources such as LinkedIn profiles and related web pages. This allows users to explore the backgrounds and experiences of individuals who have successfully obtained similar opportunities.
+
+In future work, this feature can be enhanced with semantic search capabilities that analyze blog posts, social media content, and personal experience articles from admitted students. By understanding the content of these posts, the system could identify alumni whose experiences are most relevant to the user's goals and provide deeper insights into the application journey.
+
