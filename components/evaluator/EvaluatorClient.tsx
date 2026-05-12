@@ -16,7 +16,7 @@ import type {
   Scholarship,
 } from "@/lib/types";
 
-const initialProfile: ProfileFormData = {
+const defaultProfile: ProfileFormData = {
   educationLevel: "undergraduate",
   gpa: 0,
   gpaScale: 4,
@@ -32,10 +32,14 @@ const initialProfile: ProfileFormData = {
 
 type EvaluatorClientProps = {
   initialSelectedIds: string[];
+  initialProfile?: Partial<ProfileFormData>;
 };
 
-export function EvaluatorClient({ initialSelectedIds }: EvaluatorClientProps) {
-  const [profile, setProfile] = useState<ProfileFormData>(initialProfile);
+export function EvaluatorClient({ initialSelectedIds, initialProfile }: EvaluatorClientProps) {
+  const [profile, setProfile] = useState<ProfileFormData>({
+    ...defaultProfile,
+    ...(initialProfile ?? {}),
+  });
   const [selectedIds, setSelectedIds] = useState<string[]>(initialSelectedIds);
   const [warning, setWarning] = useState<string | null>(null);
   const [errors, setErrors] = useState<Partial<Record<keyof ProfileFormData, string>>>({});
@@ -140,6 +144,11 @@ export function EvaluatorClient({ initialSelectedIds }: EvaluatorClientProps) {
           scholarships: selectedScholarships,
         }),
       });
+
+      if (response.status === 401) {
+        window.location.href = "/login?next=/evaluator";
+        return;
+      }
 
       const payload = (await response.json()) as
         | { results: EvaluationResultType[] }

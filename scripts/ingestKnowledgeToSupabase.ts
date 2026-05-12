@@ -3,7 +3,7 @@ import OpenAI from "openai";
 import dotenv from "dotenv";
 import * as fs from "fs";
 import * as path from "path";
-
+import ws from "ws";
 dotenv.config({ override: true });
 
 type KnowledgeDocumentInput = {
@@ -80,6 +80,11 @@ async function main() {
   const documents = parsed as KnowledgeDocumentInput[];
   const supabase = createClient(supabaseUrl, serviceRoleKey, {
     auth: { persistSession: false, autoRefreshToken: false },
+        // Node <22 lacks native WebSocket. @supabase/realtime-js needs one even
+        // for one-shot REST queries (it's wired up in the SupabaseClient ctor).
+        // We never open a subscription, but the transport must be set for the
+        // client to construct at all.
+        realtime: { transport: ws as unknown as typeof WebSocket },
   });
   const openai = new OpenAI({ apiKey: openAiApiKey });
 

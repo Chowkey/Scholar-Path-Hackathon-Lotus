@@ -9,9 +9,11 @@
     "lint": "next lint",
     "db:seed": "tsx scripts/scholarshipDB.ts",
     "db:upload-snapshot": "tsx scripts/uploadSnapshotToSupabase.ts",
-    "db:ingest-knowledge": "tsx scripts/ingestKnowledgeToSupabase.ts"
+    "db:ingest-knowledge": "tsx scripts/ingestKnowledgeToSupabase.ts",
+    "db:backfill-embeddings": "tsx scripts/backfillScholarshipEmbeddings.ts"
   },
   "dependencies": {
+    "@supabase/ssr": "^0.10.3",
     "@supabase/supabase-js": "^2.99.3",
     "@tailwindcss/typography": "^0.5.19",
     "date-fns": "^4.1.0",
@@ -30,8 +32,9 @@
     "@types/node": "^20",
     "@types/react": "^18.3.28",
     "@types/react-dom": "^18.3.7",
+    "@types/ws": "^8.18.1",
     "autoprefixer": "^10.4.27",
-    "eslint": "^8.57.1",
+    "eslint": "^9.39.4",
     "eslint-config-next": "^16.2.1",
     "postcss": "^8.5.8",
     "tailwindcss": "^3.4.19",

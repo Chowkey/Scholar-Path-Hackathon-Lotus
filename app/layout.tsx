@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, Plus_Jakarta_Sans } from "next/font/google";
 import { AppShell } from "@/components/layout/AppShell";
+import { SidebarUser } from "@/components/layout/SidebarUser";
 import "./globals.css";
 
 const plusJakartaSans = Plus_Jakarta_Sans({
@@ -29,7 +30,7 @@ export default function RootLayout({
       className={`${plusJakartaSans.variable} ${inter.variable} h-full antialiased`}
     >
       <body className="min-h-full">
-        <AppShell>{children}</AppShell>
+        <AppShell userSlot={<SidebarUser />}>{children}</AppShell>
       </body>
     </html>
   );

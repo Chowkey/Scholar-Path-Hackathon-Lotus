@@ -1,19 +1,23 @@
-import { createClient } from "@supabase/supabase-js";
 import dotenv from "dotenv";
 import * as fs from "fs";
 import * as path from "path";
+import { upsertScholarshipsToSupabase } from "../lib/scholarshipScraper";
 import type { Scholarship } from "../lib/types";
 
 dotenv.config({ override: true });
 
 type SnapshotRow = {
-  id: string;
+  id?: string;
   name: string;
   country: string;
-  flag: string;
+  flag?: string;
   organization: string;
   degree: string;
   funding: string;
+  fundingKind?: Scholarship["fundingKind"];
+  fundingAmountValue?: Scholarship["fundingAmountValue"];
+  fundingAmountCurrency?: Scholarship["fundingAmountCurrency"];
+  fundingAmountPeriod?: Scholarship["fundingAmountPeriod"];
   field: string;
   academicRequirements: string;
   languageRequirements: Scholarship["languageRequirements"];
@@ -33,20 +37,14 @@ function ensureEnv(name: string, value: string | undefined): string {
 }
 
 async function main() {
-  const supabaseUrl = ensureEnv(
+  ensureEnv(
     "SUPABASE_URL (or NEXT_PUBLIC_SUPABASE_URL)",
-    process.env.SUPABASE_URL ?? process.env.NEXT_PUBLIC_SUPABASE_URL
+    process.env.SUPABASE_URL ?? process.env.NEXT_PUBLIC_SUPABASE_URL,
   );
-  const serviceRoleKey = ensureEnv(
-    "SUPABASE_SERVICE_ROLE_KEY",
-    process.env.SUPABASE_SERVICE_ROLE_KEY
-  );
+  ensureEnv("SUPABASE_SERVICE_ROLE_KEY", process.env.SUPABASE_SERVICE_ROLE_KEY);
+  ensureEnv("OPENAI_API_KEY", process.env.OPENAI_API_KEY);
 
-  const snapshotPath = path.resolve(
-    process.cwd(),
-    "scripts",
-    "scholarships-snapshot.json"
-  );
+  const snapshotPath = path.resolve(process.cwd(), "scripts", "scholarships-snapshot.json");
   if (!fs.existsSync(snapshotPath)) {
     throw new Error(`Snapshot file not found: ${snapshotPath}`);
   }
@@ -56,44 +54,38 @@ async function main() {
   if (!Array.isArray(parsed)) {
     throw new Error("Snapshot format is invalid. Expected a JSON array.");
   }
-
   const records = parsed as SnapshotRow[];
   if (records.length === 0) {
     throw new Error("Snapshot is empty.");
   }
 
-  const rows = records.map((item) => ({
-    id: item.id,
+  // Hand off to the shared scraper writer so descriptions get batch-embedded
+  // and rows flow through the same dedup co-signal RPC as the live scraper.
+  const items: Scholarship[] = records.map((item) => ({
+    id: "", // assigned by DB
     name: item.name,
     country: item.country,
     flag: item.flag ?? "",
     organization: item.organization,
     degree: item.degree,
     funding: item.funding,
-    field_of_study: item.field,
-    academic_requirements: item.academicRequirements ?? "",
-    language_requirements: item.languageRequirements ?? { other: [] },
-    other_requirements: item.otherRequirements ?? "",
+    fundingKind: item.fundingKind,
+    fundingAmountValue: item.fundingAmountValue ?? null,
+    fundingAmountCurrency: item.fundingAmountCurrency ?? null,
+    fundingAmountPeriod: item.fundingAmountPeriod,
+    field: item.field,
+    academicRequirements: item.academicRequirements ?? "",
+    languageRequirements: item.languageRequirements ?? { other: [] },
+    otherRequirements: item.otherRequirements ?? "",
     deadline: item.deadline,
     description: item.description,
     link: item.link,
-    source_name: item.sourceName ?? "",
-    source_url: item.sourceUrl ?? "",
+    sourceName: item.sourceName ?? "",
+    sourceUrl: item.sourceUrl ?? "",
   }));
 
-  const supabase = createClient(supabaseUrl, serviceRoleKey, {
-    auth: { persistSession: false, autoRefreshToken: false },
-  });
-
-  const { error } = await supabase
-    .from("scholarships")
-    .upsert(rows, { onConflict: "id" });
-
-  if (error) {
-    throw new Error(`Supabase upsert failed: ${error.message}`);
-  }
-
-  console.log(`Uploaded ${rows.length} scholarships from snapshot to Supabase.`);
+  await upsertScholarshipsToSupabase(items);
+  console.log(`Uploaded ${items.length} scholarships from snapshot to Supabase.`);
 }
 
 main().catch((error) => {

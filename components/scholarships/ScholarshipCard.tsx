@@ -3,6 +3,7 @@ import { ArrowRight } from "lucide-react";
 import { Badge } from "@/components/ui/Badge";
 import { Card } from "@/components/ui/Card";
 import { DeadlineBadge } from "@/components/scholarships/DeadlineBadge";
+import { SaveButton } from "@/components/scholarships/SaveButton";
 import type { Scholarship } from "@/lib/types";
 
 type ScholarshipCardProps = {
@@ -11,8 +12,8 @@ type ScholarshipCardProps = {
 
 export function ScholarshipCard({ scholarship }: ScholarshipCardProps) {
   return (
-    <Link href={`/scholarships/${scholarship.id}`}>
-      <Card hoverable className="h-full cursor-pointer p-5">
+    <div className="relative h-full">
+      <Card hoverable className="h-full p-5">
         <div className="flex items-start justify-between gap-4">
           <div>
             <p className="text-sm text-neutral-400">
@@ -44,6 +45,16 @@ export function ScholarshipCard({ scholarship }: ScholarshipCardProps) {
           <ArrowRight className="h-4 w-4" />
         </div>
       </Card>
-    </Link>
+
+      <Link
+        href={`/scholarships/${scholarship.id}`}
+        className="absolute inset-0 rounded-2xl"
+        aria-label={scholarship.name}
+      />
+
+      <div className="absolute right-3 top-3">
+        <SaveButton scholarshipId={scholarship.id} />
+      </div>
+    </div>
   );
 }

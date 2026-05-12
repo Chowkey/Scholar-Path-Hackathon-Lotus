@@ -1,8 +1,20 @@
 import { NextResponse } from "next/server";
 import { getOpenAIClient } from "@/lib/openai";
-import { saveChatSession } from "@/lib/chat-storage";
+import { createServerClient } from "@/lib/supabase/server";
 import { createBrowserClient } from "@/lib/supabase";
-import { rowToScholarship, type ScholarshipRow } from "@/lib/scholarshipTransform";
+import { createSession, persistTurn } from "@/lib/chat-sessions";
+import { listFactsAsRecord, upsertFacts, type FactInput } from "@/lib/user-facts";
+import { PROFILE_FACT_KEYS } from "@/lib/profile-facts";
+import {
+  rowToScholarship,
+  SCHOLARSHIP_SELECT,
+  type ScholarshipJoinedRow,
+} from "@/lib/scholarshipTransform";
+import {
+  retrieveScholarshipRecommendations,
+  buildProfileText,
+  type MissingPreferenceKey,
+} from "@/lib/scholarshipRecommend";
 import { studyAbroadKnowledge } from "@/lib/study-abroad-knowledge";
 import type { Scholarship } from "@/lib/types";
 
@@ -24,17 +36,31 @@ Rules:
 const PROFILE_EXTRACTION_PROMPT = `Extract the student's study-abroad planning state from the
 conversation. Use only information explicitly stated or strongly implied by the user.
 
+You will receive an input JSON with both "messages" (the conversation) and "knownUserFacts"
+(facts already on file from prior sessions, e.g. nationality, GPA, degree target, field).
+
 Rules:
 - Do not invent facts.
 - Keep unknown values as null or empty arrays.
+- Treat knownUserFacts as already established. Do NOT mark them as missing, and do NOT propose a
+  "nextBestQuestion" that re-asks any field already present in knownUserFacts.
 - Track both scholarship-fit details and broader study-abroad process needs.
+- "gpa" should be the GPA as the user stated it (string), e.g. "3.8" or "8.5".
+- "gpaScale" must be 4, 10, or 100 — infer from the GPA value or the user's statement; null if unclear.
+- "sat" only when the user gives a numeric SAT score (max 1600).
+- "projectExperience" should be a short markdown summary of any concrete projects, portfolio work,
+  research, or internships the user mentions; null if none discussed.
+- "extracurricularActivities" should be a short markdown summary of clubs, volunteering, leadership,
+  competitions, community work; null if none discussed.
 - "enoughInfoForRecommendations" should be true only if you have at least:
   degree target, preferred country/region, preferred field, and funding preference.
 - "needsGeneralGuidance" should be true if the user is mainly confused about process, documents,
   certificates, application order, or country choice.
 - "confusionAreas" should list what the student still seems unclear about.
 - "specificityLevel" should be "low" when the student's answer is vague and needs narrowing.
-- "nextBestQuestion" should be one concise question that would most improve your ability to guide them.
+- "nextBestQuestion" must advance beyond knownUserFacts — pick a deeper, related insight to surface
+  next (e.g. project/research interests, target universities, intake term, English test status,
+  specialization, work-after-study goals) rather than re-asking what is already known.
 - "generalQuestionToAnswer" should summarize any process question the user asked that deserves
   a direct answer before continuing intake.`;
 
@@ -42,31 +68,56 @@ const KB_RESPONSE_PROMPT = `You are ScholarPath Counselor, a warm and practical 
 
 You will receive:
 - the conversation planning summary
+- knownUserFacts: previously remembered facts about this user (e.g. nationality, GPA, degree target, field, target country, IELTS, projects). Treat these as known — do not re-ask for them unless the user contradicts them.
 - retrieved local knowledge snippets from ScholarPath's database
-- optionally a shortlist of validated scholarships
+- optionally a shortlist of validated scholarships (already pre-filtered and ranked for this user)
+- missingUserPreferences: the list of preferences the user has NOT stated. These were treated as "open to any" during shortlist retrieval.
 
 Rules:
+- Before writing your reply, scan knownUserFacts. Acknowledge what you already know about the student briefly (e.g. "Given your 3.6 GPA in CS and Vietnamese nationality...") so they feel heard.
+- NEVER ask the student for a fact that already exists in knownUserFacts. If the fact is present, treat it as settled.
+- Your follow-up question must move the conversation FORWARD into deeper, related insight — not repeat ground already covered. Examples of good forward questions when basics are known:
+  - if GPA + field are known → ask about specific project/research interests, target university tier, or English test status
+  - if country + budget are known → ask about preferred intake (Fall/Spring), language preferences, or work-after-study goals
+  - if degree target + field are known → ask about specialization, faculty/lab interests, or thesis vs coursework preference
 - Prefer the local knowledge snippets as your primary source of truth.
 - Answer concept and process questions clearly and directly.
-- If the student's question is vague, explain what is still unclear and ask exactly one focused follow-up question.
-- If enough profile information is available and the user wants personalized options, you may recommend scholarships from the validated shortlist only.
+
+SCHOLARSHIP RECOMMENDATIONS (when validatedScholarships is non-empty):
+- These are pre-filtered RAG matches. Re-rank them by overall fit for THIS student using their profile + knownUserFacts + fitReasons.
+- For EACH recommended scholarship, write a short paragraph (2-3 sentences) explaining concretely why it suits the student — reference their field, country preference, funding need, degree level, GPA, language scores, or projects as relevant.
+- Always include a Markdown link to the scholarship's officialLink so the student can follow it.
+- For each missing preference in missingUserPreferences, briefly state the assumption you used (e.g. "Because you haven't told me a target country yet, I included programs across multiple destinations — narrow this and I'll re-tune the list.").
+- Put the recommended scholarship IDs into recommendedScholarshipIds, in the order you'd rank them best→worst.
+- Recommend ONLY from validatedScholarships. Do not invent scholarship names or official rules not supported by the provided context.
+
 - You may use light Markdown: short headings, bold text, bullet lists, numbered lists, inline code, and links.
-- Do not invent scholarship names or official rules not supported by the provided context.
 - If local knowledge may be incomplete for a changing topic, state that the student should verify official sources.`;
 
 const WEB_RESPONSE_PROMPT = `You are ScholarPath Counselor, a warm and practical study-abroad advisor.
 
 You will receive:
 - the conversation planning summary
+- knownUserFacts: previously remembered facts about this user (e.g. nationality, GPA, degree target, field, target country, IELTS, projects). Treat these as known — do not re-ask for them unless the user contradicts them.
 - optional local knowledge snippets
-- optional validated scholarship shortlist
+- optional validated scholarship shortlist (already pre-filtered and ranked for this user)
+- missingUserPreferences: preferences the user has NOT stated. These were treated as "open to any" during shortlist retrieval.
 
 Rules:
+- Before writing your reply, scan knownUserFacts. Briefly acknowledge what you already know about the student so they feel heard, then build on it.
+- NEVER ask the student for a fact that already exists in knownUserFacts. If the fact is present, treat it as settled.
+- Your follow-up question must move the conversation FORWARD into deeper, related insight — not repeat ground already covered (e.g. if GPA and field are already known, ask about projects, target universities, intake, or English test status instead).
 - Use web search for up-to-date or official information.
 - Prefer official university, embassy, immigration, scholarship, or government sources when possible.
 - Give a practical answer first, then list source links the student can check.
-- If the user is vague, ask exactly one focused follow-up question after the answer.
-- If scholarship recommendations are included, only use the validated shortlist provided to you.
+- If the user is vague, ask exactly one focused follow-up question after the answer that advances beyond knownUserFacts.
+
+SCHOLARSHIP RECOMMENDATIONS (when validatedScholarships is non-empty):
+- These are pre-filtered RAG matches. Re-rank them by overall fit and, for each one, write 2-3 sentences explaining concretely why it suits the student. Include a Markdown link to officialLink so they can follow it.
+- For each missing preference in missingUserPreferences, briefly state the assumption you used (e.g. "Because you didn't tell me your funding need, I included both full- and partial-funded options.").
+- Put the recommended scholarship IDs into recommendedScholarshipIds, ordered best→worst.
+- Recommend ONLY from validatedScholarships.
+
 - You may use light Markdown.
 - Do not use roadmap markers in assistantMessage.`;
 
@@ -130,7 +181,19 @@ const PROFILE_SCHEMA = {
     toefl: {
       anyOf: [{ type: "number" }, { type: "null" }],
     },
+    sat: {
+      anyOf: [{ type: "number" }, { type: "null" }],
+    },
     gpa: {
+      anyOf: [{ type: "string" }, { type: "null" }],
+    },
+    gpaScale: {
+      anyOf: [{ type: "number", enum: [4, 10, 100] }, { type: "null" }],
+    },
+    projectExperience: {
+      anyOf: [{ type: "string" }, { type: "null" }],
+    },
+    extracurricularActivities: {
       anyOf: [{ type: "string" }, { type: "null" }],
     },
     enoughInfoForRecommendations: { type: "boolean" },
@@ -164,7 +227,11 @@ const PROFILE_SCHEMA = {
     "fundingPreference",
     "ielts",
     "toefl",
+    "sat",
     "gpa",
+    "gpaScale",
+    "projectExperience",
+    "extracurricularActivities",
     "enoughInfoForRecommendations",
     "missingFields",
     "nextBestQuestion",
@@ -211,6 +278,7 @@ type ChatRequestBody = {
     role: "user" | "assistant";
     content: string;
   }>;
+  sessionId?: string;
 };
 
 type ChatIntent = {
@@ -230,7 +298,11 @@ type ExtractedProfile = {
   fundingPreference: "full" | "partial_or_full" | "unspecified" | null;
   ielts: number | null;
   toefl: number | null;
+  sat: number | null;
   gpa: string | null;
+  gpaScale: 4 | 10 | 100 | null;
+  projectExperience: string | null;
+  extracurricularActivities: string | null;
   enoughInfoForRecommendations: boolean;
   missingFields: string[];
   nextBestQuestion: string | null;
@@ -248,6 +320,46 @@ type ChatResponsePayload = {
   recommendedScholarshipIds: string[];
   nextSteps: string[];
 };
+
+/**
+ * Map the AI-extracted profile to a list of canonical key-value facts to
+ * persist for the user. Only non-null / non-empty values are returned;
+ * the upsert helper handles dedupe + change-detection.
+ */
+function profileToFacts(profile: ExtractedProfile, sessionId: string): FactInput[] {
+  const source = `chat:${sessionId}`;
+  const facts: FactInput[] = [];
+  if (profile.educationLevel)            facts.push({ key: PROFILE_FACT_KEYS.educationLevel,    value: profile.educationLevel,            source });
+  if (profile.degreeTarget)              facts.push({ key: PROFILE_FACT_KEYS.degreeTarget,      value: profile.degreeTarget,              source });
+  if (profile.fieldOfStudy)              facts.push({ key: PROFILE_FACT_KEYS.fieldOfStudy,      value: profile.fieldOfStudy,              source });
+  if (profile.nationality)               facts.push({ key: PROFILE_FACT_KEYS.nationality,       value: profile.nationality,               source });
+  if (profile.fundingPreference)         facts.push({ key: PROFILE_FACT_KEYS.fundingPreference, value: profile.fundingPreference,         source });
+  if (profile.targetCountriesOrRegions?.length) facts.push({ key: PROFILE_FACT_KEYS.targetCountries, value: profile.targetCountriesOrRegions, source });
+  if (profile.ielts !== null)            facts.push({ key: PROFILE_FACT_KEYS.ielts,             value: profile.ielts,                     source });
+  if (profile.toefl !== null)            facts.push({ key: PROFILE_FACT_KEYS.toefl,             value: profile.toefl,                     source });
+  if (profile.sat !== null)              facts.push({ key: PROFILE_FACT_KEYS.sat,               value: profile.sat,                       source });
+  if (profile.gpa) {
+    // Store as number so it stays consistent with evaluator-form writes.
+    const gpaNum = Number(profile.gpa);
+    facts.push({
+      key: PROFILE_FACT_KEYS.gpa,
+      value: Number.isFinite(gpaNum) ? gpaNum : profile.gpa,
+      source,
+    });
+  }
+  if (profile.gpaScale !== null)         facts.push({ key: PROFILE_FACT_KEYS.gpaScale,          value: profile.gpaScale,                  source });
+  if (profile.projectExperience)         facts.push({ key: PROFILE_FACT_KEYS.projectExperience, value: profile.projectExperience,         source });
+  if (profile.extracurricularActivities) facts.push({ key: PROFILE_FACT_KEYS.extracurricularActivities, value: profile.extracurricularActivities, source });
+  return facts;
+}
+
+function formatFactsForPrompt(facts: Record<string, unknown>): string {
+  const entries = Object.entries(facts);
+  if (entries.length === 0) return "(no facts on file yet)";
+  return entries
+    .map(([k, v]) => `- ${k}: ${Array.isArray(v) ? v.join(", ") : String(v)}`)
+    .join("\n");
+}
 
 type RankedScholarship = {
   id: string;
@@ -267,26 +379,8 @@ type RetrievedKnowledge = {
   content: string;
 };
 
-const REGION_ALIASES: Record<string, string[]> = {
-  europe: ["europe", "eu", "european union"],
-  usa: ["usa", "us", "united states", "america", "u.s."],
-  uk: ["uk", "united kingdom", "britain", "england"],
-  australia: ["australia"],
-  japan: ["japan"],
-  germany: ["germany"],
-  belgium: ["belgium"],
-  switzerland: ["switzerland"],
-  china: ["china"],
-  "south korea": ["south korea", "korea", "rok"],
-  "new zealand": ["new zealand", "nz"],
-};
-
 function normalizeText(value: string): string {
   return value.toLowerCase().replace(/[^a-z0-9\s]+/g, " ").replace(/\s+/g, " ").trim();
-}
-
-function tokenize(value: string): string[] {
-  return normalizeText(value).split(" ").filter(Boolean);
 }
 
 function parseJsonResponse<T>(raw: string): T {
@@ -298,97 +392,106 @@ function parseJsonResponse<T>(raw: string): T {
   ) as T;
 }
 
-function includesTokenMatch(source: string, target: string): boolean {
-  const normalizedSource = normalizeText(source);
-  const normalizedTarget = normalizeText(target);
-
-  return (
-    normalizedSource.includes(normalizedTarget) ||
-    normalizedTarget.includes(normalizedSource) ||
-    tokenize(target).some((token) => token.length > 2 && normalizedSource.includes(token))
-  );
-}
-
-function matchesCountryOrRegion(preferences: string[], country: string): boolean {
-  const normalizedCountry = normalizeText(country);
-
-  return preferences.some((preference) => {
-    const normalizedPreference = normalizeText(preference);
-    if (normalizedPreference === normalizedCountry) {
-      return true;
-    }
-
-    const aliases = REGION_ALIASES[normalizedCountry] ?? [];
-    return aliases.includes(normalizedPreference);
-  });
-}
-
-function fieldMatches(fieldOfStudy: string | null, scholarshipField: string): boolean {
-  if (!fieldOfStudy) {
-    return true;
-  }
-
-  return scholarshipField.trim() === "" || includesTokenMatch(scholarshipField, fieldOfStudy);
-}
-
 async function loadScholarshipLookup(): Promise<ScholarshipLookup> {
   const db = createBrowserClient();
-  const { data, error } = await db.from("scholarships").select("*");
+  const { data, error } = await db.from("scholarships").select(SCHOLARSHIP_SELECT);
 
   if (error) {
     throw new Error(`Failed to load scholarships: ${error.message}`);
   }
 
-  const scholarships = ((data ?? []) as ScholarshipRow[]).map((row) => rowToScholarship(row));
+  const scholarships = ((data ?? []) as unknown as ScholarshipJoinedRow[]).map(rowToScholarship);
   return {
     scholarships,
     scholarshipsById: new Map(scholarships.map((scholarship) => [scholarship.id, scholarship])),
   };
 }
 
-function buildShortlist(profile: ExtractedProfile, scholarships: Scholarship[]): RankedScholarship[] {
-  return scholarships
-    .map((scholarship) => {
-      let score = 0;
-      const reasons: string[] = [];
+/**
+ * RAG-style scholarship recommendation for the counselor chat. Replaces the
+ * old keyword-based buildShortlist when the intent is application_guidance
+ * or personalized_matching. Returns a RankedScholarship[] in the same shape
+ * downstream code already understands, plus the list of preferences the
+ * user hasn't specified yet (so the LLM can tell them what was assumed).
+ */
+async function recommendForChat(
+  profile: ExtractedProfile,
+): Promise<{ shortlist: RankedScholarship[]; missingPreferences: MissingPreferenceKey[] }> {
+  const db = createBrowserClient();
+  const openai = getOpenAIClient();
 
-      if (profile.degreeTarget) {
-        if (normalizeText(scholarship.degree) === normalizeText(profile.degreeTarget)) {
-          score += 45;
-          reasons.push(`supports ${profile.degreeTarget} study`);
-        } else {
-          score -= 100;
-        }
-      }
+  const gpaNum =
+    profile.gpa !== null && profile.gpa.trim()
+      ? Number.isFinite(Number(profile.gpa))
+        ? Number(profile.gpa)
+        : profile.gpa
+      : null;
 
-      if (profile.targetCountriesOrRegions.length > 0 && matchesCountryOrRegion(profile.targetCountriesOrRegions, scholarship.country)) {
-        score += 25;
-        reasons.push(`matches the preferred destination (${scholarship.country})`);
-      }
+  const profileText = buildProfileText({
+    fieldOfStudy: profile.fieldOfStudy,
+    degreeTarget: profile.degreeTarget,
+    targetCountries: profile.targetCountriesOrRegions,
+    fundingPreference: profile.fundingPreference,
+    nationality: profile.nationality,
+    gpa: gpaNum,
+    gpaScale: profile.gpaScale,
+    ielts: profile.ielts,
+    toefl: profile.toefl,
+    sat: profile.sat,
+    projectExperience: profile.projectExperience,
+    extracurricularActivities: profile.extracurricularActivities,
+    profileSummary: profile.profileSummary,
+  });
 
-      if (profile.fieldOfStudy) {
-        if (fieldMatches(profile.fieldOfStudy, scholarship.field)) {
-          score += 20;
-          reasons.push("fits the student's field interest");
-        } else {
-          score -= 10;
-        }
-      }
+  // preferredOrgText stays undefined until a `target_universities` fact key
+  // is added — the org+country filter is wired but disabled for now.
+  const result = await retrieveScholarshipRecommendations(db, openai, {
+    fieldOfStudy: profile.fieldOfStudy,
+    degreeTarget: profile.degreeTarget,
+    targetCountries: profile.targetCountriesOrRegions,
+    fundingPreference: profile.fundingPreference,
+    profileText,
+  });
 
-      if (profile.fundingPreference === "full") {
-        if (scholarship.funding === "full") {
-          score += 15;
-          reasons.push("is fully funded");
-        } else {
-          score -= 20;
-        }
-      }
+  // Diagnostic: print the filter cascade so it's obvious which stage dropped
+  // the shortlist to zero. Showing the user's filter inputs alongside makes
+  // it easy to spot "we asked for Germany but the DB has no Germany rows"
+  // vs "field threshold is too strict" vs "funding_kind column is empty".
+  console.log("[recommendForChat]", {
+    inputs: {
+      fieldOfStudy: profile.fieldOfStudy,
+      degreeTarget: profile.degreeTarget,
+      targetCountries: profile.targetCountriesOrRegions,
+      fundingPreference: profile.fundingPreference,
+    },
+    filterStats: result.filterStats,
+    missingPreferences: result.missingPreferences,
+    returnedIds: result.recommendations.map((r) => r.scholarship.id),
+  });
 
-      return { id: scholarship.id, score, reasons };
-    })
-    .filter((item) => item.score > 0)
-    .sort((a, b) => b.score - a.score)
-    .slice(0, 8);
+  const shortlist: RankedScholarship[] = result.recommendations.map((r) => {
+    const reasons: string[] = [];
+    if (r.fieldSimilarity !== null) {
+      reasons.push(`field match (${Math.round(r.fieldSimilarity * 100)}% semantic similarity)`);
+    }
+    if (profile.degreeTarget) {
+      reasons.push(`supports ${profile.degreeTarget} study`);
+    }
+    if (profile.targetCountriesOrRegions.length > 0 && r.scholarship.country) {
+      reasons.push(`in preferred destination (${r.scholarship.country})`);
+    }
+    if (r.orgSimilarity !== null) {
+      reasons.push(`organization match (${Math.round(r.orgSimilarity * 100)}% similarity)`);
+    }
+    reasons.push(`profile-description similarity ${Math.round(r.descriptionSimilarity * 100)}%`);
+    return {
+      id: r.scholarship.id,
+      score: r.descriptionSimilarity,
+      reasons,
+    };
+  });
+
+  return { shortlist, missingPreferences: result.missingPreferences };
 }
 
 function retrieveKnowledge(messages: ChatRequestBody["messages"], profile: ExtractedProfile): RetrievedKnowledge[] {
@@ -480,12 +583,15 @@ async function extractIntent(body: ChatRequestBody): Promise<ChatIntent> {
   return parseJsonResponse<ChatIntent>(response.output_text ?? "");
 }
 
-async function extractProfile(body: ChatRequestBody): Promise<ExtractedProfile> {
+async function extractProfile(
+  body: ChatRequestBody,
+  knownUserFacts: Record<string, unknown> = {},
+): Promise<ExtractedProfile> {
   const openai = getOpenAIClient();
   const response = await openai.responses.create({
     model: process.env.OPENAI_CHAT_MODEL ?? "gpt-5.4-mini",
     instructions: PROFILE_EXTRACTION_PROMPT,
-    input: JSON.stringify(body.messages),
+    input: JSON.stringify({ messages: body.messages, knownUserFacts }),
     text: {
       format: {
         type: "json_schema",
@@ -505,6 +611,8 @@ async function generateKnowledgeResponse(
   knowledge: RetrievedKnowledge[],
   shortlist: RankedScholarship[],
   scholarshipLookup: ScholarshipLookup,
+  knownFactsText: string,
+  missingPreferences: MissingPreferenceKey[],
 ): Promise<ChatResponsePayload> {
   const openai = getOpenAIClient();
   const shortlistPayload = shortlist.map((item) => {
@@ -528,12 +636,14 @@ async function generateKnowledgeResponse(
     input: JSON.stringify({
       intent,
       profile,
+      knownUserFacts: knownFactsText,
       localKnowledge: knowledge,
       validatedScholarships: shortlistPayload,
+      missingUserPreferences: missingPreferences,
       recommendationMode:
-        intent.shouldUseScholarshipMatching &&
-        profile.enoughInfoForRecommendations &&
-        profile.specificityLevel !== "low" &&
+        (intent.shouldUseScholarshipMatching ||
+          intent.intent === "application_guidance" ||
+          intent.intent === "personalized_matching") &&
         shortlistPayload.length > 0,
     }),
     text: {
@@ -557,6 +667,8 @@ async function generateWebFallbackResponse(
   knowledge: RetrievedKnowledge[],
   shortlist: RankedScholarship[],
   scholarshipLookup: ScholarshipLookup,
+  knownFactsText: string,
+  missingPreferences: MissingPreferenceKey[],
 ): Promise<ChatResponsePayload> {
   const openai = getOpenAIClient();
   const shortlistPayload = shortlist.map((item) => {
@@ -579,8 +691,10 @@ async function generateWebFallbackResponse(
       latestUserMessage,
       profile,
       intent,
+      knownUserFacts: knownFactsText,
       localKnowledge: knowledge,
       validatedScholarships: shortlistPayload,
+      missingUserPreferences: missingPreferences,
       note: "For web-based answers, include 2-5 Markdown links to the most relevant official sources you used.",
     }),
     tools: [{ type: "web_search_preview" }],
@@ -607,9 +721,19 @@ function validateRecommendations(
   const allowedIds = new Set(shortlist.map((item) => item.id));
   const recommendedScholarshipIds = payload.recommendedScholarshipIds.filter((id) => allowedIds.has(id)).slice(0, 5);
 
+  // Downgrade only if the conversation is too vague for a confident
+  // recommendation. The new RAG shortlist is itself a filter — if it
+  // returned matches AND specificity isn't "low", trust the LLM's
+  // recommendation regardless of the original shouldUseScholarshipMatching
+  // flag (we now also recommend on application_guidance).
+  const shouldRecommendIntent =
+    intent.shouldUseScholarshipMatching ||
+    intent.intent === "application_guidance" ||
+    intent.intent === "personalized_matching";
+
   if (
     payload.phase === "recommend" &&
-    (!intent.shouldUseScholarshipMatching || !profile.enoughInfoForRecommendations || profile.specificityLevel === "low")
+    (!shouldRecommendIntent || profile.specificityLevel === "low")
   ) {
     return {
       phase: profile.needsGeneralGuidance ? "guide" : "ask_more",
@@ -668,34 +792,63 @@ async function streamText(text: string): Promise<ReadableStream<Uint8Array>> {
 
 export async function POST(request: Request) {
   try {
+    const supabase = await createServerClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) {
+      return NextResponse.json({ error: "Sign in to use the counselor." }, { status: 401 });
+    }
+
     const body = (await request.json()) as ChatRequestBody;
-    const [intent, profile, scholarshipLookup] = await Promise.all([
+    let sessionId = body.sessionId;
+    if (!sessionId) {
+      const created = await createSession(supabase, user.id);
+      sessionId = created.id;
+    }
+
+    const [intent, scholarshipLookup, knownFacts] = await Promise.all([
       extractIntent(body),
-      extractProfile(body),
       loadScholarshipLookup(),
+      listFactsAsRecord(supabase, user.id),
     ]);
-    const shortlist = intent.shouldUseScholarshipMatching
-      ? buildShortlist(profile, scholarshipLookup.scholarships)
-      : [];
+    const profile = await extractProfile(body, knownFacts);
+
+    // Trigger the RAG-style recommender when the user is asking for
+    // personalized matches OR for application guidance — both flows benefit
+    // from concrete scholarship suggestions, not just abstract advice.
+    const shouldRecommend =
+      intent.shouldUseScholarshipMatching ||
+      intent.intent === "application_guidance" ||
+      intent.intent === "personalized_matching";
+
+    const { shortlist, missingPreferences } = shouldRecommend
+      ? await recommendForChat(profile)
+      : { shortlist: [] as RankedScholarship[], missingPreferences: [] as MissingPreferenceKey[] };
+
     const knowledge = intent.shouldUseKnowledgeBase ? retrieveKnowledge(body.messages, profile) : [];
+    const factsBlock = formatFactsForPrompt(knownFacts);
 
     const rawPayload = intent.needsWebSearch
-      ? await generateWebFallbackResponse(body, profile, intent, knowledge, shortlist, scholarshipLookup)
-      : await generateKnowledgeResponse(profile, intent, knowledge, shortlist, scholarshipLookup);
+      ? await generateWebFallbackResponse(body, profile, intent, knowledge, shortlist, scholarshipLookup, factsBlock, missingPreferences)
+      : await generateKnowledgeResponse(profile, intent, knowledge, shortlist, scholarshipLookup, factsBlock, missingPreferences);
 
     const payload = validateRecommendations(rawPayload, shortlist, profile, intent);
     const finalAssistantText = buildFinalAssistantText(payload, scholarshipLookup);
 
-    await saveChatSession({
-      messages: [...body.messages, { role: "assistant", content: finalAssistantText }],
-      profile: {
-        ...profile,
-        intent,
-        retrievedKnowledgeIds: knowledge.map((item) => item.id),
-      },
-      shortlistIds: shortlist.map((item) => item.id),
-      recommendations: payload.recommendedScholarshipIds,
-    });
+    await Promise.all([
+      persistTurn(supabase, sessionId, {
+        messages: [...body.messages, { role: "assistant", content: finalAssistantText }],
+        profile: {
+          ...profile,
+          intent,
+          retrievedKnowledgeIds: knowledge.map((item) => item.id),
+        },
+        shortlistIds: shortlist.map((item) => item.id),
+        recommendations: payload.recommendedScholarshipIds,
+      }),
+      upsertFacts(supabase, user.id, profileToFacts(profile, sessionId)),
+    ]);
 
     const readable = await streamText(finalAssistantText);
 
@@ -703,9 +856,13 @@ export async function POST(request: Request) {
       headers: {
         "Content-Type": "text/plain; charset=utf-8",
         "Cache-Control": "no-store",
+        "X-Session-Id": sessionId,
       },
     });
   } catch (error) {
+    // Surface the failure in the dev server console too — not just the
+    // response body. The stack trace is what you actually want to debug a 500.
+    console.error("[/api/chat] handler threw:", error);
     const message = error instanceof Error ? error.message : "Unable to start chat stream.";
     return NextResponse.json({ error: message }, { status: 500 });
   }

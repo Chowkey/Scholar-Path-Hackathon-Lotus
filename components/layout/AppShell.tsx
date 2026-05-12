@@ -6,16 +6,19 @@ import { Sidebar } from "@/components/layout/Sidebar";
 
 type AppShellProps = {
   children: React.ReactNode;
+  userSlot?: React.ReactNode;
 };
 
-export function AppShell({ children }: AppShellProps) {
+export function AppShell({ children, userSlot }: AppShellProps) {
   const pathname = usePathname();
   const isAdminRoute = pathname.startsWith("/admin");
   const isLandingPage = pathname === "/";
+  const isAuthRoute =
+    pathname === "/login" || pathname === "/signup" || pathname.startsWith("/auth/");
 
   return (
     <div className="flex h-screen">
-      {isAdminRoute ? <AdminSidebar /> : isLandingPage ? null : <Sidebar />}
+      {isAdminRoute ? <AdminSidebar /> : isLandingPage || isAuthRoute ? null : <Sidebar userSlot={userSlot} />}
       <main
         className={
           isAdminRoute
